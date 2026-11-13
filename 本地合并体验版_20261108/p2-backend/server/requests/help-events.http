@@ -1,0 +1,44 @@
+@baseUrl = http://localhost:8080
+@userId = u100
+@helpId = replace-with-created-help-uuid
+@requestKey = replace-with-unique-key-for-this-help
+
+### 发起求助：不要求档案或 Trip；失败重试沿用 requestKey，新求助必须换新 Key
+POST {{baseUrl}}/api/help-events
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+Idempotency-Key: {{requestKey}}
+Content-Type: application/json
+
+{
+  "userId": "{{userId}}",
+  "tripId": null,
+  "type": "GENERAL",
+  "location": null,
+  "locationNote": "开发联调演示：入口附近，需要咨询（非真实求助）"
+}
+
+### 老人只看自己的求助；复制创建响应 id 到顶部 helpId
+GET {{baseUrl}}/api/help-events
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+
+### 查询当前状态与模拟通知；轮询此接口，不重发创建请求
+GET {{baseUrl}}/api/help-events/{{helpId}}
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+
+### 景区演示接单列表（首期同一个 mock 工作池）
+GET {{baseUrl}}/api/help-events
+X-Mock-Actor-Id: scenic-operator-001
+X-Mock-Actor-Role: SCENIC
+
+### 景区人员接单
+POST {{baseUrl}}/api/help-events/{{helpId}}/acknowledge
+X-Mock-Actor-Id: scenic-operator-001
+X-Mock-Actor-Role: SCENIC
+
+### 实际处理人解决；换其他景区操作人会返回 403
+POST {{baseUrl}}/api/help-events/{{helpId}}/resolve
+X-Mock-Actor-Id: scenic-operator-001
+X-Mock-Actor-Role: SCENIC

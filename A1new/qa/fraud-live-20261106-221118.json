@@ -1,0 +1,112 @@
+{
+  "startedAt": "2026-11-06T22:11:11",
+  "sample": "【快递客服】您的包裹在运输中丢失，可双倍赔付。请添加QQ群8812345办理，先缴纳300元保证金，再把收到的短信验证码发给客服，逾期视为放弃。",
+  "steps": [
+    {
+      "at": "2026-11-06T22:11:12",
+      "status": "queued"
+    },
+    {
+      "at": "2026-11-06T22:11:15",
+      "status": "processing"
+    },
+    {
+      "at": "2026-11-06T22:11:18",
+      "status": "completed"
+    }
+  ],
+  "submit": {
+    "http": 202,
+    "idempotencyKey": "live-becbd3499df940d6ae8f15d80ed227bd",
+    "response": {
+      "analysis_id": "real-1c5be2de-4e87-45f3-bc5c-ae41dbd6261f"
+    }
+  },
+  "final": {
+    "analysis_id": "real-1c5be2de-4e87-45f3-bc5c-ae41dbd6261f",
+    "status": "completed",
+    "error": null,
+    "result": {
+      "id": "real-1c5be2de-4e87-45f3-bc5c-ae41dbd6261f",
+      "level": "high",
+      "type": "快递理赔诈骗",
+      "summary": "【快递客服】您的包裹在运输中丢失，可双倍赔付。请添加QQ群8812345办理，先缴纳300元保证金，再把收到的短信验证码发给客服，逾期视为放弃。",
+      "time": "2026-11-06T14:11:12.077499+00:00",
+      "user": "本地比赛演示",
+      "handled": false,
+      "confidence": null,
+      "advice": [
+        "立即停止与对方联系，不要添加QQ群，不要缴纳任何保证金。",
+        "绝对不要向任何人提供短信验证码，这是保护资金安全的最后一道防线。",
+        "通过官方APP或官方客服电话核实包裹状态，不要点击消息中的链接或拨打消息中的电话。",
+        "如果已经泄露验证码或转账，请立即联系银行冻结账户并报警。"
+      ],
+      "evidence": "输入内容包含典型的快递理赔诈骗特征：以包裹丢失为由诱导用户添加非官方社交软件（QQ群），要求缴纳保证金，并索要短信验证码。这些行为严重违反正规快递公司的理赔流程，属于高危诈骗信号。",
+      "logs": [],
+      "modality": "文本",
+      "origin": "backend",
+      "assessment": "assessed",
+      "sources": [],
+      "evidenceItems": [
+        {
+          "id": "e0",
+          "excerpt": "【快递客服】您的包裹在运输中丢失，可双倍赔付。",
+          "start": 0,
+          "end": 23
+        },
+        {
+          "id": "e1",
+          "excerpt": "请添加QQ群8812345办理，先缴纳300元保证金，再把收到的短信验证码发给客服，逾期视为放弃。",
+          "start": 23,
+          "end": 72
+        }
+      ],
+      "model": "qwen3.8-27b",
+      "knowledgeVersion": "seed-2026-09-16",
+      "retrievalMethod": "关键词案例检索（第一阶段）",
+      "profile": {
+        "role": "未设置",
+        "age": "",
+        "job": "",
+        "preference": 50
+      }
+    }
+  },
+  "entry": {
+    "http": 200,
+    "packet": {
+      "mode": "LOCAL_A1_DOMAIN_COORDINATOR_NOT_P2",
+      "state": "WAIT_RESULT",
+      "reply": "反诈请求已受理，正在等待分析结果。",
+      "domain": "fraud",
+      "domainResult": {
+        "mode": "LOCAL_DOMAIN_CONNECTOR",
+        "analysisId": "real-24da8e72-f520-42c1-8bb2-14a336a42da4",
+        "state": "ACCEPTED",
+        "notice": "任务已受理，不代表已完成检测；未执行通知。"
+      },
+      "notificationExecuted": false,
+      "sharedMemoryWritten": false,
+      "executionTrace": [
+        {
+          "stage": "selection",
+          "label": "用户选择防诈",
+          "status": "completed",
+          "detail": "按用户选择直接调用反诈服务；本轮不调用总模型分流。"
+        },
+        {
+          "stage": "dispatch",
+          "label": "提交反诈任务8000",
+          "status": "completed",
+          "detail": "沿用幂等请求标识，等待受理确认。"
+        },
+        {
+          "stage": "result",
+          "label": "等待反诈分析",
+          "status": "waiting",
+          "detail": "受理不是风险结论，正在等待领域模型结果。"
+        }
+      ]
+    }
+  }
+}

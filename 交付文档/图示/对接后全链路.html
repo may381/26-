@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>对接全部队友之后：全链路与责任方</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 1500px; background: #f5f7f9; color: #1f2933; padding: 30px 40px 24px;
+         font-family: "Microsoft YaHei", "PingFang SC", sans-serif; }
+  h1 { font-size: 26px; text-align: center; }
+  .sub { text-align: center; font-size: 13.5px; color: #6b7a8d; margin: 8px 0 14px; }
+  .legend { display: flex; justify-content: center; gap: 9px; margin-bottom: 8px; flex-wrap: wrap; font-size: 12.5px; }
+  .lg { border-radius: 20px; padding: 3px 12px; border: 1.2px solid; background: #fff; }
+  .lg.p1 { color: #3c6d92; border-color: #a9c8de; background: #eef5fa; }
+  .lg.p2 { color: #8a5a3c; border-color: #d8b79c; background: #fbf2ea; }
+  .lg.a1 { color: #3f7a6b; border-color: #a6ccbf; background: #edf7f3; }
+  .lg.a23 { color: #61508f; border-color: #bdb0dd; background: #f3f0fb; }
+  .lg.ext { color: #6b7a8d; border-color: #c8d2dc; background: #f1f4f7; }
+  .state { display: flex; justify-content: center; gap: 16px; margin-bottom: 20px; font-size: 12.5px; color: #6b7a8d; }
+  .state i { font-style: normal; }
+
+  table { width: 100%; border-collapse: separate; border-spacing: 0 6px; }
+  th { text-align: left; font-size: 12.5px; color: #6b7a8d; font-weight: 600; padding: 0 12px 2px; }
+  tr.row td { background: #fff; border-top: 1.2px solid #dfe6ec; border-bottom: 1.2px solid #dfe6ec; padding: 9px 12px; font-size: 13.2px; vertical-align: middle; }
+  tr.row td:first-child { border-left: 5px solid #7aa7c7; border-radius: 7px 0 0 7px; width: 44px; text-align: center; font-weight: 700; color: #33506b; }
+  tr.row td:last-child { border-right: 1.2px solid #dfe6ec; border-radius: 0 7px 7px 0; }
+  tr.row.p1 td:first-child { border-left-color: #7aa7c7; }
+  tr.row.p2 td:first-child { border-left-color: #d8a97e; }
+  tr.row.a1 td:first-child { border-left-color: #6fae9f; }
+  tr.row.a23 td:first-child { border-left-color: #9b8ccb; }
+  tr.row.ext td:first-child { border-left-color: #b6c2ce; }
+  .who { font-weight: 600; white-space: nowrap; }
+  .api { font-family: Consolas, monospace; font-size: 12.3px; background: #f1f4f7; padding: 2px 6px; border-radius: 4px; }
+  .what { color: #5d7287; font-size: 12.5px; }
+  .ok { color: #3f7a6b; background: #edf7f3; border-radius: 4px; padding: 2px 8px; font-size: 12px; white-space: nowrap; }
+  .warn { color: #8a6a2f; background: #fdf7ea; border-radius: 4px; padding: 2px 8px; font-size: 12px; white-space: nowrap; }
+  .no { color: #a05a48; background: #fbeee8; border-radius: 4px; padding: 2px 8px; font-size: 12px; white-space: nowrap; }
+
+  .bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 16px; }
+  .panel { background: #fff; border: 1.2px solid #dfe6ec; border-radius: 9px; padding: 13px 16px; font-size: 12.7px; line-height: 1.85; color: #445464; }
+  .panel h4 { font-size: 13.5px; color: #33506b; margin-bottom: 7px; }
+  .panel b { color: #8a5a3c; }
+  .note { text-align: center; font-size: 12.5px; color: #8a99a8; margin-top: 14px; }
+</style>
+</head>
+<body>
+  <h1>对接全部队友之后：全链路与责任方</h1>
+  <p class="sub">数字就是调用顺序；每一行都写清「谁 → 谁、走哪个接口、送什么、现在什么状态」。</p>
+
+  <div class="legend">
+    <span class="lg p1">P1 前端 · 我</span>
+    <span class="lg p2">P2 网关 · 队友</span>
+    <span class="lg a1">A1 智能体 · 我</span>
+    <span class="lg a23">A2 / A3 · 队友</span>
+    <span class="lg ext">外部 / 领域</span>
+  </div>
+  <div class="state">
+    <i>状态：</i><i class="ok">已实现</i><i class="warn">契约有、实现未完成</i><i class="no">未接入</i>
+  </div>
+
+  <table>
+    <tr><th>#</th><th>谁 → 谁</th><th>走哪个接口</th><th>送 / 收什么</th><th>现在状态</th></tr>
+
+    <tr class="row p1"><td>1</td><td class="who">老人 → P1 页面</td><td><span class="api">页面输入</span></td><td class="what">文字 / 图片 / 语音转写；原文不改写</td><td><span class="ok">已实现</span></td></tr>
+
+    <tr class="row p2"><td>2</td><td class="who">P1 → P2 网关</td><td><span class="api">POST /api/v3/agent/messages</span></td><td class="what">消息 + Idempotency-Key；返回 taskId（只代表受理）</td><td><span class="ok">已实现</span></td></tr>
+
+    <tr class="row p2"><td>3</td><td class="who">P2 → A1</td><td><span class="api">POST /internal/v3/messages</span></td><td class="what">任务单：目标、上下文、附件 ID、deadline、凭证</td><td><span class="warn">契约有，A1 未实现</span></td></tr>
+
+    <tr class="row a1"><td>4</td><td class="who">A1 → P2</td><td><span class="api">POST /internal/agent/v3/tasks/{id}/steps<br>/actions　/confirmations</span></td><td class="what">登记步骤、准备动作、准备确认（确认只能 A1 提）</td><td><span class="warn">契约有，未实现</span></td></tr>
+
+    <tr class="row a1"><td>5</td><td class="who">A1 → P2</td><td><span class="api">POST /internal/agent/v3/delegations</span></td><td class="what">委派子任务给 A2 / A3（A1 不直连、不拿别人密钥）</td><td><span class="warn">契约有，未实现</span></td></tr>
+
+    <tr class="row a23"><td>6</td><td class="who">P2 → A2 / A3</td><td><span class="api">POST /internal/v3/messages</span></td><td class="what">子任务单：做什么、缺什么、依赖谁</td><td><span class="no">A2 / A3 未接入</span></td></tr>
+
+    <tr class="row a23"><td>7</td><td class="who">A2 / A3 → P2</td><td><span class="api">统一 AgentResponse</span></td><td class="what">结果单：完成 / 等输入 / 等确认 / 等依赖 / 失败</td><td><span class="no">未接入</span></td></tr>
+
+    <tr class="row p2"><td>8</td><td class="who">P2 → A1</td><td><span class="api">恢复调用（带 dependencyResults）</span></td><td class="what">子结果、确认结果、真实 effects</td><td><span class="warn">未实现</span></td></tr>
+
+    <tr class="row a1"><td>9</td><td class="who">A1 → P2</td><td><span class="api">AgentResponse</span></td><td class="what">整合后的回复 + 未执行事项 + 待确认 ID</td><td><span class="warn">未实现</span></td></tr>
+
+    <tr class="row p1"><td>10</td><td class="who">P1 ← P2</td><td><span class="api">GET /api/v3/agent/tasks/{id}</span></td><td class="what">WAITING_INPUT 看追问；WAITING_CONFIRMATION 逐项确认；最终看 results + effects</td><td><span class="ok">已实现</span></td></tr>
+
+    <tr class="row ext"><td>11</td><td class="who">A1 → 8091 / 8000</td><td><span class="api">/api/agent/messages　/api/analyses</span></td><td class="what">旅游咨询、反诈分析（带幂等键，只读票务）</td><td><span class="ok">已实现（A1 域内）</span></td></tr>
+
+    <tr class="row ext"><td>12</td><td class="who">A1 / A2 / A3 → 学校模型</td><td><span class="api">POST /v1/chat/completions</span></td><td class="what">各自出计划 / 分析；共用 qwen3.8-27b，不经过 P2</td><td><span class="ok">已实现</span></td></tr>
+  </table>
+
+  <div class="bottom">
+    <div class="panel">
+      <h4>P2 已经实现、可直接用的横切能力</h4>
+      · 附件：API-51 / 52 / 53（10MiB、每条最多 4 个、24h）<br>
+      · 长期记忆：API-54 / 55（只读已确认偏好、按版本删除）<br>
+      · 语音：API-56 / 57（当前 mock，audioUrl 可能为 null）<br>
+      · 取消任务：API-48；确认决定：API-50（逐项、各自幂等键）
+    </div>
+    <div class="panel">
+      <h4>这张图最能说明的三件事</h4>
+      1. <b>A1 不直连 A2/A3</b>：所有委派都经 P2，密钥不落地。<br>
+      2. <b>P1 只认任务，不认 Agent</b>：前端永远查 <span class="api">/tasks/{id}</span>，不需要知道背后是谁。<br>
+      3. <b>12 步里 7 步还悬着</b>（5 步等我实现，2 步等 A2/A3）——这才是下一步的工作量，不是加功能。
+    </div>
+  </div>
+
+  <p class="note">依据《P2后端接口文档 v3.0》（57 公开 / 8 内部）与 r3 协议包　·　2026-11-04</p>
+</body>
+</html>

@@ -1,0 +1,36 @@
+@baseUrl = http://localhost:8080
+@userId = u100
+@actionKey = replace-with-stable-key-for-this-help-action
+
+### 让后端/Agent 识别意图，查询演示设施
+POST {{baseUrl}}/api/agent/messages
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+Content-Type: application/json
+
+{"userId":"{{userId}}","text":"厕所在哪"}
+
+### 二期占位，不声称提供真实健康服务
+POST {{baseUrl}}/api/agent/messages
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+Content-Type: application/json
+
+{"userId":"{{userId}}","text":"看看健康服务","intent":"health"}
+
+### 仅转人工事件；无定位/动作 Key 时，不创建求助或实际通知
+POST {{baseUrl}}/api/agent/messages
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+Content-Type: application/json
+
+{"userId":"{{userId}}","text":"找人帮忙","intent":"help"}
+
+### 演示求助工具：会创建 GENERAL 求助和模拟通知，新动作换 Key，重试沿用
+POST {{baseUrl}}/api/agent/messages
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+Idempotency-Key: {{actionKey}}
+Content-Type: application/json
+
+{"userId":"{{userId}}","text":"我要发起求助","intent":"help","context":{"location":"spot-003"}}

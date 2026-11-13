@@ -1,0 +1,41 @@
+@baseUrl = http://localhost:8080
+@userId = u100
+@tripId = replace-with-created-trip-uuid
+
+### 通用推荐：无需档案，仍须 mock 身份
+GET {{baseUrl}}/api/routes
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+
+### 档案推荐：先按 profile-family.http 建档
+GET {{baseUrl}}/api/routes?userId={{userId}}
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+
+### 显式条件覆盖，不改写档案
+GET {{baseUrl}}/api/routes?userId={{userId}}&walkDurationMin=70&avoidSteps=false
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+
+### 高德地图补充接口：每次调用会发起坐标转换和逐段步行规划，需要本地配置 Web 服务 Key
+GET {{baseUrl}}/api/routes/r1/map
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+
+### 开始游览，复制响应 data.id 到顶部 tripId；同一老人重复创建 ACTIVE 返回 409
+POST {{baseUrl}}/api/trips?userId={{userId}}
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+Content-Type: application/json
+
+{"routeId":"r1"}
+
+### 查询游览
+GET {{baseUrl}}/api/trips/{{tripId}}?userId={{userId}}
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+
+### 结束游览
+POST {{baseUrl}}/api/trips/{{tripId}}/finish?userId={{userId}}
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER

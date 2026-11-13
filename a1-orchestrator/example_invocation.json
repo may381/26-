@@ -1,0 +1,37 @@
+{
+  "protocolVersion": "3.0",
+  "userId": "demo-user",
+  "conversationId": "conv-local-demo",
+  "messageId": "msg-local-demo",
+  "task": {
+    "id": "root-local-demo",
+    "parentTaskId": null,
+    "version": 1,
+    "attempt": 1,
+    "invocationId": "invoke-local-demo",
+    "deadlineAt": "2099-01-01T00:00:00Z"
+  },
+  "input": {
+    "text": "想学剪纸，别太远，希望女儿陪同",
+    "attachmentIds": []
+  },
+  "context": {
+    "businessRefs": [],
+    "history": [],
+    "completedEffects": [],
+    "reason": "USER_MESSAGE",
+    "candidateTasks": [],
+    "dependencyResults": [],
+    "confirmationResults": [],
+    "actionLedger": [],
+    "planSteps": [],
+    "readSet": {
+      "memoryRevision": 0,
+      "authorizationRevision": 0,
+      "provenanceRefs": []
+    },
+    "inputResponse": null,
+    "pendingInputRequests": []
+  },
+  "capabilityToken": "DEMO-NOT-A-REAL-TOKEN"
+}

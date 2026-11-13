@@ -1,0 +1,40 @@
+[
+  {
+    "input": "你好",
+    "decision": "REPLY",
+    "domains": [],
+    "steps": []
+  },
+  {
+    "input": "有人自称客服，要求我先交300元保证金退款并提供验证码，帮我分析风险。",
+    "decision": "PLAN",
+    "domains": [
+      "fraud"
+    ],
+    "steps": [
+      {
+        "id": "s1",
+        "agent": "a1",
+        "domain": "fraud",
+        "goal": "分析用户提供的‘自称客服要求交300元保证金退款并提供验证码’这一具体场景的诈骗风险，提供证据、建议及来源。",
+        "dependsOn": []
+      }
+    ]
+  },
+  {
+    "input": "我想去杭州旅游三天，少走路，多休息。",
+    "decision": "PLAN",
+    "domains": [
+      "tourism"
+    ],
+    "steps": [
+      {
+        "id": "s1",
+        "agent": "a1",
+        "domain": "tourism",
+        "goal": "规划杭州三日游行程，要求少走路、多休息，包含景点、交通、餐饮和休息安排",
+        "dependsOn": []
+      }
+    ]
+  }
+]

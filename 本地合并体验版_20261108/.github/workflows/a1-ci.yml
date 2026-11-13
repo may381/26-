@@ -1,0 +1,89 @@
+name: A1 CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  a1-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: a1-orchestrator/requirements.txt
+
+      - name: Install A1 dependencies
+        run: python -m pip install -r a1-orchestrator/requirements.txt
+
+      - name: Test A1 orchestrator
+        working-directory: a1-orchestrator
+        run: |
+          python -X utf8 -m unittest discover -p "test_*.py"
+          python -X utf8 verify_doc.py
+
+      - name: Test A1 unified entry
+        working-directory: A1new
+        run: python -X utf8 -m unittest discover -p "test_*.py"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Check key browser scripts
+        working-directory: A1new
+        run: |
+          node --check app.js
+          node --check fraud-ui.js
+          node --check native-tourism.js
+          node --check tools.js
+
+  tourism-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: a1-guide/server
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+      - name: Test tourism service
+        run: mvn test
+
+  fraud-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: anti-fraud/backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: anti-fraud/backend/requirements.txt
+      - name: Install anti-fraud dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Test anti-fraud service
+        run: python -X utf8 -m pytest -q

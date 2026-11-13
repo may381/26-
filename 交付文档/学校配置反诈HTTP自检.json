@@ -1,0 +1,23 @@
+{
+  "direct": {
+    "provider": "school",
+    "model": "qwen3.8-27b",
+    "model_configured": true,
+    "model_ready": false,
+    "database_ready": true,
+    "elapsedSeconds": 3.66
+  },
+  "frontendProxy": {
+    "provider": "school",
+    "model": "qwen3.8-27b",
+    "model_configured": true,
+    "model_ready": false,
+    "database_ready": true,
+    "elapsedSeconds": 3.67
+  },
+  "unavailableSubmission": {
+    "httpStatus": 503,
+    "detail": "学校模型当前不可达，请连接校园网络并检查服务器模型服务。不会切换其他模型。",
+    "noNewAlerts": true
+  }
+}

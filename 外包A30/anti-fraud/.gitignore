@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
+backend/.venv/
+backend/.env
+backend/data/
+**/__pycache__/
+.pytest_cache/
+backend/.pytest-local*/
+backend/stress-result.json
+backend/evaluation-report.md

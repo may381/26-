@@ -1,0 +1,1 @@
+window.SILVER_AMAP_CONFIG={"key":"e1f78962deb2c0d929ed506577e4d8da","securityJsCode":"6a85eb7d6be1ad6bd845687126bb1fe6"};

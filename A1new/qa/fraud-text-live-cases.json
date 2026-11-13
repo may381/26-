@@ -1,0 +1,107 @@
+[
+  {
+    "sample": "ordinary",
+    "packet": {
+      "mode": "LOCAL_A1_DOMAIN_COORDINATOR_NOT_P2",
+      "state": "COMPLETE",
+      "reply": "原分析任务状态如下；结论以领域结果为准。",
+      "notificationExecuted": false,
+      "sharedMemoryWritten": false,
+      "domainResult": {
+        "analysis_id": "real-4d1fa5e8-e6dd-4e4f-a0bc-0ba9fbd3b061",
+        "status": "completed",
+        "error": null,
+        "result": {
+          "id": "real-4d1fa5e8-e6dd-4e4f-a0bc-0ba9fbd3b061",
+          "level": "low",
+          "type": "正常内容",
+          "summary": "【联调测试样本】明天下午三点在小区门口散步，记得带水，不需要交钱。",
+          "time": "2026-11-03T07:13:56.240132+00:00",
+          "user": "本地比赛演示",
+          "handled": true,
+          "confidence": null,
+          "advice": [
+            "本段未发现明显风险，但请注意核实信息来源，确保非他人冒用。",
+            "保持警惕，任何要求转账或提供验证码的行为均需谨慎核实。"
+          ],
+          "evidence": "输入内容明确标注为“联调测试样本”，且包含“不需要交钱”的防骗提示，属于正常的日常提醒或系统测试信息，未发现诈骗特征。",
+          "logs": [],
+          "modality": "文本",
+          "origin": "backend",
+          "assessment": "assessed",
+          "sources": [],
+          "evidenceItems": [
+            {
+              "id": "e0",
+              "excerpt": "【联调测试样本】明天下午三点在小区门口散步，记得带水，不需要交钱。",
+              "start": 0,
+              "end": 33
+            }
+          ],
+          "model": "qwen3.8-27b",
+          "knowledgeVersion": "seed-2026-09-16",
+          "retrievalMethod": "关键词案例检索（第一阶段）",
+          "profile": {
+            "role": "未设置",
+            "age": "",
+            "job": "",
+            "preference": 50
+          }
+        }
+      }
+    }
+  },
+  {
+    "sample": "insufficient",
+    "packet": {
+      "mode": "LOCAL_A1_DOMAIN_COORDINATOR_NOT_P2",
+      "state": "COMPLETE",
+      "reply": "原分析任务状态如下；结论以领域结果为准。",
+      "notificationExecuted": false,
+      "sharedMemoryWritten": false,
+      "domainResult": {
+        "analysis_id": "real-ab5b5a03-ab0e-4db7-af03-35eb215fc71f",
+        "status": "completed",
+        "error": null,
+        "result": {
+          "id": "real-ab5b5a03-ab0e-4db7-af03-35eb215fc71f",
+          "level": "low",
+          "type": "正常内容",
+          "summary": "【联调测试样本】有人给我发了个消息，我不知道能不能相信。",
+          "time": "2026-11-03T07:14:02.094384+00:00",
+          "user": "本地比赛演示",
+          "handled": true,
+          "confidence": null,
+          "advice": [
+            "本段输入为测试样本，未发现明显诈骗风险。",
+            "鉴于您近期有未处理的快递理赔诈骗记录，若后续收到类似“快递丢失理赔”、“客服退款”等消息，请务必通过官方APP或官方客服电话核实，切勿点击陌生链接或提供验证码。",
+            "对于任何要求转账、提供银行卡号或远程操控手机的消息，请保持警惕并拒绝。"
+          ],
+          "evidence": "输入内容明确标注为“联调测试样本”，且用户仅表达收到消息后不确定是否可信的咨询意图，未包含具体的诈骗诱导、资金要求或敏感信息泄露行为。虽然历史摘要中存在未处理的快递理赔诈骗记录，但本次输入未提供与该类型相关的具体证据，因此不直接判定为诈骗。",
+          "logs": [],
+          "modality": "文本",
+          "origin": "backend",
+          "assessment": "assessed",
+          "sources": [],
+          "evidenceItems": [
+            {
+              "id": "e0",
+              "excerpt": "【联调测试样本】有人给我发了个消息，我不知道能不能相信。",
+              "start": 0,
+              "end": 28
+            }
+          ],
+          "model": "qwen3.8-27b",
+          "knowledgeVersion": "seed-2026-09-16",
+          "retrievalMethod": "关键词案例检索（第一阶段）",
+          "profile": {
+            "role": "未设置",
+            "age": "",
+            "job": "",
+            "preference": 50
+          }
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>常见诈骗 · 一句话看懂</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+  body { background:#f4f7f9; font-family:"Microsoft YaHei",sans-serif; color:#1f2933; }
+  .wrap { max-width:900px; margin:0 auto; padding:28px 20px 60px; }
+  h1 { font-size:26px; margin-bottom:6px; }
+  .sub { color:#6b7a8d; font-size:14px; margin-bottom:8px; line-height:1.7; }
+  .meta { font-size:13px; color:#8a99a8; margin-bottom:18px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:16px; }
+  .case { background:#fff; border:1.4px solid #e3eaf0; border-radius:12px; padding:18px 18px 16px; }
+  .case .tag { display:inline-block; font-size:12.5px; padding:2px 9px; border-radius:20px;
+               background:#eef4f8; color:#3c6a86; border:1px solid #cfe0ec; margin-bottom:10px; }
+  .case h2 { font-size:17px; margin-bottom:8px; line-height:1.5; }
+  .case p { font-size:15px; line-height:1.8; color:#445464; }
+  .case .src { font-size:12px; color:#93a1b0; margin-top:10px; word-break:break-all; }
+  .case .src a { color:#5c8aa8; }
+  .empty { border-style:dashed; background:#fbfcfd; color:#8a99a8; display:flex;
+           flex-direction:column; justify-content:center; min-height:150px; }
+  .empty h2 { color:#8a99a8; font-size:15px; }
+  .ok { background:#fdf9f4; border:1.2px dashed #ddc4a8; border-radius:10px;
+        padding:12px 16px; font-size:13.5px; color:#8a6a4a; line-height:1.8; margin-top:18px; }
+  .err { color:#a05a48; font-size:15px; }
+</style>
+</head><body>
+<div class="wrap">
+  <h1>常见诈骗 · 一句话看懂</h1>
+  <p class="sub">每张卡只说三件事：它长什么样、它要你做什么、你该怎么做。</p>
+  <p class="meta" id="meta">正在加载案例…</p>
+  <div class="grid" id="grid"></div>
+  <div class="ok" id="note" hidden></div>
+  <p class="meta" style="margin-top:16px">案例是参考相似性，不代表本事件已被认定；判断仍以公安和银行核实为准。</p>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => { const d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; };
+
+function card(item) {
+  const source = item.source
+    ? '<div class="src">来源：' + (item.source.startsWith("http")
+        ? '<a href="' + esc(item.source) + '" target="_blank" rel="noopener">' + esc(item.source) + "</a>"
+        : esc(item.source)) + "</div>"
+    : "";
+  return '<article class="case"><span class="tag">' + esc(item.type) + "</span>"
+       + "<h2>" + esc(item.title) + "</h2>"
+       + "<p>" + esc(item.content) + "</p>" + source + "</article>";
+}
+
+function emptyCard(title) {
+  return '<article class="case empty"><span class="tag">待补</span>'
+       + "<h2>" + esc(title) + "</h2>"
+       + "<p>还没有可核实的来源案例，先不编一张卡。</p></article>";
+}
+
+(async () => {
+  try {
+    const response = await fetch("/api/fraud-cases");
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "案例库未返回");
+    const items = data.items || [];
+    $("meta").textContent = "已有 " + data.count + " 条 / 目标 " + data.target + " 类 · 来源：" + data.origin;
+    $("grid").innerHTML = items.map(card).join("") + (data.missing || []).map(emptyCard).join("");
+    $("note").hidden = false;
+    $("note").textContent = (data.missing || []).length
+      ? "还缺 " + data.missing.join("、") + " 这几类。" + data.notice
+      : data.notice;
+  } catch (error) {
+    $("meta").innerHTML = '<span class="err">案例库未加载：' + esc(error.message)
+      + "。请先启动反诈服务（8000）后刷新。</span>";
+  }
+})();
+</script>
+</body></html>

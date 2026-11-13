@@ -1,0 +1,64 @@
+spring:
+  application:
+    name: silver-tourism-server
+  profiles:
+    default: local
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 11MB
+      file-size-threshold: 0
+
+springdoc:
+  use-fqn: true
+  paths-to-match: /api/**
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+speech:
+  mode: ${SPEECH_MODE:disabled}
+  service-url: ${SPEECH_SERVICE_URL:http://127.0.0.1:18010}
+
+media:
+  public-origin: ${MEDIA_PUBLIC_ORIGIN:}
+  signing-key: ${MEDIA_SIGNING_KEY:}
+
+server:
+  port: ${SERVER_PORT:8080}
+
+data:
+  source: ${SCENIC_DATA_SOURCE:mock}
+  fixture: classpath:fixtures/qingfeng.json
+
+amap:
+  web-service-key: ${AMAP_WEB_SERVICE_KEY:}
+  connect-timeout: PT2S
+  read-timeout: PT5S
+
+agents:
+  mode: ${AGENTS_MODE:disabled}
+  a1-url: ${AGENT_A1_URL:http://127.0.0.1:18001}
+  a2-url: ${AGENT_A2_URL:http://127.0.0.1:18002}
+  a3-url: ${AGENT_A3_URL:http://127.0.0.1:18003}
+  a1-api-key: ${AGENT_A1_API_KEY:}
+  a2-api-key: ${AGENT_A2_API_KEY:}
+  a3-api-key: ${AGENT_A3_API_KEY:}
+
+management:
+  server:
+    address: 127.0.0.1
+    port: ${MANAGEMENT_PORT:8081}
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+  structured:
+    format:
+      console: logstash

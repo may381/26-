@@ -1,0 +1,1175 @@
+{
+  "info": {
+    "name": "银龄智游 P2 本地联调 v1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "先阅读 P2后端接口文档_v1.md。默认 userId=u101；00~08 会改演示档案并留下已结束游览/已撤回关系/已解决求助，务必使用测试库。90 含高德和手动上传，不要直接整套运行。无任何真实密钥。"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8080",
+      "type": "string"
+    },
+    {
+      "key": "healthUrl",
+      "value": "http://127.0.0.1:8081",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "u101",
+      "type": "string"
+    },
+    {
+      "key": "runId",
+      "value": "start-from-folder-00",
+      "type": "string"
+    },
+    {
+      "key": "familyId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "tripId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "helpId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "00 启动检查（每轮从这里开始）",
+      "item": [
+        {
+          "name": "开始新一轮：健康 UP（会更新本轮测试 Key）",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{healthUrl}}/actuator/health",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('runId', pm.variables.replaceIn('{{$guid}}'));",
+                  "['familyId','tripId','helpId'].forEach(k => pm.collectionVariables.unset(k));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('UP', () => pm.expect(body.status).to.eql('UP'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "通用路线：不依赖档案",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              }
+            ],
+            "url": "{{baseUrl}}/api/routes",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('3 条演示路线', () => pm.expect(body.data.routes.length).to.eql(3));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "01 老人档案（会覆盖 userId 的演示资料）",
+      "item": [
+        {
+          "name": "P02 完整建档/更新",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/profile?userId={{userId}}",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nickname\": \"接口联调演示老人\",\n  \"age\": 68,\n  \"residence\": \"演示城市\",\n  \"language\": \"普通话\",\n  \"walkSpeed\": \"MEDIUM\",\n  \"walkDurationMin\": 60,\n  \"avoidSteps\": true,\n  \"interests\": [\n    \"历史\"\n  ],\n  \"interactionPreference\": \"VOICE\",\n  \"emergencyContacts\": [\n    {\n      \"name\": \"演示联系人\",\n      \"phone\": \"DEMO-NOT-A-PHONE\",\n      \"relation\": \"家属\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('UUID', () => pm.expect(body.data.id).to.match(/^[0-9a-f-]{36}$/));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "P01 查询档案",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              }
+            ],
+            "url": "{{baseUrl}}/api/profile?userId={{userId}}",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('演示资料', () => pm.expect(body.data.nickname).to.eql('接口联调演示老人')); "
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "P02 部分更新",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/profile?userId={{userId}}",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"walkDurationMin\": 70\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('未传字段保留', () => {pm.expect(body.data.walkDurationMin).to.eql(70); pm.expect(body.data.nickname).to.eql('接口联调演示老人');});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02 家属创建与独立授权",
+      "item": [
+        {
+          "name": "F02 创建关系并保存 familyId",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/family-relations?userId={{userId}}",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"联调演示家属\",\n  \"relation\": \"家属\",\n  \"phone\": \"DEMO-NOT-A-PHONE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('status=PENDING', () => pm.expect(body.data.status).to.eql('PENDING'));",
+                  "if (pm.response.code === 200 && body.code === 'OK') pm.collectionVariables.set('familyId', body.data.id);"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "F01 查询关系列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              }
+            ],
+            "url": "{{baseUrl}}/api/family-relations?userId={{userId}}",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('列表', () => pm.expect(body.data).to.be.an('array')); "
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "F03 老人确认绑定",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              }
+            ],
+            "url": "{{baseUrl}}/api/family-relations/{{familyId}}/approve?userId={{userId}}",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('status=ACTIVE', () => pm.expect(body.data.status).to.eql('ACTIVE'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "F04 仅打开告警共享",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/family-relations/{{familyId}}/permissions?userId={{userId}}",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shareAlert\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('独立权限', () => {pm.expect(body.data.permissions.shareAlert).to.eql(true); pm.expect(body.data.permissions.shareLocation).to.eql(false);});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 路线与游览",
+      "item": [
+        {
+          "name": "R01 档案推荐",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              }
+            ],
+            "url": "{{baseUrl}}/api/routes?userId={{userId}}&walkDurationMin=70&avoidSteps=true",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('仅一个首选', () => pm.expect(body.data.routes.filter(r=>r.recommended).length).to.eql(1));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "T01 创建活动游览并保存 tripId",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/trips?userId={{userId}}",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"routeId\": \"r1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('status=ACTIVE', () => pm.expect(body.data.status).to.eql('ACTIVE'));",
+                  "if (pm.response.code === 200 && body.code === 'OK') pm.collectionVariables.set('tripId', body.data.id);"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "T02 查询游览",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              }
+            ],
+            "url": "{{baseUrl}}/api/trips/{{tripId}}?userId={{userId}}",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('status=ACTIVE', () => pm.expect(body.data.status).to.eql('ACTIVE'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04 求助幂等与处理闭环（仅模拟通知）",
+      "item": [
+        {
+          "name": "H01 创建 GENERAL 演示求助并保存 helpId",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "demo-{{runId}}-direct"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/help-events",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"tripId\": \"{{tripId}}\",\n  \"type\": \"GENERAL\",\n  \"location\": {\n    \"spotId\": \"spot-003\"\n  },\n  \"locationNote\": \"接口集合自动联调演示，非真实求助\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('businessStatus=OPEN', () => pm.expect(body.data.businessStatus).to.eql('OPEN'));",
+                  "if (pm.response.code === 200 && body.code === 'OK') pm.collectionVariables.set('helpId', body.data.id);"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "H01 重发相同动作，检查不重复建单",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "demo-{{runId}}-direct"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/help-events",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"tripId\": \"{{tripId}}\",\n  \"type\": \"GENERAL\",\n  \"location\": {\n    \"spotId\": \"spot-003\"\n  },\n  \"locationNote\": \"接口集合自动联调演示，非真实求助\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('同一 helpId', () => pm.expect(body.data.id).to.eql(pm.collectionVariables.get('helpId')));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "H02 老人求助列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              }
+            ],
+            "url": "{{baseUrl}}/api/help-events?userId={{userId}}",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('列表', () => pm.expect(body.data).to.be.an('array')); "
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "H03 求助详情",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              }
+            ],
+            "url": "{{baseUrl}}/api/help-events/{{helpId}}?userId={{userId}}",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('businessStatus=OPEN', () => pm.expect(body.data.businessStatus).to.eql('OPEN'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "H04 工作人员接单",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "scenic-operator-001"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "SCENIC"
+              }
+            ],
+            "url": "{{baseUrl}}/api/help-events/{{helpId}}/acknowledge?userId={{userId}}",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('businessStatus=ACKNOWLEDGED', () => pm.expect(body.data.businessStatus).to.eql('ACKNOWLEDGED'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "H05 原处理人解决",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "scenic-operator-001"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "SCENIC"
+              }
+            ],
+            "url": "{{baseUrl}}/api/help-events/{{helpId}}/resolve?userId={{userId}}",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('businessStatus=RESOLVED', () => pm.expect(body.data.businessStatus).to.eql('RESOLVED'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05 Agent 只读问答",
+      "item": [
+        {
+          "name": "A01 自动识别旅游问答",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/agent/messages",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"text\": \"厕所在哪\",\n  \"context\": {\n    \"location\": \"spot-003\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('旅游 + 无音频', () => {pm.expect(body.data.intent).to.eql('tourism');pm.expect(body.data.audioUrl).to.eql(null);});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "A01 二期健康服务明确未开放",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/agent/messages",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"text\": \"演示健康入口\",\n  \"intent\": \"health\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('未开放', () => pm.expect(body.data.tools[0].result.available).to.eql(false));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "06 TTS 演示",
+      "item": [
+        {
+          "name": "S02 合成占位，audioUrl=null",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/speech/syntheses",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"接口联调演示\",\n  \"speechRate\": 0.8\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('mock 音频为空', () => pm.expect(body.data.audioUrl).to.eql(null));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "07 负向测试（应得到对应拒绝）",
+      "item": [
+        {
+          "name": "匿名查路线应 401",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/routes",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 401', () => pm.response.to.have.status(401));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=UNAUTHORIZED', () => pm.expect(body.code).to.eql('UNAUTHORIZED')); "
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "跨老人档案应 403（固定两位身份）",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "u101"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              }
+            ],
+            "url": "{{baseUrl}}/api/profile?userId=u100",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403', () => pm.response.to.have.status(403));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=FORBIDDEN', () => pm.expect(body.code).to.eql('FORBIDDEN')); "
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "TTS 语速超限应 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/speech/syntheses",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"演示\",\n  \"speechRate\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=INVALID_ARGUMENT', () => pm.expect(body.code).to.eql('INVALID_ARGUMENT')); "
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "08 完成本轮游览与撤回关系",
+      "item": [
+        {
+          "name": "T03 结束本轮游览",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              }
+            ],
+            "url": "{{baseUrl}}/api/trips/{{tripId}}/finish?userId={{userId}}",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('status=FINISHED', () => pm.expect(body.data.status).to.eql('FINISHED'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "F05 撤回本轮关系",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              }
+            ],
+            "url": "{{baseUrl}}/api/family-relations/{{familyId}}/revoke?userId={{userId}}",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('status=REVOKED', () => pm.expect(body.data.status).to.eql('REVOKED'));",
+                  "pm.test('权限全关闭', () => pm.expect(Object.values(body.data.permissions).every(v=>v===false)).to.eql(true));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "90 手动依赖测试（默认不要选入 Runner）",
+      "item": [
+        {
+          "name": "R02 高德地图（需自己的服务端 Key，消耗配额）",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              }
+            ],
+            "url": "{{baseUrl}}/api/routes/r1/map",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('GCJ-02 + 未核验', () => {pm.expect(body.data.coordinateSystem).to.eql('GCJ-02');pm.expect(body.data.accessibilityVerified).to.eql(false);});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "S01 先选择演示文件并设置 MIME 后发送",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Mock-Actor-Id",
+                "value": "{{userId}}"
+              },
+              {
+                "key": "X-Mock-Actor-Role",
+                "value": "ELDER"
+              }
+            ],
+            "url": "{{baseUrl}}/api/speech/transcriptions",
+            "description": "字段与前置条件见同目录上级 P2后端接口文档_v1.md。仅在本地测试库执行。",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "audio",
+                  "type": "file",
+                  "src": [],
+                  "contentType": "audio/wav",
+                  "description": "选本机非私密 WAV 演示文件；其他格式需改正确 MIME，不能只改文件名。"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('code=OK', () => pm.expect(body.code).to.eql('OK')); ",
+                  "pm.test('演示转写', () => pm.expect(body.data.text).to.include('演示')); "
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    }
+  ]
+}

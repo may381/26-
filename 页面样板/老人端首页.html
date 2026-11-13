@@ -1,0 +1,106 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><title>银龄智游 · 老人端首页样板</title><style>body{margin:0;background:#eef2f1}button{cursor:pointer}</style></head><body><div id="silver-home-preview" class="viz-dotted-background">
+  <div class="st-phone" aria-label="银龄智游老人端首页样板">
+    <div class="st-status"><span>9:41</span><span aria-label="信号与电量">▮▮▮　▰</span></div>
+    <header class="st-header"><div><div class="st-brand">银龄智游<span class="st-dot"></span></div><div class="st-subtitle">陪您慢慢走，好风景不着急</div></div><button class="st-icon cursor-interaction" data-action="字号" aria-label="调整字号">字</button></header>
+    <main>
+      <button class="st-location cursor-interaction" data-action="景区"><i data-lucide="map-pin" aria-hidden="true"></i><span>翠湖公园 <small>演示景区</small></span><i data-lucide="chevron-down" aria-hidden="true"></i></button>
+      <section class="st-companion"><div class="st-eyebrow">今天，也有人陪您看风景</div><div class="st-guide-row"><div class="st-avatar"><i data-lucide="sprout" aria-hidden="true"></i></div><div><h1>您好，我是小游</h1><p>您的贴心 AI 导游</p></div></div><p class="st-guide-copy">景点故事、路线和附近设施，<br>您想知道的，直接问我就好。</p><button class="st-primary cursor-interaction" data-action="讲解"><i data-lucide="headphones" aria-hidden="true"></i>开始听讲解<i data-lucide="arrow-right" aria-hidden="true"></i></button></section>
+      <button class="st-voice cursor-interaction" data-action="语音"><span class="st-mic"><i data-lucide="mic" aria-hidden="true"></i></span><span><strong>点击说话</strong><small>试着问：“附近哪里能休息？”</small></span></button>
+      <button class="st-text cursor-interaction" data-action="输入">也可以打字问我 <i data-lucide="keyboard" aria-hidden="true"></i></button>
+      <section class="st-route"><div class="st-section-title"><h2>轻松游览路线</h2><span class="st-tag">省力优先</span></div><p>湖畔慢行 · 赏景与休息都有</p><div class="st-route-stats"><span><i data-lucide="footprints" aria-hidden="true"></i>1.2 公里</span><span><i data-lucide="clock-3" aria-hidden="true"></i>约 50 分钟</span></div><div class="st-route-bottom"><span>少台阶 · 3 处休息点</span><button class="st-link cursor-interaction" data-action="路线">查看路线 <i data-lucide="arrow-right" aria-hidden="true"></i></button></div></section>
+      <section class="st-services"><h2>您身边的服务</h2><div class="st-service-grid"><button class="cursor-interaction" data-action="厕所"><i data-lucide="bath" aria-hidden="true"></i><span>找厕所</span></button><button class="cursor-interaction" data-action="休息点"><i data-lucide="armchair" aria-hidden="true"></i><span>找休息点</span></button><button class="cursor-interaction" data-action="饮水点"><i data-lucide="glass-water" aria-hidden="true"></i><span>找饮水点</span></button></div></section>
+      <button class="st-sos cursor-interaction" data-action="求助"><i data-lucide="shield-plus" aria-hidden="true"></i><span><strong>紧急求助</strong><small>需要帮助时，点这里</small></span><i data-lucide="chevron-right" aria-hidden="true"></i></button>
+    </main>
+    <nav class="st-nav" aria-label="底部导航"><button class="st-active cursor-interaction" data-action="首页" aria-current="page"><i data-lucide="house" aria-hidden="true"></i><span>首页</span></button><button class="cursor-interaction" data-action="游览"><i data-lucide="map" aria-hidden="true"></i><span>游览</span></button><button class="cursor-interaction" data-action="我的"><i data-lucide="user-round" aria-hidden="true"></i><span>我的</span></button></nav>
+    <div class="st-homebar"><span></span></div>
+    <div class="st-overlay" hidden><section class="st-dialog" role="dialog" aria-modal="true" aria-labelledby="st-dialog-title"><h2 id="st-dialog-title"></h2><p class="st-dialog-copy" aria-live="polite"></p><label class="st-input-label" hidden>您想问什么？<input type="text" placeholder="例如：附近哪里能休息？"></label><button class="st-primary st-close cursor-interaction">知道了</button></section></div>
+  </div>
+</div>
+<style>
+#silver-home-preview{padding:24px 12px;box-sizing:border-box;color-scheme:light dark}
+#silver-home-preview *{box-sizing:border-box}
+#silver-home-preview .st-phone{--st-brand:#167D8D;--st-bg:light-dark(#F5F7F8,#172426);--st-surface:light-dark(#FFFFFF,#223336);--st-ink:light-dark(#203437,#F0F5F4);--st-secondary:light-dark(#4B6266,#B7CBCD);--st-line:light-dark(#DFE8E8,#3C5155);--st-soft:light-dark(#E8F3F0,#294742);--st-danger:light-dark(#AF3338,#FFADB0);--st-danger-bg:light-dark(#FFF1F0,#452C30);font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;font-size:20px;line-height:1.5;color:var(--st-ink);background:var(--st-bg);max-width:412px;margin:auto;border:1px solid var(--st-line);border-radius:32px;overflow:hidden;position:relative;box-shadow:0 12px 40px #00000012}
+#silver-home-preview button{font:inherit;color:inherit;appearance:none;border:0;background:none}
+#silver-home-preview button:focus-visible{outline:3px solid var(--st-brand);outline-offset:3px}
+#silver-home-preview .st-status{display:flex;justify-content:space-between;padding:16px 24px 6px;font-size:14px;font-weight:500}
+#silver-home-preview .st-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px 18px;gap:12px}
+#silver-home-preview .st-brand{font-size:26px;font-weight:500;letter-spacing:1px;display:flex;align-items:center;gap:8px}
+#silver-home-preview .st-dot{width:7px;height:7px;background:var(--st-brand);border-radius:50%}
+#silver-home-preview .st-subtitle{font-size:16px;color:var(--st-secondary);margin-top:4px}
+#silver-home-preview .st-icon{width:48px;height:48px;border:1px solid var(--st-line);border-radius:14px;background:var(--st-surface);flex-shrink:0}
+#silver-home-preview main{padding:0 16px 20px}
+#silver-home-preview .st-location{display:flex;align-items:center;width:100%;gap:8px;padding:0 4px 14px;text-align:left}
+#silver-home-preview .st-location span{flex:1;font-weight:500}
+#silver-home-preview small{font-weight:400;font-size:16px;color:var(--st-secondary)}
+#silver-home-preview .st-location small{margin-left:8px;font-size:14px}
+#silver-home-preview .st-companion{padding:22px;border-radius:20px;background:var(--st-soft);position:relative;overflow:hidden}
+#silver-home-preview .st-eyebrow{font-size:16px;color:var(--st-secondary);margin-bottom:18px}
+#silver-home-preview .st-guide-row{display:flex;align-items:center;gap:14px}
+#silver-home-preview .st-avatar{width:62px;height:62px;border-radius:22px;display:grid;place-items:center;background:var(--st-surface);color:var(--st-brand);flex-shrink:0}
+#silver-home-preview .st-avatar svg{width:34px;height:34px}
+#silver-home-preview h1{font-size:24px;font-weight:500;margin:0}
+#silver-home-preview h2{font-size:20px;font-weight:500;margin:0}
+#silver-home-preview p{margin:0}
+#silver-home-preview .st-guide-row p{font-size:16px;color:var(--st-secondary);margin-top:3px}
+#silver-home-preview .st-guide-copy{margin:18px 0;font-size:18px;line-height:1.7}
+#silver-home-preview .st-primary{display:flex;justify-content:center;align-items:center;gap:10px;width:100%;min-height:56px;padding:12px;border-radius:14px;background:var(--st-brand);color:#FFFFFF;font-weight:500}
+#silver-home-preview .st-primary svg:last-child{margin-left:auto}
+#silver-home-preview .st-primary svg:first-child{margin-right:auto}
+#silver-home-preview .st-voice{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--st-surface);border:1px solid var(--st-line);border-radius:18px;padding:16px;margin-top:16px}
+#silver-home-preview .st-mic{display:grid;place-items:center;background:var(--st-soft);color:var(--st-brand);width:52px;height:52px;border-radius:50%;flex-shrink:0}
+#silver-home-preview strong{font-weight:500}
+#silver-home-preview .st-voice small{display:block;margin-top:4px;font-size:15px}
+#silver-home-preview .st-text{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:48px;font-size:16px;color:var(--st-secondary)}
+#silver-home-preview .st-route{background:var(--st-surface);border:1px solid var(--st-line);padding:18px;border-radius:18px;margin:8px 0 22px}
+#silver-home-preview .st-section-title{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+#silver-home-preview .st-tag{font-size:14px;background:var(--st-soft);color:var(--st-ink);border-radius:6px;padding:3px 8px}
+#silver-home-preview .st-route p{font-size:16px;color:var(--st-secondary);margin:8px 0 16px}
+#silver-home-preview .st-route-stats{display:flex;gap:18px;flex-wrap:wrap;font-size:18px}
+#silver-home-preview .st-route-stats span{display:flex;align-items:center;gap:6px}
+#silver-home-preview .st-route-stats svg{width:19px;height:19px;color:var(--st-secondary)}
+#silver-home-preview .st-route-bottom{border-top:1px solid var(--st-line);margin-top:16px;padding-top:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:15px;color:var(--st-secondary)}
+#silver-home-preview .st-link{display:flex;gap:4px;align-items:center;color:var(--st-brand);min-height:44px;padding:0;font-size:17px}
+#silver-home-preview .st-services h2{margin:0 4px 12px}
+#silver-home-preview .st-service-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#silver-home-preview .st-service-grid button{display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--st-surface);border:1px solid var(--st-line);border-radius:16px;padding:16px 4px;font-size:17px;min-height:96px}
+#silver-home-preview .st-service-grid svg{color:var(--st-brand);width:26px;height:26px}
+#silver-home-preview .st-sos{display:flex;align-items:center;gap:12px;width:100%;background:var(--st-danger-bg);color:var(--st-danger);border-radius:16px;padding:16px;text-align:left;margin-top:22px}
+#silver-home-preview .st-sos span{flex:1}
+#silver-home-preview .st-sos small{display:block;color:var(--st-danger);font-size:15px;margin-top:2px}
+#silver-home-preview .st-nav{display:grid;grid-template-columns:repeat(3,1fr);padding:12px 16px 4px;border-top:1px solid var(--st-line);background:var(--st-surface)}
+#silver-home-preview .st-nav button{display:flex;align-items:center;flex-direction:column;gap:5px;font-size:16px;min-height:58px;color:var(--st-secondary)}
+#silver-home-preview .st-nav .st-active{color:var(--st-brand)}
+#silver-home-preview .st-homebar{display:flex;justify-content:center;background:var(--st-surface);padding:12px}
+#silver-home-preview .st-homebar span{width:100px;height:4px;background:var(--st-ink);border-radius:4px}
+#silver-home-preview .st-overlay{position:absolute;inset:0;background:#00000055;z-index:5;align-items:flex-start;justify-content:center;padding:150px 20px 20px}
+#silver-home-preview .st-overlay:not([hidden]){display:flex}
+#silver-home-preview .st-dialog{background:var(--st-surface);color:var(--st-ink);padding:24px;border-radius:20px;width:100%;box-shadow:0 8px 28px #00000022}
+#silver-home-preview .st-dialog p{font-size:18px;margin:16px 0 24px;line-height:1.7}
+#silver-home-preview .st-input-label{font-size:18px;margin:12px 0 24px;display:block}
+#silver-home-preview .st-input-label[hidden]{display:none}
+#silver-home-preview input{font:inherit;width:100%;margin-top:8px;padding:12px;border:1px solid var(--st-line);border-radius:12px;color:var(--st-ink);background:var(--st-bg);font-size:16px}
+@media(max-width:360px){#silver-home-preview{padding:12px 0}#silver-home-preview .st-header{padding:14px 16px}#silver-home-preview .st-companion{padding:18px}#silver-home-preview .st-voice{gap:10px;padding:12px}#silver-home-preview .st-voice small{font-size:14px}}
+</style>
+<script>
+(() => {
+const root=document.getElementById('silver-home-preview');
+const overlay=root.querySelector('.st-overlay');
+const title=root.querySelector('#st-dialog-title');
+const copy=root.querySelector('.st-dialog-copy');
+const inputLabel=root.querySelector('.st-input-label');
+let previousFocus=null;
+const messages={景区:['选择景区','当前为翠湖公园演示数据。后续这里可以切换景区或扫描景区二维码。'],讲解:['湖畔的故事','这里将展示景点讲解与播放控制。本次仅预览页面样式，没有播放真实音频。'],语音:['语音提问','正式 App 将在您授权后使用麦克风。这一版为交互演示，没有录音。'],输入:['文字提问','输入您想了解的问题，后续将连接景区知识问答。'],路线:['湖畔慢行路线','演示路线：入口 → 湖畔 → 休息亭 → 花园 → 出口。距离和时长为示例，尚未接入地图。'],厕所:['附近的厕所','这里将展示可到达的厕所、距离及路线。当前没有接入定位。'],休息点:['附近的休息点','这里将展示座椅、休息亭和省力到达路线。当前没有接入定位。'],饮水点:['附近的饮水点','这里将展示饮水设施及开放状态。当前没有接入景区数据。'],求助:['紧急求助演示','正式 App 将确认求助并显示发送、接收和处理状态。此处不会拨打电话或发送通知。'],游览:['我的游览','后续这里展示地图、当前行程和旅行回忆。'],我的:['我的','后续这里包含账号、家人绑定、紧急联系人、字号与语速设置。']};
+root.querySelectorAll('[data-action]').forEach(button=>button.addEventListener('click',()=>{
+const action=button.dataset.action;
+if(action==='首页')return;
+if(action==='字号'){const phone=root.querySelector('.st-phone');const large=phone.dataset.large!=='true';phone.dataset.large=String(large);phone.style.fontSize=large?'22px':'20px';phone.querySelectorAll('h1,h2,strong').forEach(el=>{el.style.fontSize=large?'24px':'';});button.textContent=large?'字＋':'字';return;}
+previousFocus=button;const message=messages[action];title.textContent=message[0];copy.textContent=message[1];inputLabel.hidden=action!=='输入';overlay.hidden=false;root.querySelector('.st-close').focus();
+}));
+function close(){overlay.hidden=true;if(previousFocus)previousFocus.focus();}
+root.querySelector('.st-close').addEventListener('click',close);
+overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
+root.addEventListener('keydown',e=>{if(overlay.hidden)return;if(e.key==='Escape')close();if(e.key==='Tab'){const elements=[...overlay.querySelectorAll('input,button')].filter(el=>!el.closest('[hidden]'));const first=elements[0],last=elements[elements.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});
+if(globalThis.Tweak){const state={accent:'#167D8D'};const phone=root.querySelector('.st-phone');const tweak=new Tweak({container:phone,onChange:()=>phone.style.setProperty('--st-brand',state.accent)});tweak.addColorPicker(state,'accent',{label:'品牌主色',reference:'--st-brand'});}
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script><script>if(window.lucide)lucide.createIcons();</script></body></html>

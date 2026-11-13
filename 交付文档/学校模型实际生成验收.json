@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-10-31T16:22:05.113123+00:00",
+  "model": "qwen3.8-27b",
+  "endpoint": "http://10.138.50.151:8000/v1/chat/completions",
+  "businessWrites": false,
+  "scope": "School text endpoint only; not application or P2 end-to-end acceptance.",
+  "success": false,
+  "error": "RemoteDisconnected",
+  "elapsedSeconds": 5.03
+}

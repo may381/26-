@@ -1,0 +1,2746 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:silver-travel:agent:v3:r3",
+  "title": "Agent v3 r3 首批控制层冻结候选",
+  "description": "仅定义首批控制层。问题由Agent提出草案，P2登记版本；payload、工具args和历史条目仍由登记业务Schema和服务端语义校验。",
+  "definitions": {
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "retryable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "retryable"
+      ],
+      "additionalProperties": false
+    },
+    "BusinessRef": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "Reply": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "speechRate": {
+          "type": "number",
+          "minimum": 0.5,
+          "maximum": 1.5
+        },
+        "audioUrl": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "text",
+        "speechRate",
+        "audioUrl"
+      ],
+      "additionalProperties": false
+    },
+    "Question": {
+      "type": "object",
+      "properties": {
+        "ownerTaskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "inputRequestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
+          "description": "由产生该问题的Agent程序生成的UUID v4；P2另行校验全局唯一性。"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "requiredFields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "maxItems": 10
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4000
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "label",
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 10
+        },
+        "allowFreeText": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "ownerTaskId",
+        "inputRequestId",
+        "version",
+        "question",
+        "requiredFields",
+        "options",
+        "allowFreeText"
+      ],
+      "additionalProperties": false
+    },
+    "AnswerRef": {
+      "type": "object",
+      "properties": {
+        "ownerTaskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "inputRequestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
+          "description": "由产生该问题的Agent程序生成的UUID v4；P2另行校验全局唯一性。"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "selectedOptionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ownerTaskId",
+        "inputRequestId",
+        "version",
+        "selectedOptionId"
+      ],
+      "additionalProperties": false
+    },
+    "MessageRequest": {
+      "type": "object",
+      "properties": {
+        "protocolVersion": {
+          "const": "3.0"
+        },
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "conversationId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "continueTaskId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "relatedTaskId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "maxLength": 2000
+            },
+            "attachmentIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "maxItems": 4
+            },
+            "responseTo": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/AnswerRef"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "text",
+            "attachmentIds",
+            "responseTo"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "properties": {
+                "text": {
+                  "minLength": 1
+                }
+              }
+            },
+            {
+              "properties": {
+                "attachmentIds": {
+                  "minItems": 1
+                }
+              }
+            }
+          ]
+        },
+        "context": {
+          "type": "object",
+          "properties": {
+            "businessRefs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/BusinessRef"
+              },
+              "maxItems": 20
+            }
+          },
+          "required": [
+            "businessRefs"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "protocolVersion",
+        "userId",
+        "conversationId",
+        "continueTaskId",
+        "relatedTaskId",
+        "input",
+        "context"
+      ],
+      "additionalProperties": false
+    },
+    "Control": {
+      "type": "object",
+      "properties": {
+        "next": {
+          "enum": [
+            "COMPLETE",
+            "WAIT_CONFIRMATION",
+            "WAIT_DEPENDENCIES",
+            "WAIT_INPUT"
+          ]
+        },
+        "outcome": {
+          "anyOf": [
+            {
+              "enum": [
+                "SUCCEEDED",
+                "PARTIALLY_SUCCEEDED",
+                "FAILED"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dependencyTaskIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "maxItems": 6
+        },
+        "inputRequest": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/QuestionProposal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "next",
+        "outcome",
+        "dependencyTaskIds",
+        "inputRequest"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "next": {
+                "const": "COMPLETE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "outcome": {
+                "enum": [
+                  "SUCCEEDED",
+                  "PARTIALLY_SUCCEEDED",
+                  "FAILED"
+                ]
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "outcome": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "next": {
+                "const": "WAIT_INPUT"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "inputRequest": {
+                "$ref": "#/definitions/QuestionProposal"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "inputRequest": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "next": {
+                "const": "WAIT_DEPENDENCIES"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "dependencyTaskIds": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Result": {
+      "type": "object",
+      "properties": {
+        "resultId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "schemaVersion": {
+          "const": "1.0"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "businessRef": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/BusinessRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "availability": {
+          "enum": [
+            "REAL",
+            "DEMO",
+            "UNAVAILABLE",
+            "NEEDS_VERIFICATION"
+          ]
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "maxItems": 20
+        },
+        "pendingChecks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "maxItems": 20
+        },
+        "payload": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "resultId",
+        "type",
+        "schemaVersion",
+        "title",
+        "businessRef",
+        "availability",
+        "generatedAt",
+        "sources",
+        "pendingChecks",
+        "payload"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "MEMORY_REVIEW"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "#/definitions/MemoryReview"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "AgentData": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "messageId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "taskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "baseTaskVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "invocationId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "intent": {
+          "enum": [
+            "tourism",
+            "help",
+            "fraud",
+            "health",
+            "care",
+            "community",
+            "volunteer",
+            "culture",
+            "ability"
+          ]
+        },
+        "domains": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "tourism",
+              "help",
+              "fraud",
+              "health",
+              "care",
+              "community",
+              "volunteer",
+              "culture",
+              "ability"
+            ]
+          },
+          "maxItems": 9
+        },
+        "control": {
+          "$ref": "#/definitions/Control"
+        },
+        "reply": {
+          "$ref": "#/definitions/Reply"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Result"
+          },
+          "maxItems": 20
+        },
+        "confirmationIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "maxItems": 20
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "tool": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "args": {
+                "type": "object"
+              },
+              "result": {}
+            },
+            "required": [
+              "tool",
+              "args",
+              "result"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 40
+        },
+        "handoff": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "human_handoff"
+                },
+                "to": {
+                  "enum": [
+                    "family",
+                    "scenic",
+                    "official"
+                  ]
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4000
+                }
+              },
+              "required": [
+                "type",
+                "to",
+                "reason"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "usedMemoryRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "memoryId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "version": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "memoryId",
+              "version"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "conversationId",
+        "messageId",
+        "taskId",
+        "baseTaskVersion",
+        "invocationId",
+        "intent",
+        "domains",
+        "control",
+        "reply",
+        "results",
+        "confirmationIds",
+        "tools",
+        "handoff",
+        "usedMemoryRefs"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "control": {
+                "properties": {
+                  "next": {
+                    "const": "WAIT_CONFIRMATION"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "confirmationIds": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "AgentResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "const": "OK"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "data": {
+          "$ref": "#/definitions/AgentData"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "StepRegisterRequest": {
+      "type": "object",
+      "properties": {
+        "protocolVersion": {
+          "const": "3.0"
+        },
+        "taskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "requestKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "planVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "clientStepKey": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "tool": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "args": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "clientStepKey",
+              "tool",
+              "args"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 20,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "protocolVersion",
+        "taskId",
+        "requestKey",
+        "planVersion",
+        "steps"
+      ],
+      "additionalProperties": false
+    },
+    "StepRegisterResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "const": "OK"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "taskId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "planVersion": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "steps": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "clientStepKey": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "stepId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "prepareKey": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "state": {
+                    "const": "PLANNED"
+                  }
+                },
+                "required": [
+                  "clientStepKey",
+                  "stepId",
+                  "prepareKey",
+                  "state"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 20
+            }
+          },
+          "required": [
+            "taskId",
+            "planVersion",
+            "steps"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "ActionPrepareRequest": {
+      "type": "object",
+      "properties": {
+        "protocolVersion": {
+          "const": "3.0"
+        },
+        "taskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "stepId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "tool": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "args": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "tool",
+            "args"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "protocolVersion",
+        "taskId",
+        "stepId",
+        "input"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "input": {
+                "properties": {
+                  "tool": {
+                    "const": "memory.change"
+                  }
+                },
+                "required": [
+                  "tool"
+                ]
+              }
+            },
+            "required": [
+              "input"
+            ]
+          },
+          "then": {
+            "properties": {
+              "input": {
+                "properties": {
+                  "args": {
+                    "$ref": "#/definitions/MemoryChangeArgs"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ActionPrepareResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "const": "OK"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "taskId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "stepId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "actionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "state": {
+              "const": "PREPARED"
+            },
+            "requiresConfirmation": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "taskId",
+            "stepId",
+            "actionId",
+            "state",
+            "requiresConfirmation"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "ActionLedger": {
+      "type": "object",
+      "properties": {
+        "stepId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "tool": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "argsDigest": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "confirmationId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "executionStatus": {
+          "enum": [
+            "PREPARED",
+            "NOT_STARTED",
+            "RUNNING",
+            "SUCCEEDED",
+            "FAILED",
+            "UNKNOWN"
+          ]
+        },
+        "effectId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "businessRef": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/BusinessRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "externalStatus": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lastError": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retryPolicy": {
+          "enum": [
+            "NO_RETRY",
+            "RECONCILE_FIRST",
+            "SERVER_CONTROLLED"
+          ]
+        }
+      },
+      "required": [
+        "stepId",
+        "actionId",
+        "tool",
+        "argsDigest",
+        "confirmationId",
+        "executionStatus",
+        "effectId",
+        "businessRef",
+        "externalStatus",
+        "lastError",
+        "retryPolicy"
+      ],
+      "additionalProperties": false
+    },
+    "Dependency": {
+      "type": "object",
+      "properties": {
+        "taskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "parentTaskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "targetAgent": {
+          "enum": [
+            "a2",
+            "a3"
+          ]
+        },
+        "domain": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "status": {
+          "enum": [
+            "QUEUED",
+            "RUNNING",
+            "WAITING_INPUT",
+            "WAITING_CONFIRMATION",
+            "SUCCEEDED",
+            "PARTIALLY_SUCCEEDED",
+            "FAILED",
+            "CANCEL_REQUESTED",
+            "CANCELLED",
+            "EXPIRED"
+          ]
+        },
+        "reply": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Reply"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Result"
+          },
+          "maxItems": 20
+        },
+        "inputRequest": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Question"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confirmationIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "maxItems": 20
+        },
+        "effectIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "maxItems": 40
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "taskId",
+        "parentTaskId",
+        "targetAgent",
+        "domain",
+        "required",
+        "version",
+        "status",
+        "reply",
+        "results",
+        "inputRequest",
+        "confirmationIds",
+        "effectIds",
+        "error",
+        "completedAt"
+      ],
+      "additionalProperties": false
+    },
+    "ReadSet": {
+      "type": "object",
+      "properties": {
+        "memoryRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "authorizationRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "provenanceRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "enum": [
+                  "MEMORY",
+                  "HISTORY",
+                  "CHILD_RESULT",
+                  "CARD",
+                  "BUSINESS"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "version": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "type",
+              "id",
+              "version"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "memoryRevision",
+        "authorizationRevision",
+        "provenanceRefs"
+      ],
+      "additionalProperties": false
+    },
+    "Confirmation": {
+      "type": "object",
+      "properties": {
+        "confirmationId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "ownerTaskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "rootTaskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "state": {
+          "enum": [
+            "PENDING",
+            "APPROVED",
+            "EXECUTING",
+            "EXECUTED",
+            "EXECUTION_FAILED",
+            "EXECUTION_UNKNOWN",
+            "REJECTED",
+            "CANCELLED",
+            "EXPIRED",
+            "INVALIDATED"
+          ]
+        },
+        "operation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "actionStatus": {
+          "enum": [
+            "PREPARED",
+            "NOT_STARTED",
+            "RUNNING",
+            "SUCCEEDED",
+            "FAILED",
+            "UNKNOWN"
+          ]
+        },
+        "lastError": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "canRetry": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "confirmationId",
+        "ownerTaskId",
+        "rootTaskId",
+        "actionId",
+        "version",
+        "state",
+        "operation",
+        "summary",
+        "expiresAt",
+        "actionStatus",
+        "lastError",
+        "canRetry"
+      ],
+      "additionalProperties": false
+    },
+    "InvocationRequest": {
+      "type": "object",
+      "properties": {
+        "protocolVersion": {
+          "const": "3.0"
+        },
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "conversationId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "messageId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "task": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "parentTaskId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "attempt": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "invocationId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "deadlineAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "id",
+            "parentTaskId",
+            "version",
+            "attempt",
+            "invocationId",
+            "deadlineAt"
+          ],
+          "additionalProperties": false
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            },
+            "attachmentIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "maxItems": 4
+            }
+          },
+          "required": [
+            "text",
+            "attachmentIds"
+          ],
+          "additionalProperties": false
+        },
+        "context": {
+          "type": "object",
+          "properties": {
+            "businessRefs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/BusinessRef"
+              },
+              "maxItems": 20
+            },
+            "history": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "maxItems": 40
+            },
+            "completedEffects": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "maxItems": 40
+            },
+            "reason": {
+              "enum": [
+                "USER_MESSAGE",
+                "INPUT_PROVIDED",
+                "CHILDREN_FINISHED",
+                "CHILD_INPUT_REQUIRED",
+                "CHILD_CONFIRMATION_REQUIRED",
+                "CONFIRMATION_DECIDED",
+                "RECOVERY"
+              ]
+            },
+            "candidateTasks": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "maxItems": 5
+            },
+            "dependencyResults": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Dependency"
+              },
+              "maxItems": 6
+            },
+            "confirmationResults": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Confirmation"
+              },
+              "maxItems": 20
+            },
+            "actionLedger": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ActionLedger"
+              },
+              "maxItems": 40
+            },
+            "planSteps": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "maxItems": 40
+            },
+            "readSet": {
+              "$ref": "#/definitions/ReadSet"
+            },
+            "inputResponse": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "responseTo": {
+                      "$ref": "#/definitions/AnswerRef"
+                    },
+                    "text": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4000
+                    }
+                  },
+                  "required": [
+                    "responseTo",
+                    "text"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "pendingInputRequests": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Question"
+              },
+              "maxItems": 20
+            }
+          },
+          "required": [
+            "businessRefs",
+            "history",
+            "completedEffects",
+            "reason",
+            "candidateTasks",
+            "dependencyResults",
+            "confirmationResults",
+            "actionLedger",
+            "planSteps",
+            "readSet",
+            "inputResponse",
+            "pendingInputRequests"
+          ],
+          "additionalProperties": false
+        },
+        "capabilityToken": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        }
+      },
+      "required": [
+        "protocolVersion",
+        "userId",
+        "conversationId",
+        "messageId",
+        "task",
+        "input",
+        "context",
+        "capabilityToken"
+      ],
+      "additionalProperties": false
+    },
+    "ConfirmationPrepareRequest": {
+      "type": "object",
+      "properties": {
+        "protocolVersion": {
+          "const": "3.0"
+        },
+        "taskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "protocolVersion",
+        "taskId",
+        "actionId"
+      ],
+      "additionalProperties": false
+    },
+    "ConfirmationResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "const": "OK"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "data": {
+          "$ref": "#/definitions/Confirmation"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "ConfirmationDecisionRequest": {
+      "type": "object",
+      "properties": {
+        "protocolVersion": {
+          "const": "3.0"
+        },
+        "decision": {
+          "enum": [
+            "APPROVE",
+            "REJECT",
+            "CANCEL"
+          ]
+        },
+        "expectedVersion": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "protocolVersion",
+        "decision",
+        "expectedVersion"
+      ],
+      "additionalProperties": false
+    },
+    "InvocationCancelRequest": {
+      "type": "object",
+      "properties": {
+        "protocolVersion": {
+          "const": "3.0"
+        },
+        "invocationId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "cancelRequestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        }
+      },
+      "required": [
+        "protocolVersion",
+        "invocationId",
+        "cancelRequestId",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "InvocationCancelResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "const": "OK"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "invocationId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "cancelRequestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "status": {
+              "enum": [
+                "CANCEL_REQUESTED",
+                "CANCELLED",
+                "FINISHED",
+                "FAILED"
+              ]
+            },
+            "lastProgressSeq": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "reconciliationRequired": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "invocationId",
+            "cancelRequestId",
+            "status",
+            "lastProgressSeq",
+            "reconciliationRequired"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "InvocationReceiptResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "const": "OK"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "invocationId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "status": {
+              "enum": [
+                "RECEIVED",
+                "RUNNING",
+                "FINISHED",
+                "FAILED",
+                "CANCEL_REQUESTED",
+                "CANCELLED"
+              ]
+            },
+            "result": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/AgentResponse"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "error": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Error"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "receivedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "invocationId",
+            "status",
+            "result",
+            "error",
+            "receivedAt",
+            "updatedAt"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "data"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "data": {
+                "properties": {
+                  "status": {
+                    "const": "FINISHED"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/AgentResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "enum": [
+            "INVALID_ARGUMENT",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "CONFLICT",
+            "QUESTION_NOT_PENDING",
+            "STALE_VERSION",
+            "TASK_NOT_RUNNABLE",
+            "UPSTREAM_ERROR",
+            "UPSTREAM_TIMEOUT",
+            "CAPABILITY_UNAVAILABLE",
+            "UNAUTHORIZED",
+            "UNSUPPORTED_PROTOCOL_VERSION",
+            "RATE_LIMITED",
+            "CONFIRMATION_REQUIRED",
+            "CONFIRMATION_EXPIRED",
+            "INTERNAL_ERROR"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "data": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "MemoryReview": {
+      "type": "object",
+      "properties": {
+        "candidateId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "candidateVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reviewId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "reviewVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "recommendation": {
+          "enum": [
+            "ADD",
+            "MERGE",
+            "REPLACE",
+            "KEEP",
+            "REJECT"
+          ]
+        },
+        "conflictMemoryRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "memoryId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "version": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "memoryId",
+              "version"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 10
+        },
+        "proposedDomains": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "maxItems": 9
+        },
+        "needsUserConfirmation": {
+          "type": "boolean"
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        }
+      },
+      "required": [
+        "candidateId",
+        "candidateVersion",
+        "reviewId",
+        "reviewVersion",
+        "recommendation",
+        "conflictMemoryRefs",
+        "proposedDomains",
+        "needsUserConfirmation",
+        "explanation"
+      ],
+      "additionalProperties": false
+    },
+    "DelegationRequest": {
+      "type": "object",
+      "properties": {
+        "protocolVersion": {
+          "const": "3.0"
+        },
+        "conversationId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "taskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "targetAgent": {
+              "enum": [
+                "a2",
+                "a3"
+              ]
+            },
+            "domain": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "required": {
+              "type": "boolean"
+            },
+            "instruction": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            },
+            "attachmentIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "maxItems": 4
+            },
+            "businessRefs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/BusinessRef"
+              },
+              "maxItems": 20
+            }
+          },
+          "required": [
+            "targetAgent",
+            "domain",
+            "required",
+            "instruction",
+            "attachmentIds",
+            "businessRefs"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "protocolVersion",
+        "conversationId",
+        "taskId",
+        "actionId",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "DelegationResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "const": "OK"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "childTaskId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "parentTaskId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "targetAgent": {
+              "enum": [
+                "a2",
+                "a3"
+              ]
+            },
+            "status": {
+              "const": "QUEUED"
+            }
+          },
+          "required": [
+            "childTaskId",
+            "parentTaskId",
+            "targetAgent",
+            "status"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "TaskCancelRequest": {
+      "type": "object",
+      "properties": {
+        "protocolVersion": {
+          "const": "3.0"
+        },
+        "expectedVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        }
+      },
+      "required": [
+        "protocolVersion",
+        "expectedVersion",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "TaskCancelResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "const": "OK"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "taskId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "status": {
+              "enum": [
+                "CANCEL_REQUESTED",
+                "CANCELLED"
+              ]
+            }
+          },
+          "required": [
+            "taskId",
+            "version",
+            "status"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "MessageAcceptedResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "const": "OK"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "messageId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "taskId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "taskVersion": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "taskStatus": {
+              "const": "QUEUED"
+            },
+            "reply": {
+              "type": "null"
+            },
+            "results": {
+              "type": "array",
+              "maxItems": 0
+            },
+            "confirmationIds": {
+              "type": "array",
+              "maxItems": 0
+            }
+          },
+          "required": [
+            "conversationId",
+            "messageId",
+            "taskId",
+            "taskVersion",
+            "taskStatus",
+            "reply",
+            "results",
+            "confirmationIds"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "Effect": {
+      "type": "object",
+      "properties": {
+        "effectId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "tool": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "businessRef": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/BusinessRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "executionStatus": {
+          "enum": [
+            "NOT_STARTED",
+            "RUNNING",
+            "SUCCEEDED",
+            "FAILED",
+            "UNKNOWN"
+          ]
+        },
+        "externalStatus": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "effectId",
+        "actionId",
+        "tool",
+        "businessRef",
+        "executionStatus",
+        "externalStatus",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "TaskSnapshot": {
+      "type": "object",
+      "properties": {
+        "taskId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "conversationId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "sourceMessageId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "parentTaskId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "relatedTaskId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "status": {
+          "enum": [
+            "QUEUED",
+            "RUNNING",
+            "WAITING_INPUT",
+            "WAITING_DEPENDENCIES",
+            "WAITING_CONFIRMATION",
+            "SUCCEEDED",
+            "PARTIALLY_SUCCEEDED",
+            "FAILED",
+            "CANCEL_REQUESTED",
+            "CANCELLED",
+            "EXPIRED"
+          ]
+        },
+        "phase": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reply": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Reply"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Result"
+          },
+          "maxItems": 20
+        },
+        "inputRequest": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Question"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pendingInputRequests": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Question"
+          },
+          "maxItems": 20
+        },
+        "confirmationIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "maxItems": 20
+        },
+        "childTasks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "taskId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "targetAgent": {
+                "enum": [
+                  "a2",
+                  "a3"
+                ]
+              },
+              "status": {
+                "enum": [
+                  "QUEUED",
+                  "RUNNING",
+                  "WAITING_INPUT",
+                  "WAITING_DEPENDENCIES",
+                  "WAITING_CONFIRMATION",
+                  "SUCCEEDED",
+                  "PARTIALLY_SUCCEEDED",
+                  "FAILED",
+                  "CANCEL_REQUESTED",
+                  "CANCELLED",
+                  "EXPIRED"
+                ]
+              },
+              "required": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "taskId",
+              "targetAgent",
+              "status",
+              "required"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 6
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Effect"
+          },
+          "maxItems": 40
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "taskId",
+        "conversationId",
+        "sourceMessageId",
+        "parentTaskId",
+        "relatedTaskId",
+        "version",
+        "status",
+        "phase",
+        "reply",
+        "results",
+        "inputRequest",
+        "pendingInputRequests",
+        "confirmationIds",
+        "childTasks",
+        "effects",
+        "error",
+        "createdAt",
+        "updatedAt",
+        "expiresAt"
+      ],
+      "additionalProperties": false
+    },
+    "TaskQueryResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "const": "OK"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "data": {
+          "$ref": "#/definitions/TaskSnapshot"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "QuestionProposal": {
+      "type": "object",
+      "properties": {
+        "inputRequestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
+          "description": "由产生该问题的Agent程序生成的UUID v4；P2另行校验全局唯一性。"
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "requiredFields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "maxItems": 10
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4000
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "label",
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 10
+        },
+        "allowFreeText": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "inputRequestId",
+        "question",
+        "requiredFields",
+        "options",
+        "allowFreeText"
+      ],
+      "additionalProperties": false,
+      "description": "Agent提交的问题草案。新问题用程序生成的UUID v4；转呈子问题时原样引用已登记ID，不含P2分配的ownerTaskId/version。"
+    },
+    "MemoryChangeArgs": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "enum": [
+            "ADD",
+            "MERGE",
+            "REPLACE"
+          ]
+        },
+        "candidateId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "candidateVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reviewId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "reviewVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "targetMemoryId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "targetMemoryVersion": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "operation",
+        "candidateId",
+        "candidateVersion",
+        "reviewId",
+        "reviewVersion"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "MERGE",
+                  "REPLACE"
+                ]
+              }
+            },
+            "required": [
+              "operation"
+            ]
+          },
+          "then": {
+            "required": [
+              "targetMemoryId",
+              "targetMemoryVersion"
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "targetMemoryId"
+                  ]
+                },
+                {
+                  "required": [
+                    "targetMemoryVersion"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

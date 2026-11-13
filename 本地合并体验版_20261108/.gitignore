@@ -1,0 +1,14 @@
+node_modules/
+dist/
+target/
+.env
+.env.local
+.env.*.local
+!.env.example
+.cache/
+data/
+*.log
+.idea/
+.DS_Store
+# 团队安排与过程文档仅保留本地；共享启动说明仍使用 README。
+docs/

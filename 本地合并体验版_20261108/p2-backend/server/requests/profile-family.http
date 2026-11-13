@@ -1,0 +1,66 @@
+@baseUrl = http://localhost:8080
+@userId = u100
+@familyId = replace-with-created-relation-uuid
+
+### 首次建档（完整字段）；已有档案执行此请求会覆盖这些字段
+PATCH {{baseUrl}}/api/profile?userId={{userId}}
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+Content-Type: application/json
+
+{
+  "nickname": "王阿姨",
+  "age": 68,
+  "residence": "深圳",
+  "language": "普通话",
+  "walkSpeed": "MEDIUM",
+  "walkDurationMin": 40,
+  "avoidSteps": true,
+  "interests": ["历史"],
+  "interactionPreference": "VOICE",
+  "emergencyContacts": [{"name":"王小明","phone":"138xxxx","relation":"儿子"}]
+}
+
+### 查询档案
+GET {{baseUrl}}/api/profile?userId={{userId}}
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+
+### 部分更新
+PATCH {{baseUrl}}/api/profile?userId={{userId}}
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+Content-Type: application/json
+
+{"walkDurationMin":20,"avoidSteps":false}
+
+### 创建待确认关系（复制响应 data.id 到顶部 familyId；不要反复执行）
+POST {{baseUrl}}/api/family-relations?userId={{userId}}
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+Content-Type: application/json
+
+{"name":"王小明","relation":"儿子","phone":"138xxxx"}
+
+### 查询家属关系
+GET {{baseUrl}}/api/family-relations?userId={{userId}}
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+
+### 老人确认绑定
+POST {{baseUrl}}/api/family-relations/{{familyId}}/approve?userId={{userId}}
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+
+### 修改授权（需先确认绑定）
+PATCH {{baseUrl}}/api/family-relations/{{familyId}}/permissions?userId={{userId}}
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER
+Content-Type: application/json
+
+{"shareLocation":true,"shareAlert":true}
+
+### 撤回绑定（撤回后不可再次批准）
+POST {{baseUrl}}/api/family-relations/{{familyId}}/revoke?userId={{userId}}
+X-Mock-Actor-Id: {{userId}}
+X-Mock-Actor-Role: ELDER

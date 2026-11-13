@@ -1,0 +1,1893 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "银龄智游 P2 本地联调 API",
+    "description": "本地身份为 mock；Authorize 同时填写 actorId=u100、actorRole=ELDER。语音、Agent、通知均有模拟实现；高德地图需独立配置后端 Key。内部 Agent 工具协议见项目文档。",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "description": "本地默认地址；其他环境请显式配置",
+      "url": "http://127.0.0.1:8080"
+    }
+  ],
+  "security": [
+    {
+      "actorId": [],
+      "actorRole": []
+    }
+  ],
+  "paths": {
+    "/api/trips": {
+      "post": {
+        "tags": [
+          "trip-controller"
+        ],
+        "operationId": "create",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/cn.silvertravel.platform.trip.TripController.CreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.trip.TripService.View"
+                }
+              }
+            }
+          }
+        },
+        "summary": "T01 开始游览"
+      }
+    },
+    "/api/trips/{id}/finish": {
+      "post": {
+        "tags": [
+          "trip-controller"
+        ],
+        "operationId": "finish",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.trip.TripService.View"
+                }
+              }
+            }
+          }
+        },
+        "summary": "T03 结束游览"
+      }
+    },
+    "/api/speech/transcriptions": {
+      "post": {
+        "tags": [
+          "speech-controller"
+        ],
+        "summary": "S01 ASR 演示占位",
+        "operationId": "transcribe",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "audio": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "audio"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.speech.SpeechController.Transcription"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/speech/syntheses": {
+      "post": {
+        "tags": [
+          "speech-controller"
+        ],
+        "summary": "S02 TTS 演示占位",
+        "operationId": "synthesize",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/cn.silvertravel.platform.speech.SpeechController.SynthesisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.speech.SpeechController.Synthesis"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/help-events": {
+      "get": {
+        "tags": [
+          "help-event-controller"
+        ],
+        "operationId": "list",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseJava.util.ListCn.silvertravel.platform.help.HelpModels.View"
+                }
+              }
+            }
+          }
+        },
+        "summary": "H02 查询求助列表"
+      },
+      "post": {
+        "tags": [
+          "help-event-controller"
+        ],
+        "operationId": "create_1",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/cn.silvertravel.platform.help.HelpModels.CreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.help.HelpModels.View"
+                }
+              }
+            }
+          }
+        },
+        "summary": "H01 创建求助（通知仅模拟）"
+      }
+    },
+    "/api/help-events/{id}/resolve": {
+      "post": {
+        "tags": [
+          "help-event-controller"
+        ],
+        "operationId": "resolve",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.help.HelpModels.View"
+                }
+              }
+            }
+          }
+        },
+        "summary": "H05 实际处理人或管理员解决"
+      }
+    },
+    "/api/help-events/{id}/acknowledge": {
+      "post": {
+        "tags": [
+          "help-event-controller"
+        ],
+        "operationId": "acknowledge",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.help.HelpModels.View"
+                }
+              }
+            }
+          }
+        },
+        "summary": "H04 工作人员接单"
+      }
+    },
+    "/api/family-relations": {
+      "get": {
+        "tags": [
+          "family-relation-controller"
+        ],
+        "operationId": "list_1",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseJava.util.ListCn.silvertravel.platform.family.FamilyModels.View"
+                }
+              }
+            }
+          }
+        },
+        "summary": "F01 查询家属关系"
+      },
+      "post": {
+        "tags": [
+          "family-relation-controller"
+        ],
+        "operationId": "create_2",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/cn.silvertravel.platform.family.FamilyModels.CreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.family.FamilyModels.View"
+                }
+              }
+            }
+          }
+        },
+        "summary": "F02 创建待确认家属关系"
+      }
+    },
+    "/api/family-relations/{id}/revoke": {
+      "post": {
+        "tags": [
+          "family-relation-controller"
+        ],
+        "operationId": "revoke",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.family.FamilyModels.View"
+                }
+              }
+            }
+          }
+        },
+        "summary": "F05 撤回家属关系"
+      }
+    },
+    "/api/family-relations/{id}/approve": {
+      "post": {
+        "tags": [
+          "family-relation-controller"
+        ],
+        "operationId": "approve",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.family.FamilyModels.View"
+                }
+              }
+            }
+          }
+        },
+        "summary": "F03 老人确认绑定"
+      }
+    },
+    "/api/agent/messages": {
+      "post": {
+        "tags": [
+          "agent-controller"
+        ],
+        "operationId": "send",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/cn.silvertravel.platform.agent.AgentProtocol.Message"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.agent.AgentProtocol.Reply"
+                }
+              }
+            }
+          }
+        },
+        "summary": "A01 Agent 统一对话（当前 mock）"
+      }
+    },
+    "/api/profile": {
+      "get": {
+        "tags": [
+          "profile-controller"
+        ],
+        "operationId": "get",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.profile.ProfileView"
+                }
+              }
+            }
+          }
+        },
+        "summary": "P01 查询老人档案"
+      },
+      "patch": {
+        "tags": [
+          "profile-controller"
+        ],
+        "operationId": "patch",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "首次建档必须提供全部十项档案字段；已有档案可只传要修改的字段。未传保留，null 拒绝，数组整体替换。id 只读，不能提交。",
+                "minProperties": 1,
+                "properties": {
+                  "nickname": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 0
+                  },
+                  "age": {
+                    "type": "integer",
+                    "format": "int32",
+                    "maximum": 150,
+                    "minimum": 1
+                  },
+                  "residence": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "minLength": 0
+                  },
+                  "language": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 0
+                  },
+                  "walkSpeed": {
+                    "type": "string",
+                    "enum": [
+                      "SLOW",
+                      "MEDIUM",
+                      "FAST"
+                    ]
+                  },
+                  "walkDurationMin": {
+                    "type": "integer",
+                    "format": "int32",
+                    "maximum": 1440,
+                    "minimum": 1
+                  },
+                  "avoidSteps": {
+                    "type": "boolean"
+                  },
+                  "interests": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "maxLength": 100,
+                      "minLength": 0
+                    },
+                    "maxItems": 30,
+                    "minItems": 0
+                  },
+                  "interactionPreference": {
+                    "type": "string",
+                    "enum": [
+                      "VOICE",
+                      "TEXT"
+                    ]
+                  },
+                  "emergencyContacts": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/cn.silvertravel.platform.profile.ProfileFields.EmergencyContact"
+                    },
+                    "maxItems": 10,
+                    "minItems": 0
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.profile.ProfileView"
+                }
+              }
+            }
+          }
+        },
+        "summary": "P02 建档或部分更新档案"
+      }
+    },
+    "/api/family-relations/{id}/permissions": {
+      "patch": {
+        "tags": [
+          "family-relation-controller"
+        ],
+        "operationId": "permissions",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "ACTIVE 关系的独立权限部分更新；至少一项布尔值，未传保留，null 拒绝。正文直接传开关，不包 permissions 外层。",
+                "minProperties": 1,
+                "properties": {
+                  "shareLocation": {
+                    "type": "boolean"
+                  },
+                  "shareProgress": {
+                    "type": "boolean"
+                  },
+                  "shareAlert": {
+                    "type": "boolean"
+                  },
+                  "remotePlanning": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.family.FamilyModels.View"
+                }
+              }
+            }
+          }
+        },
+        "summary": "F04 更新独立共享权限"
+      }
+    },
+    "/api/trips/{id}": {
+      "get": {
+        "tags": [
+          "trip-controller"
+        ],
+        "operationId": "get_1",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.trip.TripService.View"
+                }
+              }
+            }
+          }
+        },
+        "summary": "T02 查询游览"
+      }
+    },
+    "/api/routes": {
+      "get": {
+        "tags": [
+          "route-controller"
+        ],
+        "operationId": "recommend",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "walkDurationMin",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "avoidSteps",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.route.RouteService.Result"
+                }
+              }
+            }
+          }
+        },
+        "summary": "R01 路线推荐"
+      }
+    },
+    "/api/routes/{id}/map": {
+      "get": {
+        "tags": [
+          "route-map-controller"
+        ],
+        "operationId": "get_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.maps.RouteMapService.View"
+                }
+              }
+            }
+          }
+        },
+        "summary": "R02 高德地图规划（需服务端 Key）"
+      }
+    },
+    "/api/help-events/{id}": {
+      "get": {
+        "tags": [
+          "help-event-controller"
+        ],
+        "operationId": "get_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.help.HelpModels.View"
+                }
+              }
+            }
+          }
+        },
+        "summary": "H03 查询求助详情"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "cn.silvertravel.platform.trip.TripController.CreateRequest": {
+        "type": "object",
+        "properties": {
+          "routeId": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "routeId"
+        ]
+      },
+      "cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.trip.TripService.View": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/cn.silvertravel.platform.trip.TripService.View"
+          }
+        }
+      },
+      "cn.silvertravel.platform.trip.TripService.View": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "routeId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "FINISHED",
+              "CANCELLED"
+            ]
+          }
+        }
+      },
+      "cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.speech.SpeechController.Transcription": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/cn.silvertravel.platform.speech.SpeechController.Transcription"
+          }
+        }
+      },
+      "cn.silvertravel.platform.speech.SpeechController.Transcription": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "cn.silvertravel.platform.speech.SpeechController.SynthesisRequest": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 0
+          },
+          "speechRate": {
+            "type": "number",
+            "format": "double",
+            "maximum": 1.5,
+            "minimum": 0.5
+          }
+        },
+        "required": [
+          "speechRate",
+          "text"
+        ]
+      },
+      "cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.speech.SpeechController.Synthesis": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/cn.silvertravel.platform.speech.SpeechController.Synthesis"
+          }
+        }
+      },
+      "cn.silvertravel.platform.speech.SpeechController.Synthesis": {
+        "type": "object",
+        "properties": {
+          "audioUrl": {
+            "type": "string"
+          }
+        }
+      },
+      "cn.silvertravel.platform.help.HelpModels.CreateRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 0
+          },
+          "tripId": {
+            "type": "string",
+            "maxLength": 36,
+            "minLength": 1,
+            "pattern": ".*\\S.*"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "SOS",
+              "LOST",
+              "UNWELL",
+              "GENERAL"
+            ]
+          },
+          "location": {
+            "$ref": "#/components/schemas/cn.silvertravel.platform.help.HelpModels.Location"
+          },
+          "locationNote": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "type",
+          "userId"
+        ]
+      },
+      "cn.silvertravel.platform.help.HelpModels.Location": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number",
+            "maximum": 90,
+            "minimum": -90
+          },
+          "lng": {
+            "type": "number",
+            "maximum": 180,
+            "minimum": -180
+          },
+          "spotId": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1
+          }
+        }
+      },
+      "cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.help.HelpModels.View": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/cn.silvertravel.platform.help.HelpModels.View"
+          }
+        }
+      },
+      "cn.silvertravel.platform.help.HelpModels.Notification": {
+        "type": "object",
+        "properties": {
+          "recipientType": {
+            "type": "string"
+          },
+          "recipientId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "SENT",
+              "DELIVERED",
+              "FAILED"
+            ]
+          }
+        }
+      },
+      "cn.silvertravel.platform.help.HelpModels.View": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "tripId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "SOS",
+              "LOST",
+              "UNWELL",
+              "GENERAL"
+            ]
+          },
+          "location": {
+            "$ref": "#/components/schemas/cn.silvertravel.platform.help.HelpModels.Location"
+          },
+          "locationNote": {
+            "type": "string"
+          },
+          "businessStatus": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "ACKNOWLEDGED",
+              "RESOLVED"
+            ]
+          },
+          "notifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/cn.silvertravel.platform.help.HelpModels.Notification"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "cn.silvertravel.platform.family.FamilyModels.CreateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "relation": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 40,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "name",
+          "phone",
+          "relation"
+        ]
+      },
+      "cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.family.FamilyModels.View": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/cn.silvertravel.platform.family.FamilyModels.View"
+          }
+        }
+      },
+      "cn.silvertravel.platform.family.FamilyModels.Permissions": {
+        "type": "object",
+        "properties": {
+          "shareLocation": {
+            "type": "boolean"
+          },
+          "shareProgress": {
+            "type": "boolean"
+          },
+          "shareAlert": {
+            "type": "boolean"
+          },
+          "remotePlanning": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "remotePlanning",
+          "shareAlert",
+          "shareLocation",
+          "shareProgress"
+        ]
+      },
+      "cn.silvertravel.platform.family.FamilyModels.View": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "relation": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "permissions": {
+            "$ref": "#/components/schemas/cn.silvertravel.platform.family.FamilyModels.Permissions"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "ACTIVE",
+              "REVOKED"
+            ]
+          }
+        }
+      },
+      "cn.silvertravel.platform.agent.AgentProtocol.Context": {
+        "type": "object",
+        "properties": {
+          "tripId": {
+            "type": "string",
+            "maxLength": 36,
+            "minLength": 1
+          },
+          "location": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1
+          }
+        }
+      },
+      "cn.silvertravel.platform.agent.AgentProtocol.Message": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 0
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 0
+          },
+          "intent": {
+            "type": "string",
+            "enum": [
+              "tourism",
+              "health",
+              "fraud",
+              "care",
+              "culture",
+              "community",
+              "volunteer",
+              "ability",
+              "help"
+            ]
+          },
+          "context": {
+            "$ref": "#/components/schemas/cn.silvertravel.platform.agent.AgentProtocol.Context"
+          }
+        },
+        "required": [
+          "text",
+          "userId"
+        ]
+      },
+      "cn.silvertravel.platform.agent.AgentProtocol.Handoff": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "pattern": "human_handoff"
+          },
+          "to": {
+            "type": "string",
+            "enum": [
+              "family",
+              "scenic",
+              "official"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "reason",
+          "to",
+          "type"
+        ]
+      },
+      "cn.silvertravel.platform.agent.AgentProtocol.Reply": {
+        "type": "object",
+        "properties": {
+          "intent": {
+            "type": "string",
+            "enum": [
+              "tourism",
+              "health",
+              "fraud",
+              "care",
+              "culture",
+              "community",
+              "volunteer",
+              "ability",
+              "help"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 4000,
+            "minLength": 0
+          },
+          "speechRate": {
+            "type": "number",
+            "format": "double",
+            "maximum": 1.5,
+            "minimum": 0.5
+          },
+          "audioUrl": {
+            "type": "string"
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/cn.silvertravel.platform.agent.AgentProtocol.ToolCall"
+            },
+            "maxItems": 10,
+            "minItems": 0
+          },
+          "handoff": {
+            "$ref": "#/components/schemas/cn.silvertravel.platform.agent.AgentProtocol.Handoff"
+          }
+        },
+        "required": [
+          "intent",
+          "speechRate",
+          "text",
+          "tools"
+        ]
+      },
+      "cn.silvertravel.platform.agent.AgentProtocol.ToolCall": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string"
+          },
+          "args": {
+            "$ref": "#/components/schemas/com.fasterxml.jackson.databind.JsonNode"
+          },
+          "result": {
+            "$ref": "#/components/schemas/com.fasterxml.jackson.databind.JsonNode"
+          }
+        }
+      },
+      "cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.agent.AgentProtocol.Reply": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/cn.silvertravel.platform.agent.AgentProtocol.Reply"
+          }
+        }
+      },
+      "com.fasterxml.jackson.databind.JsonNode": {},
+      "cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.profile.ProfileView": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/cn.silvertravel.platform.profile.ProfileView"
+          }
+        }
+      },
+      "cn.silvertravel.platform.profile.ProfileFields.EmergencyContact": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 40,
+            "minLength": 0
+          },
+          "relation": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "name",
+          "phone",
+          "relation"
+        ]
+      },
+      "cn.silvertravel.platform.profile.ProfileView": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "age": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "residence": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "walkSpeed": {
+            "type": "string",
+            "enum": [
+              "SLOW",
+              "MEDIUM",
+              "FAST"
+            ]
+          },
+          "walkDurationMin": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "avoidSteps": {
+            "type": "boolean"
+          },
+          "interests": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "interactionPreference": {
+            "type": "string",
+            "enum": [
+              "VOICE",
+              "TEXT"
+            ]
+          },
+          "emergencyContacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/cn.silvertravel.platform.profile.ProfileFields.EmergencyContact"
+            }
+          }
+        }
+      },
+      "cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.route.RouteService.Result": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/cn.silvertravel.platform.route.RouteService.Result"
+          }
+        }
+      },
+      "cn.silvertravel.platform.route.RouteService.Candidate": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "spots": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "segments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/cn.silvertravel.platform.scenic.ScenicData.Segment"
+            }
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "MOCK",
+              "OPEN_DATA",
+              "FIELD"
+            ]
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "verifiedBy": {
+            "type": "string"
+          },
+          "recommended": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "cn.silvertravel.platform.route.RouteService.Result": {
+        "type": "object",
+        "properties": {
+          "routes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/cn.silvertravel.platform.route.RouteService.Candidate"
+            }
+          }
+        }
+      },
+      "cn.silvertravel.platform.scenic.ScenicData.Segment": {
+        "type": "object",
+        "properties": {
+          "fromSpotId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "toSpotId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "steps": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 100000,
+            "minimum": 0
+          },
+          "slope": {
+            "type": "number",
+            "maximum": 100,
+            "minimum": 0
+          },
+          "walkMin": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 1440,
+            "minimum": 1
+          },
+          "restFacilities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "maxItems": 1000,
+            "minItems": 0
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "MOCK",
+              "OPEN_DATA",
+              "FIELD"
+            ]
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "verifiedBy": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "fromSpotId",
+          "restFacilities",
+          "slope",
+          "source",
+          "steps",
+          "toSpotId",
+          "updatedAt",
+          "verifiedBy",
+          "walkMin"
+        ]
+      },
+      "cn.silvertravel.platform.common.api.ApiResponseCn.silvertravel.platform.maps.RouteMapService.View": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/cn.silvertravel.platform.maps.RouteMapService.View"
+          }
+        }
+      },
+      "cn.silvertravel.platform.maps.RouteMapService.FacilityMarker": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "TOILET",
+              "BENCH",
+              "MEDICAL",
+              "EXIT",
+              "SERVICE_DESK"
+            ]
+          },
+          "location": {
+            "$ref": "#/components/schemas/cn.silvertravel.platform.scenic.ScenicData.Location"
+          }
+        }
+      },
+      "cn.silvertravel.platform.maps.RouteMapService.Leg": {
+        "type": "object",
+        "properties": {
+          "fromSpotId": {
+            "type": "string"
+          },
+          "toSpotId": {
+            "type": "string"
+          },
+          "distanceMeters": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "durationSeconds": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "path": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/cn.silvertravel.platform.scenic.ScenicData.Location"
+            }
+          }
+        }
+      },
+      "cn.silvertravel.platform.maps.RouteMapService.SpotMarker": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "location": {
+            "$ref": "#/components/schemas/cn.silvertravel.platform.scenic.ScenicData.Location"
+          }
+        }
+      },
+      "cn.silvertravel.platform.maps.RouteMapService.View": {
+        "type": "object",
+        "properties": {
+          "routeId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "MOCK",
+              "OPEN_DATA",
+              "FIELD"
+            ]
+          },
+          "provider": {
+            "type": "string"
+          },
+          "coordinateSystem": {
+            "type": "string"
+          },
+          "accessibilityVerified": {
+            "type": "boolean"
+          },
+          "notice": {
+            "type": "string"
+          },
+          "spots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/cn.silvertravel.platform.maps.RouteMapService.SpotMarker"
+            }
+          },
+          "facilities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/cn.silvertravel.platform.maps.RouteMapService.FacilityMarker"
+            }
+          },
+          "legs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/cn.silvertravel.platform.maps.RouteMapService.Leg"
+            }
+          }
+        }
+      },
+      "cn.silvertravel.platform.scenic.ScenicData.Location": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number",
+            "maximum": 90,
+            "minimum": -90
+          },
+          "lng": {
+            "type": "number",
+            "maximum": 180,
+            "minimum": -180
+          }
+        },
+        "required": [
+          "lat",
+          "lng"
+        ]
+      },
+      "cn.silvertravel.platform.common.api.ApiResponseJava.util.ListCn.silvertravel.platform.help.HelpModels.View": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/cn.silvertravel.platform.help.HelpModels.View"
+            }
+          }
+        }
+      },
+      "cn.silvertravel.platform.common.api.ApiResponseJava.util.ListCn.silvertravel.platform.family.FamilyModels.View": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/cn.silvertravel.platform.family.FamilyModels.View"
+            }
+          }
+        }
+      },
+      "cn.silvertravel.platform.profile.ProfileFields": {
+        "additionalProperties": false,
+        "description": "首次建档必须提供全部十项档案字段；已有档案可只传要修改的字段。未传保留，null 拒绝，数组整体替换。id 只读，不能提交。",
+        "minProperties": 1,
+        "properties": {
+          "nickname": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "age": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 150,
+            "minimum": 1
+          },
+          "residence": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 0
+          },
+          "language": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 0
+          },
+          "walkSpeed": {
+            "type": "string",
+            "enum": [
+              "SLOW",
+              "MEDIUM",
+              "FAST"
+            ]
+          },
+          "walkDurationMin": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 1440,
+            "minimum": 1
+          },
+          "avoidSteps": {
+            "type": "boolean"
+          },
+          "interests": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 100,
+              "minLength": 0
+            },
+            "maxItems": 30,
+            "minItems": 0
+          },
+          "interactionPreference": {
+            "type": "string",
+            "enum": [
+              "VOICE",
+              "TEXT"
+            ]
+          },
+          "emergencyContacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/cn.silvertravel.platform.profile.ProfileFields.EmergencyContact"
+            },
+            "maxItems": 10,
+            "minItems": 0
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "actorId": {
+        "type": "apiKey",
+        "name": "X-Mock-Actor-Id",
+        "in": "header"
+      },
+      "actorRole": {
+        "type": "apiKey",
+        "name": "X-Mock-Actor-Role",
+        "in": "header"
+      }
+    }
+  }
+}

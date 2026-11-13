@@ -1,0 +1,41 @@
+{
+  "mode": "REAL_LOCAL_MODEL_SYNTHETIC_INPUT",
+  "casesProvided": false,
+  "noBusinessWrites": true,
+  "results": [
+    {
+      "sample": "normal",
+      "success": true,
+      "elapsedSeconds": 12.71,
+      "riskLevel": "low",
+      "assessment": "assessed",
+      "evidenceIds": [
+        "e0",
+        "e1"
+      ],
+      "caseIds": [],
+      "advice": [
+        "本段未发现明显风险",
+        "请继续留意后续信息"
+      ]
+    },
+    {
+      "sample": "suspicious",
+      "success": true,
+      "elapsedSeconds": 20.11,
+      "riskLevel": "high",
+      "assessment": "assessed",
+      "evidenceIds": [
+        "e0"
+      ],
+      "caseIds": [],
+      "advice": [
+        "立即停止转账操作，切勿向任何‘安全账户’汇款。",
+        "直接拨打官方电话（如110或当地派出所）核实身份，不要通过对方提供的联系方式联系。",
+        "告知亲友此情况可能为诈骗，避免造成不必要的恐慌。",
+        "保留相关聊天记录和通话记录作为证据。",
+        "投资有风险，转账需谨慎，切勿轻信‘安全账户’等虚假概念。"
+      ]
+    }
+  ]
+}

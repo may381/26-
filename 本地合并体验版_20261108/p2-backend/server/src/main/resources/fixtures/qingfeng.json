@@ -1,0 +1,368 @@
+{
+  "scenic": {
+    "id": "qingfeng",
+    "name": "清风园（演示数据）",
+    "source": "MOCK",
+    "updatedAt": "2026-10-23T00:00:00Z",
+    "verifiedBy": "team"
+  },
+  "spots": [
+    {
+      "id": "spot-001",
+      "name": "清风入口",
+      "location": {
+        "lat": 22.58,
+        "lng": 114.06
+      },
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "spot-002",
+      "name": "静水湖",
+      "location": {
+        "lat": 22.5805,
+        "lng": 114.0604
+      },
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "spot-003",
+      "name": "听风亭",
+      "location": {
+        "lat": 22.581,
+        "lng": 114.0608
+      },
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "spot-004",
+      "name": "文化廊",
+      "location": {
+        "lat": 22.5815,
+        "lng": 114.0612
+      },
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "spot-005",
+      "name": "花木园",
+      "location": {
+        "lat": 22.582,
+        "lng": 114.0616
+      },
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "spot-006",
+      "name": "望远台",
+      "location": {
+        "lat": 22.5825,
+        "lng": 114.062
+      },
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    }
+  ],
+  "facilities": [
+    {
+      "id": "facility-001",
+      "name": "入口厕所",
+      "type": "TOILET",
+      "spotId": "spot-001",
+      "location": {
+        "lat": 22.58,
+        "lng": 114.06
+      },
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-002",
+      "name": "花木园厕所",
+      "type": "TOILET",
+      "spotId": "spot-005",
+      "location": {
+        "lat": 22.582,
+        "lng": 114.0616
+      },
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-003",
+      "name": "湖边座椅",
+      "type": "BENCH",
+      "spotId": "spot-002",
+      "location": {
+        "lat": 22.5805,
+        "lng": 114.0604
+      },
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-004",
+      "name": "亭前座椅",
+      "type": "BENCH",
+      "spotId": "spot-003",
+      "location": {
+        "lat": 22.581,
+        "lng": 114.0608
+      },
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-005",
+      "name": "亭后座椅",
+      "type": "BENCH",
+      "spotId": "spot-003",
+      "location": {
+        "lat": 22.581,
+        "lng": 114.0608
+      },
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-006",
+      "name": "文化廊座椅",
+      "type": "BENCH",
+      "spotId": "spot-004",
+      "location": {
+        "lat": 22.5815,
+        "lng": 114.0612
+      },
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-007",
+      "name": "医务点",
+      "type": "MEDICAL",
+      "spotId": "spot-001",
+      "location": {
+        "lat": 22.58,
+        "lng": 114.06
+      },
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-008",
+      "name": "入口出口",
+      "type": "EXIT",
+      "spotId": "spot-001",
+      "location": {
+        "lat": 22.58,
+        "lng": 114.06
+      },
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-009",
+      "name": "花木园出口",
+      "type": "EXIT",
+      "spotId": "spot-005",
+      "location": {
+        "lat": 22.582,
+        "lng": 114.0616
+      },
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-010",
+      "name": "服务台",
+      "type": "SERVICE_DESK",
+      "spotId": "spot-001",
+      "location": {
+        "lat": 22.58,
+        "lng": 114.06
+      },
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    }
+  ],
+  "routes": [
+    {
+      "id": "r1",
+      "name": "省力线",
+      "spots": [
+        "spot-001",
+        "spot-002",
+        "spot-003",
+        "spot-004"
+      ],
+      "segments": [
+        {
+          "fromSpotId": "spot-001",
+          "toSpotId": "spot-002",
+          "steps": 5,
+          "slope": 1,
+          "walkMin": 10,
+          "restFacilities": [
+            "facility-003"
+          ],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        },
+        {
+          "fromSpotId": "spot-002",
+          "toSpotId": "spot-003",
+          "steps": 5,
+          "slope": 1.5,
+          "walkMin": 15,
+          "restFacilities": [
+            "facility-004",
+            "facility-005"
+          ],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        },
+        {
+          "fromSpotId": "spot-003",
+          "toSpotId": "spot-004",
+          "steps": 10,
+          "slope": 2,
+          "walkMin": 15,
+          "restFacilities": [
+            "facility-006"
+          ],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        }
+      ],
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "r2",
+      "name": "适中线",
+      "spots": [
+        "spot-001",
+        "spot-002",
+        "spot-004",
+        "spot-005"
+      ],
+      "segments": [
+        {
+          "fromSpotId": "spot-001",
+          "toSpotId": "spot-002",
+          "steps": 20,
+          "slope": 2,
+          "walkMin": 15,
+          "restFacilities": [
+            "facility-003"
+          ],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        },
+        {
+          "fromSpotId": "spot-002",
+          "toSpotId": "spot-004",
+          "steps": 20,
+          "slope": 3,
+          "walkMin": 20,
+          "restFacilities": [
+            "facility-006"
+          ],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        },
+        {
+          "fromSpotId": "spot-004",
+          "toSpotId": "spot-005",
+          "steps": 20,
+          "slope": 4,
+          "walkMin": 20,
+          "restFacilities": [],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        }
+      ],
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "r3",
+      "name": "登高线",
+      "spots": [
+        "spot-001",
+        "spot-004",
+        "spot-005",
+        "spot-006"
+      ],
+      "segments": [
+        {
+          "fromSpotId": "spot-001",
+          "toSpotId": "spot-004",
+          "steps": 40,
+          "slope": 4,
+          "walkMin": 20,
+          "restFacilities": [
+            "facility-006"
+          ],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        },
+        {
+          "fromSpotId": "spot-004",
+          "toSpotId": "spot-005",
+          "steps": 40,
+          "slope": 6,
+          "walkMin": 20,
+          "restFacilities": [],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        },
+        {
+          "fromSpotId": "spot-005",
+          "toSpotId": "spot-006",
+          "steps": 40,
+          "slope": 8,
+          "walkMin": 30,
+          "restFacilities": [],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        }
+      ],
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    }
+  ]
+}

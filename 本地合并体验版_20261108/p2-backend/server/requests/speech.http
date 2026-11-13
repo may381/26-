@@ -1,0 +1,11 @@
+@baseUrl = http://127.0.0.1:8080
+
+### mock TTS：不会产生真实音频
+POST {{baseUrl}}/api/speech/syntheses
+X-Mock-Actor-Id: u100
+X-Mock-Actor-Role: ELDER
+Content-Type: application/json
+
+{"text":"语音接口演示","speechRate":0.8}
+
+### ASR 在 Swagger 选择 audio 文件并设正确的音频 MIME；PowerShell multipart 示例见 scripts/smoke.ps1。

@@ -1,0 +1,326 @@
+{
+  "park": {
+    "id": "qingfeng",
+    "name": "清风园（演示）",
+    "hours": "08:00—18:00",
+    "source": "MOCK",
+    "updatedAt": "2026-10-23T00:00:00Z",
+    "verifiedBy": "team"
+  },
+  "spots": [
+    {
+      "id": "spot-001",
+      "name": "游客中心",
+      "narration": "这里是演示游览的起点，省力线、适中线、登高线都从这里出发。服务台旁设有大厅休息椅和饮水处，内部还有卫生间，出发前可以先坐一坐、喝口水。",
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "spot-002",
+      "name": "清风亭",
+      "narration": "这座演示亭子设定在树荫下，适合停下来听风、看景。亭内设有座椅，省力线从这里经过，走累了可以在亭里歇一会儿。",
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "spot-003",
+      "name": "荷香池",
+      "narration": "演示资料中的池塘种有荷花，可以沿池边慢慢欣赏。池边步道旁设有长椅，池边服务点有卫生间；省力线和适中线都从这里经过。",
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "spot-004",
+      "name": "竹影径",
+      "narration": "这条演示步道以竹林为主题，适合放慢脚步听听竹叶声。入口处设有饮水处，步道休息区有竹林休息椅；适中线和登高线都从这里经过。",
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "spot-005",
+      "name": "望山台",
+      "narration": "这里是演示观景点，可远眺山景。观景平台旁设有座椅，只有登高线会经过这里，这一段台阶比其他路线多，登高前请先了解自己的体力情况。",
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "spot-006",
+      "name": "东门",
+      "narration": "这里设定为清风园的演示出口，三条路线都以这里为终点。出口通道在东门游客通道，离园前请确认随身物品。",
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    }
+  ],
+  "facilities": [
+    {
+      "id": "facility-001",
+      "type": "toilet",
+      "spotId": "spot-001",
+      "name": "游客中心卫生间",
+      "note": "游客中心内部",
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-002",
+      "type": "rest",
+      "spotId": "spot-001",
+      "name": "大厅休息椅",
+      "note": "服务台旁",
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-003",
+      "type": "water",
+      "spotId": "spot-001",
+      "name": "饮水处",
+      "note": "服务台旁",
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-004",
+      "type": "rest",
+      "spotId": "spot-002",
+      "name": "亭内座椅",
+      "note": "清风亭内",
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-005",
+      "type": "toilet",
+      "spotId": "spot-003",
+      "name": "荷香池卫生间",
+      "note": "池边服务点",
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-006",
+      "type": "rest",
+      "spotId": "spot-003",
+      "name": "池边长椅",
+      "note": "池边步道旁",
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-007",
+      "type": "water",
+      "spotId": "spot-004",
+      "name": "竹径饮水处",
+      "note": "竹径入口",
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-008",
+      "type": "rest",
+      "spotId": "spot-004",
+      "name": "竹林休息椅",
+      "note": "步道休息区",
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-009",
+      "type": "rest",
+      "spotId": "spot-005",
+      "name": "望山台座椅",
+      "note": "观景平台旁",
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "facility-010",
+      "type": "exit",
+      "spotId": "spot-006",
+      "name": "东门出口",
+      "note": "东门游客通道",
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    }
+  ],
+  "routes": [
+    {
+      "id": "r1",
+      "name": "省力线",
+      "spots": [
+        "spot-001",
+        "spot-002",
+        "spot-003",
+        "spot-006"
+      ],
+      "segments": [
+        {
+          "fromSpotId": "spot-001",
+          "toSpotId": "spot-002",
+          "steps": 6,
+          "slope": 2,
+          "walkMin": 13,
+          "restFacilities": [
+            "facility-002"
+          ],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        },
+        {
+          "fromSpotId": "spot-002",
+          "toSpotId": "spot-003",
+          "steps": 6,
+          "slope": 2,
+          "walkMin": 13,
+          "restFacilities": [
+            "facility-004"
+          ],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        },
+        {
+          "fromSpotId": "spot-003",
+          "toSpotId": "spot-006",
+          "steps": 8,
+          "slope": 2,
+          "walkMin": 14,
+          "restFacilities": [
+            "facility-006"
+          ],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        }
+      ],
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "r2",
+      "name": "适中线",
+      "spots": [
+        "spot-001",
+        "spot-003",
+        "spot-004",
+        "spot-006"
+      ],
+      "segments": [
+        {
+          "fromSpotId": "spot-001",
+          "toSpotId": "spot-003",
+          "steps": 20,
+          "slope": 5,
+          "walkMin": 18,
+          "restFacilities": [
+            "facility-002"
+          ],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        },
+        {
+          "fromSpotId": "spot-003",
+          "toSpotId": "spot-004",
+          "steps": 20,
+          "slope": 5,
+          "walkMin": 18,
+          "restFacilities": [
+            "facility-006"
+          ],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        },
+        {
+          "fromSpotId": "spot-004",
+          "toSpotId": "spot-006",
+          "steps": 20,
+          "slope": 5,
+          "walkMin": 19,
+          "restFacilities": [
+            "facility-008"
+          ],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        }
+      ],
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    },
+    {
+      "id": "r3",
+      "name": "登高线",
+      "spots": [
+        "spot-001",
+        "spot-004",
+        "spot-005",
+        "spot-006"
+      ],
+      "segments": [
+        {
+          "fromSpotId": "spot-001",
+          "toSpotId": "spot-004",
+          "steps": 40,
+          "slope": 9,
+          "walkMin": 23,
+          "restFacilities": [
+            "facility-002"
+          ],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        },
+        {
+          "fromSpotId": "spot-004",
+          "toSpotId": "spot-005",
+          "steps": 40,
+          "slope": 9,
+          "walkMin": 23,
+          "restFacilities": [
+            "facility-008"
+          ],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        },
+        {
+          "fromSpotId": "spot-005",
+          "toSpotId": "spot-006",
+          "steps": 40,
+          "slope": 9,
+          "walkMin": 24,
+          "restFacilities": [
+            "facility-009"
+          ],
+          "source": "MOCK",
+          "updatedAt": "2026-10-23T00:00:00Z",
+          "verifiedBy": "team"
+        }
+      ],
+      "source": "MOCK",
+      "updatedAt": "2026-10-23T00:00:00Z",
+      "verifiedBy": "team"
+    }
+  ]
+}

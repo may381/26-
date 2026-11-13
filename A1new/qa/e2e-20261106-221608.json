@@ -1,0 +1,75 @@
+{
+  "startedAt": "2026-11-06T22:15:53",
+  "checks": [
+    {
+      "name": "入口存活，三端口状态可读",
+      "ok": true,
+      "detail": "旅游后端=通、反诈后端=通、学校模型=通"
+    },
+    {
+      "name": "缺城市 → 只追问、不派发",
+      "ok": true,
+      "detail": "trace=['received', 'planning', 'validation']"
+    },
+    {
+      "name": "追问文案非空",
+      "ok": true,
+      "detail": "请问您想去哪个城市或具体地点？"
+    },
+    {
+      "name": "出行咨询返回真实内容",
+      "ok": true,
+      "detail": "domainResult 有 text"
+    },
+    {
+      "name": "反诈提交被受理",
+      "ok": true,
+      "detail": "real-6d2beaf0-476b-4e28-94a7-d7e834d796fc"
+    },
+    {
+      "name": "反诈任务完成",
+      "ok": true,
+      "detail": "等待 6 秒"
+    },
+    {
+      "name": "返回风险等级与原文证据",
+      "ok": true,
+      "detail": "level=high 证据=2 条"
+    },
+    {
+      "name": "空输入被挡（4xx）",
+      "ok": true,
+      "detail": "HTTP 400"
+    },
+    {
+      "name": "非法 topic 被挡（4xx）",
+      "ok": true,
+      "detail": "HTTP 400"
+    },
+    {
+      "name": "超长输入被挡（4xx）",
+      "ok": true,
+      "detail": "HTTP 400"
+    }
+  ],
+  "ports": {
+    "旅游后端": true,
+    "反诈后端": true,
+    "学校模型": true
+  },
+  "fraudResult": {
+    "id": "real-6d2beaf0-476b-4e28-94a7-d7e834d796fc",
+    "level": "high",
+    "type": "快递理赔诈骗",
+    "assessment": "assessed",
+    "model": "qwen3.8-27b",
+    "retrievalMethod": "关键词案例检索（第一阶段）",
+    "evidenceCount": 2,
+    "adviceCount": 4
+  },
+  "summary": {
+    "passed": 10,
+    "total": 10,
+    "finishedAt": "2026-11-06T22:16:08"
+  }
+}

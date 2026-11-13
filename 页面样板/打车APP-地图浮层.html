@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Ride · Map and bottom sheet</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;color:#101925}button{font:inherit;cursor:pointer}button:focus-visible{outline:3px solid #2682e5;outline-offset:3px}
+/* 定位参照：整个视口。三个图层都是它的绝对定位子元素。 */
+.app{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;background:#e8edf2}
+/* 图层 1：真正铺满视口，面板覆盖地图，不挤压地图高度。 */
+.map-layer{position:absolute;inset:0;z-index:0;width:100vw;height:100vh;height:100dvh}
+#map{width:100%;height:100%}.map-message{position:absolute;top:26%;left:20px;right:20px;text-align:center;padding:15px;background:#fffffff0;border-radius:16px;font-size:14px}.map-message[hidden]{display:none}
+/* 图层 2：容器穿透点击，仅按钮捕获点击，地图可正常拖动缩放。 */
+.floating-layer{position:absolute;inset:0;z-index:5;pointer-events:none}.floating-layer button{pointer-events:auto}
+.circle{position:absolute;top:calc(20px + env(safe-area-inset-top));width:46px;height:46px;border:0;border-radius:50%;background:white;box-shadow:0 5px 16px #10253b20;display:grid;place-items:center}.back{left:20px}.layers{right:20px}
+.icon{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.vehicle-pill{position:absolute;right:20px;top:28%;background:#152331;color:white;border:0;border-radius:30px;padding:11px 16px;display:flex;gap:9px;align-items:center;font-size:13px;box-shadow:0 5px 16px #10253b25}
+/* 图层 3：底部面板独立覆盖在地图上，内容过长时内部滚动。 */
+.bottom-sheet{position:absolute;left:0;bottom:0;z-index:10;width:100%;max-height:72%;overflow:auto;overscroll-behavior:contain;background:#fff;border-radius:28px 28px 0 0;box-shadow:0 -8px 32px #10253b18;padding:0 24px calc(20px + env(safe-area-inset-bottom));transition:transform .25s ease}
+.handle{display:flex;justify-content:center;align-items:center;width:100%;height:28px;border:0;background:transparent;touch-action:none}.handle span{width:36px;height:4px;border-radius:5px;background:#cdd4dc}
+.summary{text-align:center}.summary h1{font-size:clamp(23px,5vw,30px);letter-spacing:-.7px;margin:9px 0 7px;font-weight:600}.summary p{font-size:16px;color:#737b85;margin:0 0 20px}
+.pull-over{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:50px;background:#fff;border:1px solid #dce1e6;border-radius:13px;font-weight:500;margin-bottom:22px}
+.trip{padding:0 0 20px;border-bottom:1px solid #e8ecf0}.node{position:relative;display:grid;grid-template-columns:16px 1fr auto;gap:12px;padding:0 0 24px;align-items:start}.node:first-child:after{content:'';position:absolute;left:5px;top:17px;bottom:6px;width:2px;background:#287dde}.dot{width:12px;height:12px;background:#101925;border-radius:50%;margin-top:4px}.node strong{font-size:15px;font-weight:600;display:block;line-height:1.5}.node p{font-size:13px;color:#737b85;margin:3px 0;line-height:1.5}.node time{font-size:12px;color:#737b85;padding-top:5px}.payment{display:flex;justify-content:space-between;font-size:14px;padding-top:1px}.payment strong{font-weight:600}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding-top:14px}.actions button{border:0;background:none;display:flex;align-items:center;flex-direction:column;gap:7px;padding:9px 0;font-size:12px;min-height:55px}
+.collapsed{transform:translateY(calc(100% - 116px - env(safe-area-inset-bottom)))}
+.destination{background:#fff;padding:11px 14px;border-radius:16px;box-shadow:0 6px 18px #152c3d25;display:flex;align-items:center;gap:15px;font:600 13px Arial;white-space:nowrap;color:#172331}.destination small{display:block;font-weight:400;font-size:12px;color:#73808d;margin-top:4px}.destination button{border:0;border-radius:50%;width:28px;height:28px;background:#eef1f4;font-size:21px;color:#172331}.start-dot{width:20px;height:20px;border-radius:50%;background:#2e85ea;border:4px solid white;box-shadow:0 0 0 6px #2e85ea35}.end-pin{width:22px;height:22px;background:#101925;border:3px solid white;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 3px 8px #132c3c30}
+#toast{position:absolute;z-index:30;top:90px;left:50%;transform:translateX(-50%);background:#172331;color:white;padding:10px 15px;border-radius:12px;font-size:13px;max-width:90%}#toast[hidden]{display:none}
+@media(min-width:700px){.bottom-sheet{width:420px;left:50%;margin-left:-210px;max-height:66%;border-radius:28px 28px 0 0}.vehicle-pill{right:calc(50% - 190px)}}
+@media(prefers-reduced-motion:reduce){.bottom-sheet{transition:none}}
+</style></head>
+<body><main class="app">
+<!-- 底层：高德地图的底图、路线和地理坐标标记均由 SDK 绘制。 -->
+<div class="map-layer"><div id="map" aria-label="行程地图"></div><div class="map-message" id="map-message" role="status">正在加载高德地图…</div></div>
+<!-- 中层：返回、图层、车辆标签。 -->
+<div class="floating-layer">
+<button class="circle back" aria-label="返回" id="back"><svg class="icon" viewBox="0 0 24 24"><path d="m12 4-8 8 8 8M4 12h16"/></svg></button>
+<button class="circle layers" aria-label="切换地图图层" id="layers"><svg class="icon" viewBox="0 0 24 24"><path d="m12 3 9 6-9 6-9-6zM3 14l9 6 9-6"/></svg></button>
+<button class="vehicle-pill" id="vehicle"><svg class="icon" viewBox="0 0 24 24"><path d="m5 6-2 7v6h18v-6l-2-7zM3 12h18M6 16h2M16 16h2"/></svg>Heading to drop-off</button>
+</div>
+<!-- 顶层：bottom:0；不会改变地图尺寸。 -->
+<section class="bottom-sheet" id="sheet" aria-label="行程操作面板">
+<button class="handle" id="handle" aria-label="收起行程面板" aria-expanded="true"><span></span></button>
+<header class="summary"><h1>21 min to drop-off</h1><p>Arriving at 15:24</p></header>
+<button class="pull-over" id="pull"><svg class="icon" viewBox="0 0 24 24"><path d="M7 21V9h11m-5-5 5 5-5 5"/></svg>Pull over</button>
+<div class="trip"><div class="node"><i class="dot"></i><div><strong>Current location</strong><p>Heading to drop-off</p></div><time>15:03</time></div><div class="node"><i class="dot"></i><div><strong>Japanese Village Plaza</strong><p>Drop-off: 335 East 2nd Street</p></div><time>15:24</time></div><div class="payment"><strong>Visa •••• 4242</strong><span>US$16.51</span></div></div>
+<nav class="actions" aria-label="行程操作"><button data-action="Edit"><svg class="icon" viewBox="0 0 24 24"><path d="m15 3 6 6-11 11-7 1 1-7zM13 5l6 6M3 23h18"/></svg>Edit</button><button data-action="Add stop"><svg class="icon" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></svg>Add stop</button><button data-action="Share"><svg class="icon" viewBox="0 0 24 24"><path d="M12 16V2m-5 5 5-5 5 5M6 10H3v12h18V10h-3"/></svg>Share</button></nav>
+</section><div id="toast" role="status" hidden></div>
+</main><script src="silver-amap-config.js"></script><script>
+const sheet=document.getElementById('sheet'),handle=document.getElementById('handle');
+function collapse(value){sheet.classList.toggle('collapsed',value);handle.setAttribute('aria-expanded',String(!value));handle.setAttribute('aria-label',value?'展开行程面板':'收起行程面板')}
+handle.onclick=()=>collapse(!sheet.classList.contains('collapsed'));
+let startY;handle.onpointerdown=e=>{startY=e.clientY;handle.setPointerCapture(e.pointerId)};handle.onpointerup=e=>{const delta=e.clientY-startY;if(Math.abs(delta)>25)collapse(delta>0)};
+let toastTimer;function notice(text){const el=document.getElementById('toast');el.textContent=text;el.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.hidden=true,2200)}
+document.getElementById('back').onclick=()=>collapse(true);document.getElementById('vehicle').onclick=()=>notice('车辆信息 · 示例行程');document.getElementById('pull').onclick=()=>notice('Pull over · UI 演示，未发送请求');document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>notice(b.dataset.action+' · UI 演示'));
+let map,satellite;window._AMapSecurityConfig={securityJsCode:window.SILVER_AMAP_CONFIG.securityJsCode};const sdk=document.createElement('script');sdk.src='https://webapi.amap.com/maps?v=2.0&key='+encodeURIComponent(window.SILVER_AMAP_CONFIG.key);
+sdk.onerror=()=>document.getElementById('map-message').textContent='高德地图加载失败，请检查网络和 Key 配置';
+sdk.onload=()=>{try{
+map=new AMap.Map('map',{zoom:14,center:[-118.244,34.057],viewMode:'2D'});map.on('complete',()=>document.getElementById('map-message').hidden=true);
+const path=[[-118.262,34.067],[-118.257,34.067],[-118.254,34.071],[-118.240,34.061],[-118.239,34.055],[-118.2402,34.0486]];
+map.add(new AMap.Polyline({path,strokeColor:'#2688e8',strokeWeight:6,lineCap:'round',lineJoin:'round'}));
+map.add(new AMap.Marker({position:path[0],content:'<div class="start-dot"></div>',offset:new AMap.Pixel(-10,-10)}));
+map.add(new AMap.Marker({position:path[path.length-1],content:'<div class="end-pin"></div>',offset:new AMap.Pixel(-11,-22)}));
+const label=document.createElement('div');label.className='destination';label.innerHTML='<div>Japanese Village Plaza<small>2-min walk</small></div><button aria-label="查看终点">›</button>';label.querySelector('button').onclick=()=>notice('Japanese Village Plaza · 335 East 2nd Street');map.add(new AMap.Marker({position:path[path.length-1],content:label,offset:new AMap.Pixel(-145,-90)}));
+document.getElementById('layers').onclick=()=>{if(!satellite){satellite=new AMap.TileLayer.Satellite();map.add(satellite)}else{map.remove(satellite);satellite=null}};
+}catch(error){document.getElementById('map-message').textContent='地图初始化失败：'+error.message}};document.head.append(sdk);
+</script></body></html>

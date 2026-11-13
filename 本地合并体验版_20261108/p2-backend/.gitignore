@@ -1,0 +1,13 @@
+**/target/
+.m2-repository/
+.idea/
+*.iml
+.env
+.env.*
+!.env.example
+*.log
+runtime/
+backups/
+**/__pycache__/
+**/.venv/
+**/node_modules/

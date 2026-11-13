@@ -1,0 +1,106 @@
+{
+  "place": {
+    "id": "B023B13L9M",
+    "name": "杭州西湖风景名胜区",
+    "address": "浙江省杭州市西湖区西湖街道龙井路1号",
+    "type": "风景名胜;风景名胜;国家级景点",
+    "location": "120.121358,30.222692",
+    "hours": "",
+    "photos": [
+      "https://store.is.autonavi.com/showpic/78e3e7b400e9290d0000003670488183",
+      "http://store.is.autonavi.com/showpic/d7a717ff724702f42595f6a3f09c6aba",
+      "https://store.is.autonavi.com/showpic/cbfcd936353743108182141fbeddffe3"
+    ],
+    "mapUrl": "https://uri.amap.com/marker?poiid=B023B13L9M&src=yinling-a1&callnative=0",
+    "city": "杭州市"
+  },
+  "weather": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+      "retrievedAt": "2026-11-03T13:33:04.338591500Z",
+      "source": "AMAP",
+      "forecasts": [
+        {
+          "city": "西湖区",
+          "adcode": "330106",
+          "province": "浙江",
+          "reporttime": "2026-11-03 21:02:23",
+          "casts": [
+            {
+              "date": "2026-11-03",
+              "week": "2",
+              "dayweather": "小雨",
+              "nightweather": "中雨",
+              "daytemp": "20",
+              "nighttemp": "14",
+              "daywind": "东北",
+              "nightwind": "东北",
+              "daypower": "1-3",
+              "nightpower": "1-3",
+              "daytemp_float": "20.0",
+              "nighttemp_float": "14.0"
+            },
+            {
+              "date": "2026-11-04",
+              "week": "3",
+              "dayweather": "大雨",
+              "nightweather": "小雨",
+              "daytemp": "19",
+              "nighttemp": "15",
+              "daywind": "东北",
+              "nightwind": "东北",
+              "daypower": "1-3",
+              "nightpower": "1-3",
+              "daytemp_float": "19.0",
+              "nighttemp_float": "15.0"
+            },
+            {
+              "date": "2026-11-05",
+              "week": "4",
+              "dayweather": "晴",
+              "nightweather": "多云",
+              "daytemp": "22",
+              "nighttemp": "15",
+              "daywind": "西南",
+              "nightwind": "西南",
+              "daypower": "1-3",
+              "nightpower": "1-3",
+              "daytemp_float": "22.0",
+              "nighttemp_float": "15.0"
+            },
+            {
+              "date": "2026-11-06",
+              "week": "5",
+              "dayweather": "小雨",
+              "nightweather": "多云",
+              "daytemp": "20",
+              "nighttemp": "14",
+              "daywind": "东北",
+              "nightwind": "东北",
+              "daypower": "1-3",
+              "nightpower": "1-3",
+              "daytemp_float": "20.0",
+              "nighttemp_float": "14.0"
+            }
+          ]
+        }
+      ],
+      "lives": [
+        {
+          "province": "浙江",
+          "city": "西湖区",
+          "adcode": "330106",
+          "weather": "雾",
+          "temperature": "15",
+          "winddirection": "西南",
+          "windpower": "≤3",
+          "humidity": "96",
+          "reporttime": "2026-11-03 21:02:22",
+          "temperature_float": "15.0",
+          "humidity_float": "96.0"
+        }
+      ]
+    }
+  }
+}

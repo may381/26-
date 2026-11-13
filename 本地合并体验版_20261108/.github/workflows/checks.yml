@@ -1,0 +1,28 @@
+name: Project checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  p2-backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: p2-backend/server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: p2-backend/server/pom.xml
+      - name: Test and package P2 with isolated MySQL containers
+        run: mvn -B -ntp package
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-test-reports
+          path: p2-backend/server/target/surefire-reports/
+          retention-days: 7

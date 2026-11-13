@@ -1,0 +1,16 @@
+const fs=require('node:fs');
+const vm=require('node:vm');
+const assert=require('node:assert/strict');
+const path=require('node:path');
+const source=fs.readFileSync(path.join(__dirname,'../../main/resources/static/travel-ui.js'),'utf8');
+const start=source.indexOf('function travelDraftRequest(');
+const end=source.indexOf('async function createTravelDraft(',start);
+const scope={};vm.createContext(scope);vm.runInContext(source.slice(start,end),scope);
+const state={destination:'阳江',startDate:'2026-10-30',days:3,walkMinutes:40,companions:'独自出游',dateConfirmed:true,step:2,importedPlaceIds:[]};
+const payload=JSON.parse(JSON.stringify(scope.travelDraftRequest(state)));
+assert.equal(payload.dateConfirmed,undefined);
+assert.equal(payload.step,undefined);
+assert.equal(payload.days,3);
+assert.deepEqual(payload.importedPlaceIds,[]);
+assert.deepEqual(Object.keys(payload).sort(),['destination','startDate','days','walkMinutes','companions','importedPlaceIds'].sort());
+console.log('PASS: UI-only date state is excluded from the strict draft request');
