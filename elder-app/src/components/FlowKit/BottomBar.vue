@@ -1,0 +1,1 @@
+<template><view class="kit-bottom"><slot/></view></template>

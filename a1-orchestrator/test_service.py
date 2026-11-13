@@ -1,7 +1,9 @@
 import tempfile
 import unittest
 import json
+import socket
 import threading
+import http.client
 from http.server import ThreadingHTTPServer
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
@@ -98,6 +100,72 @@ class HttpTests(unittest.TestCase):
             response = error
         with response:
             return response.status, json.load(response), response.headers.get("X-Trace-Id")
+
+    def chunked_post(self, body, key="test-key-only", chunk_size=7):
+        """RFC 7230 chunked upload, the way P2's HTTP client may send it."""
+        raw = body if isinstance(body, bytes) else json.dumps(body).encode()
+        chunks = (raw[offset:offset + chunk_size] for offset in range(0, len(raw), chunk_size))
+        connection = http.client.HTTPConnection("127.0.0.1", self.server.server_address[1], timeout=5)
+        try:
+            connection.request("POST", "/internal/v3/messages", body=chunks,
+                               headers={"X-Agent-Key": key, "Content-Type": "application/json"},
+                               encode_chunked=True)
+            response = connection.getresponse()
+            return response.status, json.loads(response.read() or b"{}")
+        finally:
+            connection.close()
+
+    def raw_chunked_post(self, wire_body):
+        """Send a hand-written chunked body so malformed framing can be exercised."""
+        head = (
+            "POST /internal/v3/messages HTTP/1.1\r\n"
+            "Host: 127.0.0.1\r\n"
+            "X-Agent-Key: test-key-only\r\n"
+            "Content-Type: application/json\r\n"
+            "Transfer-Encoding: chunked\r\n\r\n"
+        ).encode("ascii")
+        with socket.create_connection(("127.0.0.1", self.server.server_address[1]), timeout=5) as sock:
+            sock.sendall(head + wire_body)
+            received = b""
+            while True:
+                part = sock.recv(4096)
+                if not part:
+                    break
+                received += part
+        status = int(received.split(b" ", 2)[1])
+        body = json.loads(received.split(b"\r\n\r\n", 1)[1])
+        return status, body
+
+    def test_chunked_request_body_is_accepted(self):
+        status, body = self.chunked_post({"task": {"invocationId": "i-chunked"}})
+        self.assertEqual(status, 200)
+        self.assertEqual(body["code"], "OK")
+        self.assertEqual(self.process.call_count, 1)
+        self.assertEqual(self.store.get("i-chunked")["status"], "FINISHED")
+
+    def test_chunked_request_body_accepts_multibyte_utf8_split_across_chunks(self):
+        status, body = self.chunked_post({"task": {"invocationId": "i-chunked-utf8"},
+                                          "note": "反诈提醒"}, chunk_size=3)
+        self.assertEqual(status, 200)
+        self.assertEqual(body["code"], "OK")
+
+    def test_chunked_request_body_respects_size_limit(self):
+        status, body = self.raw_chunked_post(b"200000\r\n")  # declares 2 MiB, above the 1 MiB cap
+        self.assertEqual(status, 400)
+        self.assertEqual(body["code"], "INVALID_ARGUMENT")
+        self.assertEqual(self.process.call_count, 0)
+
+    def test_malformed_chunk_framing_is_rejected(self):
+        status, body = self.raw_chunked_post(b"ZZZ\r\n")
+        self.assertEqual(status, 400)
+        self.assertEqual(body["code"], "INVALID_ARGUMENT")
+        self.assertEqual(self.process.call_count, 0)
+
+    def test_empty_chunked_body_is_rejected(self):
+        status, body = self.raw_chunked_post(b"0\r\n\r\n")
+        self.assertEqual(status, 400)
+        self.assertEqual(body["code"], "INVALID_ARGUMENT")
+        self.assertEqual(self.process.call_count, 0)
 
     def test_health_is_public_and_reports_v3_runtime_without_secrets(self):
         with urlopen(self.url + "/health", timeout=5) as response:

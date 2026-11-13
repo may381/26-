@@ -1,0 +1,1 @@
+<script setup>import FlowShell from "../FlowShell.vue";defineProps({title:String,subtitle:String})</script><template><FlowShell :title="title" :subtitle="subtitle" kit><view class="kit-content"><slot/></view><template #bottom><slot name="bottom"/></template></FlowShell></template>

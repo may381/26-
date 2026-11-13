@@ -1,0 +1,22 @@
+/* 游览小结分享落地页（对外页面，paper 体系） */
+.share-page{min-height:100vh;padding:calc(28px + env(safe-area-inset-top)) calc(var(--u)*32) calc(var(--u)*180 + env(safe-area-inset-bottom));background:#f4f9ff;box-sizing:border-box}
+.share-head{margin:calc(var(--u)*8) 0 calc(var(--u)*18)}
+.share-brand{display:flex;align-items:center;gap:calc(var(--u)*10)}
+.share-brand image{width:calc(var(--u)*40);height:calc(var(--u)*40);display:block}
+.share-brand text{font-size:calc(var(--u)*28);color:#006aff;font-weight:700;letter-spacing:.5px}
+.share-kicker{display:block;font-size:calc(var(--u)*26);color:#4e648a;margin-top:calc(var(--u)*10)}
+.share-card{margin-bottom:calc(var(--u)*16)}
+.share-hero .paper-title{display:block;font-size:calc(var(--u)*56);line-height:1.25}
+.share-hero .paper-subtitle{display:block;margin-top:calc(var(--u)*8)}
+.share-stats{display:flex;gap:calc(var(--u)*10);margin-top:calc(var(--u)*14)}
+.share-stat{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(var(--u)*16) calc(var(--u)*6);background:#f2f8ff;border-radius:calc(var(--u)*18);min-width:0}
+.share-num{font-size:calc(var(--u)*44);font-weight:800;color:#006aff;line-height:1.1}
+.share-num-sm{font-size:calc(var(--u)*24);font-weight:700;line-height:1.35;text-align:center;overflow-wrap:anywhere}
+.share-cap{font-size:calc(var(--u)*24);color:#4e648a;margin-top:calc(var(--u)*6);text-align:center}
+.share-photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:calc(var(--u)*10);margin-top:calc(var(--u)*14)}
+.share-photos image,.share-photos uni-image{width:100%;height:calc(var(--u)*250);border-radius:calc(var(--u)*20);object-fit:cover;display:block}
+.share-note{display:block;text-align:center;font-size:calc(var(--u)*24);color:#4e648a;margin:calc(var(--u)*8) 0 0}
+.share-footer{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:540px;padding:calc(var(--u)*14) calc(var(--u)*32) calc(var(--u)*18 + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(244,249,255,0),#f4f9ff 34%);box-sizing:border-box;z-index:5}
+.share-footer .paper-primary{width:100%}
+.share-error .paper-heading{display:block}
+.share-error .paper-help{display:block;margin-top:calc(var(--u)*8);line-height:1.6}

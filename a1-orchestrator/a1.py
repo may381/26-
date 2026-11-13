@@ -4,6 +4,8 @@ import copy
 import os
 import re
 import sys
+from datetime import datetime, timezone
+from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 
 DOMAINS = {
@@ -16,6 +18,8 @@ SYSTEM = """你是老人个人数字分身平台的 A1 总调度。你只理解�
 【输出契约】
 只输出一个合法 JSON 对象，不输出 Markdown、代码围栏、注释、前后解释或额外字段。
 每次必须包含且只包含六个字段：decision、reply、domains、steps、memoryCandidate、location。
+另可选一个 options 字段，仅当 decision=ASK 时才可出现：它是给用户的候选答案数组，长度1至4；每项必须且只能有 id、label、value 三个非空字符串，id 不重复且最多64字符，label 最多40字符，value 最多200字符。
+options 只是可选答案，不代表已经查询或办理；没有把握给出有意义的候选时省略该字段，不要为凑数编造城市、日期或服务。
 decision 只能是 ASK、PLAN、REPLY；reply 是非空字符串，最多1500字符。
 domains 是不重复的领域字符串数组，最多9项，只能使用下列登记领域。
 steps 是步骤对象数组，最多6项；每个步骤必须且只能有 id、agent、domain、goal、dependsOn。
@@ -49,6 +53,7 @@ culture（非遗、文化及文化课程）→ a3；ability（个人技能、传
 当前没有设备定位、用户档案或已授权位置；不能把助手旧回复中的地点当作用户证据。
 location 必须逐字取自当前或历史某条 user 消息中的连续原文，不能从常识、默认值或模型知识推测、补全或改写。
 用户未明确提供地点时 location=null。涉及“附近”“就近”“别太远”等位置依赖查询，缺少必要城市或地点时必须 ASK。
+用户只说“帮我规划出行”但未说目的地时，先问想去哪个城市；只有用户明确提出跨城出行时才询问出发地。
 已有城市且仅准备候选查询时，不必追问精确住址；目的地、日期等其他条件仅在本任务确有必要时逐次追问。
 
 【事实与业务边界】
@@ -75,7 +80,9 @@ class PlanningError(Exception):
 def validate_plan(plan):
     """Reject invalid routing/dependencies rather than executing model instructions."""
     expected = {"decision", "reply", "domains", "steps", "memoryCandidate"}
-    if not isinstance(plan, dict) or set(plan) not in (expected, expected | {"location"}):
+    allowed = (expected, expected | {"location"}, expected | {"options"},
+               expected | {"location", "options"})
+    if not isinstance(plan, dict) or set(plan) not in allowed:
         raise PlanningError("模型计划字段不符合约定")
     if plan.get("location") is not None and (not isinstance(plan["location"], str) or not plan["location"].strip() or len(plan["location"]) > 100):
         raise PlanningError("地点字段无效")
@@ -83,6 +90,8 @@ def validate_plan(plan):
         raise PlanningError("计划类型无效")
     if not isinstance(plan["reply"], str) or not plan["reply"].strip() or len(plan["reply"]) > 1500:
         raise PlanningError("回复为空或过长")
+    if re.search(r'(?:已经|已)(?:为您|帮您|替您)?(?:成功)?(?:通知|报名|保存|订票|支付|转账|联系家属|发送邮件)', plan['reply']):
+        raise PlanningError('规划阶段不能宣称业务已经执行')
     domains = plan["domains"]
     if not isinstance(domains, list) or len(domains) > 9 or any(not isinstance(x, str) or x not in DOMAINS for x in domains):
         raise PlanningError("领域无效")
@@ -118,6 +127,23 @@ def validate_plan(plan):
     memory = plan["memoryCandidate"]
     if memory is not None and (not isinstance(memory, str) or not memory.strip() or len(memory) > 1000):
         raise PlanningError("记忆候选无效")
+    if "options" in plan:
+        options = plan["options"]
+        if plan["decision"] != "ASK":
+            raise PlanningError("只有追问才能提供候选答案")
+        if not isinstance(options, list) or not 1 <= len(options) <= 4:
+            raise PlanningError("候选答案数量无效")
+        seen = set()
+        for option in options:
+            if not isinstance(option, dict) or set(option) != {"id", "label", "value"}:
+                raise PlanningError("候选答案字段无效")
+            if any(not isinstance(option[key], str) or not option[key].strip() for key in ("id", "label", "value")):
+                raise PlanningError("候选答案内容为空")
+            if len(option["id"]) > 64 or len(option["label"]) > 40 or len(option["value"]) > 200:
+                raise PlanningError("候选答案过长")
+            if option["id"] in seen:
+                raise PlanningError("候选答案编号重复")
+            seen.add(option["id"])
     return plan
 
 
@@ -173,7 +199,11 @@ def _location_supported(location, user_texts):
                 suffix = clause[occurrence.end():]
                 if re.search(r"(?:不去|不想去|不要去|不打算去|不考虑|不选|排除|取消|别去|不是|不在|原来去|原计划去|之前去|本来去)\s*$", prefix):
                     continue
-                if re.search(r"推荐|建议|听说|朋友说|家人说", prefix) and not re.search(r"(?:我|我们)(?:想|要|决定|打算|计划)去[^，,。；;]*$", prefix):
+                direct_recommendation = re.search(
+                    r"(?:^|[，,。；;])(?:请|帮我|给我).*(?:推荐|建议)[^，,。；;]*$", prefix)
+                if (re.search(r"推荐|建议|听说|朋友说|家人说", prefix)
+                        and not direct_recommendation
+                        and not re.search(r"(?:我|我们)(?:想|要|决定|打算|计划)去[^，,。；;]*$", prefix)):
                     continue
                 if re.search(r"(?:从|出发地(?:是|为)?[：:]?)\s*$", prefix):
                     continue
@@ -189,6 +219,13 @@ def _location_supported(location, user_texts):
     return False
 
 
+def new_travel_request(text):
+    """True when the current message starts a trip but does not itself name a destination."""
+    return isinstance(text, str) and bool(re.search(
+        r"(?:帮我|给我|请)?(?:规划|安排|计划|准备)(?:一下|一次)?(?:这次|本次)?(?:的)?"
+        r"(?:出行|旅游|旅行|行程|出游|游玩)|我(?:想|要|打算|计划)去", text))
+
+
 def enforce_location(plan, text, history=None):
     """Gate location-dependent plans; never treat the model's own words as evidence."""
     user_texts = [m["content"] for m in (history or [])
@@ -197,7 +234,23 @@ def enforce_location(plan, text, history=None):
     if isinstance(text, str):
         user_texts.append(text)
     location = plan.get("location")
+    # A short city answer is authoritative user evidence. Models sometimes
+    # join comma-separated qualifiers into a non-verbatim location, or omit
+    # location entirely. Repair only this narrow, explicit city-answer shape.
+    city_answer = re.fullmatch(r"([\u4e00-\u9fff]{2,12}市)[，,](?:市中心|城区|市区)(?:附近)?[。！!\s]*", text or "")
+    if (plan["decision"] == "PLAN" and "tourism" in plan["domains"]
+            and city_answer and (not isinstance(location, str)
+                                 or not _location_supported(location, [text]))):
+        plan = dict(plan)
+        location = city_answer.group(1)
+        plan["location"] = location
+    # 当前消息若是新的出行请求却没有点名目的地，历史里的旧城市不能自动继承，
+    # 否则「帮我规划出行」会被上一轮的杭州带偏。
+    new_request = new_travel_request(text)
+    inherited_only = (new_request and isinstance(location, str) and location.strip()
+                      and location not in text)
     verified = (isinstance(location, str) and bool(location.strip())
+                and not inherited_only
                 and _location_supported(location, user_texts))
     location_domains = {"tourism", "culture", "community", "volunteer"}
     needs_location = bool(set(plan["domains"]) & location_domains) and any(
@@ -216,42 +269,111 @@ def enforce_location(plan, text, history=None):
     return plan
 
 
-def ask_model(text, history=None):
-    """Return a validated plan only; never invoke a domain or business action."""
+FORMAT_REMINDER = ("\n\n【格式纠正】上一次输出无法解析或不符合输出契约。这次只输出一个合法 JSON 对象，"
+                   "不要解释、不要 Markdown、不要编号列表、不要补充任何字段。")
+
+
+ASSISTANT_MARKER = "（上一轮助手已回复，内容略）"
+
+
+def _planner_history(history):
+    """Keep user turns and a short structural marker for assistant turns.
+
+    P2 stores the assistant's natural-language reply in ``context.history``.  Replaying
+    that prose as an assistant turn makes the model imitate it and answer in Markdown
+    instead of the JSON contract, which made A1 fail intermittently once a conversation
+    had a few turns.  A fixed marker keeps the turn boundary (so a completed earlier
+    request is not mistaken for the current one) without giving the model a prose
+    sample to copy.  Assistant text is also not location evidence, so it is dropped
+    by the location gate as well.
+    """
+    lines = []
+    for line in history or []:
+        if not isinstance(line, dict):
+            continue
+        content = line.get("content")
+        if line.get("role") == "user" and isinstance(content, str) and content.strip():
+            lines.append({"role": "user", "content": content})
+        elif line.get("role") == "assistant" and isinstance(content, str):
+            if not lines or lines[-1]["role"] == "assistant":
+                continue
+            lines.append({"role": "assistant", "content": ASSISTANT_MARKER})
+    while lines and lines[0]["role"] == "assistant":
+        lines.pop(0)
+    return lines[-8:]
+
+
+def _model_config():
+    endpoint = os.environ.get("A1_MODEL_URL", "http://10.138.50.151:8000").rstrip("/")
+    # Accept either a server origin, an OpenAI /v1 base, or a full endpoint.
+    path = urlsplit(endpoint).path
+    if not path:
+        endpoint += "/v1/chat/completions"
+    elif path == "/v1":
+        endpoint += "/chat/completions"
     try:
-        endpoint = os.environ.get("A1_MODEL_URL", "http://10.138.50.151:8000").rstrip("/")
-        # Accept either a server origin, an OpenAI /v1 base, or a full endpoint.
-        from urllib.parse import urlsplit
-        path = urlsplit(endpoint).path
-        if not path:
-            endpoint += "/v1/chat/completions"
-        elif path == "/v1":
-            endpoint += "/chat/completions"
-        payload = {
-            "model": os.environ.get("A1_MODEL_NAME", "qwen3.8-27b"),
-            "messages": [{"role": "system", "content": SYSTEM}] + list(history or []) + [{"role": "user", "content": text}],
-            "temperature": 0.1, "max_completion_tokens": 1800, "stream": False,
-            "chat_template_kwargs": {"enable_thinking": False}
-        }
-        request = Request(endpoint, data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
-                          headers={"Content-Type": "application/json"}, method="POST")
-        try:
-            timeout = float(os.environ.get("A1_MODEL_TIMEOUT_SECONDS", "40"))
-        except ValueError:
-            raise PlanningError("A1_MODEL_TIMEOUT_SECONDS 配置无效") from None
-        if not 1 <= timeout <= 50:
-            raise PlanningError("模型超时必须在1至50秒内，以符合P2调用期限")
-        with urlopen(request, timeout=timeout) as response:
-            raw = response.read(1024 * 1024 + 1)
-        if len(raw) > 1024 * 1024:
-            raise PlanningError("模型响应过大")
-        result = json.loads(raw.decode("utf-8"))
-        choice = result["choices"][0]
-        if choice.get("finish_reason") == "length":
-            raise PlanningError("模型计划被截断，请缩短需求后重试")
-        if choice.get("finish_reason") != "stop":
-            raise PlanningError("模型未正常结束生成，未接受计划或执行业务")
-        return enforce_location(validate_plan(json.loads(choice["message"]["content"])), text, history)
+        timeout = float(os.environ.get("A1_MODEL_TIMEOUT_SECONDS", "40"))
+    except ValueError:
+        raise PlanningError("A1_MODEL_TIMEOUT_SECONDS 配置无效") from None
+    if not 1 <= timeout <= 50:
+        raise PlanningError("模型超时必须在1至50秒内，以符合P2调用期限")
+    return endpoint, timeout
+
+
+def _request_plan(endpoint, messages, timeout, text, history):
+    payload = {
+        "model": os.environ.get("A1_MODEL_NAME", "qwen3.8-27b"),
+        "messages": messages,
+        "temperature": 0.1, "max_completion_tokens": 1800, "stream": False,
+        "chat_template_kwargs": {"enable_thinking": False}
+    }
+    request = Request(endpoint, data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
+                      headers={"Content-Type": "application/json"}, method="POST")
+    with urlopen(request, timeout=timeout) as response:
+        raw = response.read(1024 * 1024 + 1)
+    if len(raw) > 1024 * 1024:
+        raise PlanningError("模型响应过大")
+    result = json.loads(raw.decode("utf-8"))
+    choice = result["choices"][0]
+    if choice.get("finish_reason") == "length":
+        raise PlanningError("模型计划被截断，请缩短需求后重试")
+    if choice.get("finish_reason") != "stop":
+        raise PlanningError("模型未正常结束生成，未接受计划或执行业务")
+    try:
+        value = json.loads(choice["message"]["content"])
+    except (TypeError, ValueError):
+        raise PlanningError("模型未按JSON契约输出，未执行任何业务") from None
+    return enforce_location(validate_plan(value), text, history)
+
+
+def ask_model(text, history=None, deadline=None, hint=None):
+    """Return a validated plan only; never invoke a domain or business action.
+
+    ``hint`` is a per-invocation constraint block (for example: the pending
+    clarification question the user is answering, or the single-step limit of
+    this deployment).  It is appended to the system prompt so it can never be
+    mistaken for the user's own words.
+    """
+    try:
+        endpoint, timeout = _model_config()
+        projected = _planner_history(history)
+        system_base = SYSTEM + (("\n\n【本轮约束】\n" + hint) if isinstance(hint, str) and hint.strip() else "")
+        last = None
+        for attempt, system in enumerate((system_base, system_base + FORMAT_REMINDER)):
+            if attempt and deadline is not None:
+                remaining = (deadline - datetime.now(timezone.utc)).total_seconds()
+                if remaining < 20:
+                    break
+                timeout = min(timeout, max(1.0, remaining - 5))
+            messages = ([{"role": "system", "content": system}] + projected
+                        + [{"role": "user", "content": text}])
+            try:
+                return _request_plan(endpoint, messages, timeout, text, history)
+            except PlanningError as error:
+                last = error
+                if "配置无效" in str(error) or "响应过大" in str(error):
+                    break
+        raise last or PlanningError("剩余调用预算不足，未执行任何业务")
     except PlanningError:
         raise
     except Exception as error:

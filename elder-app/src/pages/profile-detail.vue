@@ -1,0 +1,1 @@
+<script setup>import {onShow as onPageShow} from "@dcloudio/uni-app";import {refreshState as refreshPageState} from "../components/app-state.js";onPageShow(refreshPageState);import ProfileDetailScreen from "../components/ProfileDetailScreen.vue"</script><template><ProfileDetailScreen/></template>

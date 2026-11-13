@@ -1,0 +1,1944 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A3 演示台 · 记忆 + 非遗文化</title>
+<style>
+  :root{
+    --bg:#F6F7F9; --card:#FFFFFF; --ink:#1F2937; --muted:#6B7280; --line:#E5E7EB;
+    --blue:#2563EB; --blue-bg:#EFF6FF;
+    --ok:#15803D; --ok-bg:#DCFCE7;
+    --warn:#B45309; --warn-bg:#FEF3C7;
+    --err:#B91C1C; --err-bg:#FEE2E2;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+    font-size:15px;line-height:1.65}
+  header{padding:20px 28px 14px;border-bottom:1px solid var(--line);background:var(--card)}
+  h1{margin:0;font-size:20px;font-weight:600;letter-spacing:.2px}
+  .sub{margin-top:4px;font-size:13px;color:var(--muted)}
+  .bar{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;
+    font-size:13px;font-weight:500;border:1px solid transparent}
+  .pill.on{background:var(--ok-bg);color:var(--ok);border-color:#86EFAC}
+  .pill.off{background:var(--warn-bg);color:var(--warn);border-color:#FCD34D}
+  .dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+  input[type=text]{padding:5px 10px;border:1px solid var(--line);border-radius:8px;
+    font-size:13px;width:190px;font-family:inherit;color:var(--ink)}
+  button{font-family:inherit}
+  button.ghost{padding:5px 12px;border:1px solid var(--line);background:var(--card);
+    border-radius:8px;font-size:13px;cursor:pointer;color:var(--ink)}
+  button.ghost:hover{border-color:#C7CBD1}
+
+  nav{display:flex;gap:4px;padding:12px 28px 0;background:var(--card);
+    border-bottom:1px solid var(--line);overflow-x:auto}
+  nav button{padding:9px 18px;border:none;background:transparent;cursor:pointer;
+    font-size:15px;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap}
+  nav button.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}
+
+  main{padding:22px 28px 48px;max-width:1180px;margin:0 auto}
+  section{display:none}
+  section.active{display:block}
+  .grid{display:grid;grid-template-columns:250px 1fr;gap:20px;align-items:start}
+  @media(max-width:840px){.grid{grid-template-columns:1fr}}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .panel h2{margin:0 0 10px;font-size:13px;font-weight:600;color:var(--muted);
+    text-transform:uppercase;letter-spacing:.6px}
+
+  .scen{display:flex;flex-direction:column;gap:6px}
+  .scen button{text-align:left;padding:9px 12px;border:1px solid var(--line);
+    background:var(--card);border-radius:9px;cursor:pointer;font-size:14px;color:var(--ink)}
+  .scen button:hover{background:#F9FAFB}
+  .scen button.on{border-color:var(--blue);background:var(--blue-bg);color:#1D4ED8;font-weight:500}
+  .scen small{display:block;color:var(--muted);font-size:12px;font-weight:400;margin-top:2px}
+
+  .say{margin-bottom:14px}
+  .bubble{padding:11px 15px;border-radius:12px;max-width:86%;font-size:15px}
+  .bubble.old{background:#F3F4F6;border:1px solid var(--line);margin-left:auto}
+  .bubble.bot{background:var(--blue-bg);border:1px solid #BFDBFE}
+  .who{font-size:12px;color:var(--muted);margin-bottom:4px}
+  .who.r{text-align:right}
+
+  .tag{display:inline-block;padding:2px 9px;border-radius:6px;font-size:12px;
+    font-weight:500;margin-right:6px}
+  .tag.ok{background:var(--ok-bg);color:var(--ok)}
+  .tag.warn{background:var(--warn-bg);color:var(--warn)}
+  .tag.err{background:var(--err-bg);color:var(--err)}
+  .tag.info{background:var(--blue-bg);color:var(--blue)}
+  .tag.mute{background:#F3F4F6;color:var(--muted)}
+
+  .course{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:10px}
+  .course .t{font-size:16px;font-weight:600}
+  .course .v{font-size:13px;color:var(--muted);margin-top:2px}
+  .facts{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:13px}
+  .facts span{color:var(--muted)}
+  .facts b{color:var(--ink);font-weight:500}
+  .why{margin-top:8px;font-size:12px;color:var(--blue)}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+  th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:500;font-size:12px;width:34%}
+  td code{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
+
+  .big{font-size:22px;font-weight:600;margin:6px 0}
+  .kv{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:6px}
+  .mem{border-left:3px solid var(--line);padding:7px 0 7px 12px;margin-top:8px}
+  .mem.hit{border-left-color:var(--ok)}
+  .mem.drop{border-left-color:#D1D5DB;opacity:.62}
+  .mem .k{font-size:12px;color:var(--muted)}
+  pre{background:#0F172A;color:#E2E8F0;padding:14px;border-radius:10px;overflow:auto;
+    font-size:12.5px;line-height:1.55;font-family:ui-monospace,Consolas,monospace;margin:8px 0 0}
+  .note{font-size:13px;color:var(--muted);margin-top:12px;padding-top:12px;
+    border-top:1px dashed var(--line)}
+  .empty{color:var(--muted);font-size:14px;padding:24px 0;text-align:center}
+  .err-box{background:var(--err-bg);border:1px solid #FCA5A5;border-radius:10px;
+    padding:12px 14px;font-size:14px;color:var(--err)}
+  .opt{display:inline-block;padding:6px 14px;border:1px solid #BFDBFE;background:#fff;
+    border-radius:999px;font-size:14px;margin:6px 8px 0 0;color:#1D4ED8}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>A3 演示台 · 记忆 · 非遗文化 · 能力银行</h1>
+  <div class="sub">按 v3 协议对接 P2 的真实服务。场景全部走本地 HTTP，不是预录动画。</div>
+  <div class="bar">
+    <span class="pill off" id="mode"><span class="dot"></span><span id="modeText">检测中…</span></span>
+    <input type="text" id="base" value="http://127.0.0.1:18003">
+    <button class="ghost" id="recheck">重新检测</button>
+    <span class="sub" id="hint" style="margin:0"></span>
+  </div>
+</header>
+
+<nav>
+  <button class="active" data-tab="culture">文化问答与课程</button>
+  <button data-tab="review">记忆审核</button>
+  <button data-tab="search">检索四态</button>
+  <button data-tab="raw">报文原文</button>
+</nav>
+
+<main>
+  <section id="tab-culture" class="active">
+    <div class="grid">
+      <div class="panel"><h2>老人说的话</h2><div class="scen" id="cultureScen"></div></div>
+      <div class="panel"><h2>系统怎么答</h2><div id="cultureOut"><div class="empty">点左边任一句试试</div></div></div>
+    </div>
+  </section>
+
+  <section id="tab-review">
+    <div class="grid">
+      <div class="panel"><h2>审核情形</h2><div class="scen" id="reviewScen"></div></div>
+      <div class="panel"><h2>审核结论</h2><div id="reviewOut"><div class="empty">点左边任一种情况试试</div></div></div>
+    </div>
+  </section>
+
+  <section id="tab-search">
+    <div class="grid">
+      <div class="panel"><h2>检索情形</h2><div class="scen" id="searchScen"></div></div>
+      <div class="panel"><h2>检索结果</h2><div id="searchOut"><div class="empty">点左边任一种情况试试</div></div></div>
+    </div>
+  </section>
+
+  <section id="tab-raw">
+    <div class="panel">
+      <h2>最近一次请求</h2>
+      <pre id="rawReq">（还没发起调用）</pre>
+      <h2 style="margin-top:18px">最近一次响应</h2>
+      <pre id="rawRes">（还没发起调用）</pre>
+      <div class="note">这里显示的是发出去和收回来的原始 JSON。切换 tab 不会清空，方便对着报文讲。</div>
+    </div>
+  </section>
+</main>
+
+<script id="snapshot" type="application/json">{
+ "culture": [
+  {
+   "text": "想学剪纸，走路别太远",
+   "note": "说清楚兴趣 + 距离要求",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-dbcdd6",
+     "intent": "culture",
+     "domains": [
+      "culture",
+      "tourism"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "找到 2 个可以去的班。最近的是阳光社区活动室的剪纸入门班，走过去大概 5 分钟，周四上午九点半上课。还有 1 个备选，我念给您听？",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "culture-courses-c0121f7ac28f",
+       "type": "culture.course_candidates",
+       "schemaVersion": "1.0",
+       "title": "附近可以参加的非遗文化活动",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "DEMO_DATASET",
+         "id": "a3-culture-demo-v1",
+         "note": "演示数据集，课程、场馆、名额均为虚构，仅用于联调与演示"
+        }
+       ],
+       "pendingChecks": [
+        "课程为演示数据，实际开课以场馆公告为准",
+        "名额为演示值，报名前需向场馆确认",
+        "A3 不代办报名，报名需经本人确认后由平台执行"
+       ],
+       "payload": {
+        "query": {
+         "interests": "想学剪纸，走路别太远",
+         "kinds": [
+          "papercut"
+         ]
+        },
+        "totalCandidates": 2,
+        "courses": [
+         {
+          "courseId": "demo-papercut-01",
+          "title": "剪纸入门班",
+          "kind": "papercut",
+          "kindLabel": "剪纸",
+          "venue": "阳光社区活动室",
+          "walkMinutes": 5,
+          "durationMin": 90,
+          "level": "入门",
+          "seatsLeft": 8,
+          "hasSteps": false,
+          "tags": [
+           "非遗",
+           "手工",
+           "坐着上课"
+          ],
+          "note": "工具现场提供，带一副老花镜就行",
+          "nextSession": {
+           "startAt": "2026-11-12T09:30:00Z",
+           "endAt": "2026-11-12T11:00:00Z",
+           "weekdayLabel": "周四"
+          },
+          "reasons": [
+           "您喜欢剪纸",
+           "走过去只要 5 分钟",
+           "不用爬台阶"
+          ]
+         },
+         {
+          "courseId": "demo-papercut-02",
+          "title": "窗花剪纸提高班",
+          "kind": "papercut",
+          "kindLabel": "剪纸",
+          "venue": "区文化馆三楼",
+          "walkMinutes": 18,
+          "durationMin": 120,
+          "level": "进阶",
+          "seatsLeft": 2,
+          "hasSteps": true,
+          "tags": [
+           "非遗",
+           "手工"
+          ],
+          "note": "楼里有电梯，但要先上三级台阶",
+          "nextSession": {
+           "startAt": "2026-11-10T14:00:00Z",
+           "endAt": "2026-11-10T16:00:00Z",
+           "weekdayLabel": "周二"
+          },
+          "reasons": [
+           "您喜欢剪纸"
+          ]
+         }
+        ],
+        "readOnly": true,
+        "booked": false,
+        "notified": false
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "想学刺绣",
+   "note": "只说兴趣",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-be52f3",
+     "intent": "culture",
+     "domains": [
+      "culture",
+      "tourism"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "找到一个可以去的班。最近的是老年大学东教室的苏绣基础，走过去大概 12 分钟，周一上午十点上课。要去的话我帮您问问还有没有名额。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "culture-courses-f7f3ead857ac",
+       "type": "culture.course_candidates",
+       "schemaVersion": "1.0",
+       "title": "附近可以参加的非遗文化活动",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "DEMO_DATASET",
+         "id": "a3-culture-demo-v1",
+         "note": "演示数据集，课程、场馆、名额均为虚构，仅用于联调与演示"
+        }
+       ],
+       "pendingChecks": [
+        "课程为演示数据，实际开课以场馆公告为准",
+        "名额为演示值，报名前需向场馆确认",
+        "A3 不代办报名，报名需经本人确认后由平台执行"
+       ],
+       "payload": {
+        "query": {
+         "interests": "想学刺绣",
+         "kinds": [
+          "embroidery"
+         ]
+        },
+        "totalCandidates": 1,
+        "courses": [
+         {
+          "courseId": "demo-embroidery-01",
+          "title": "苏绣基础",
+          "kind": "embroidery",
+          "kindLabel": "刺绣",
+          "venue": "老年大学东教室",
+          "walkMinutes": 12,
+          "durationMin": 100,
+          "level": "入门",
+          "seatsLeft": 5,
+          "hasSteps": false,
+          "tags": [
+           "非遗",
+           "手工",
+           "坐着上课"
+          ],
+          "note": "绣绷和丝线由老师统一准备",
+          "nextSession": {
+           "startAt": "2026-11-09T10:00:00Z",
+           "endAt": "2026-11-09T11:40:00Z",
+           "weekdayLabel": "周一"
+          },
+          "reasons": [
+           "您喜欢刺绣",
+           "不用爬台阶"
+          ]
+         }
+        ],
+        "readOnly": true,
+        "booked": false,
+        "notified": false
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "想学书法",
+   "note": "另一门兴趣",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-987848",
+     "intent": "culture",
+     "domains": [
+      "culture",
+      "tourism"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "找到一个可以去的班。最近的是社区书屋的楷书入门，走过去大概 8 分钟，周三下午三点上课。要去的话我帮您问问还有没有名额。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "culture-courses-77a510d39ba9",
+       "type": "culture.course_candidates",
+       "schemaVersion": "1.0",
+       "title": "附近可以参加的非遗文化活动",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "DEMO_DATASET",
+         "id": "a3-culture-demo-v1",
+         "note": "演示数据集，课程、场馆、名额均为虚构，仅用于联调与演示"
+        }
+       ],
+       "pendingChecks": [
+        "课程为演示数据，实际开课以场馆公告为准",
+        "名额为演示值，报名前需向场馆确认",
+        "A3 不代办报名，报名需经本人确认后由平台执行"
+       ],
+       "payload": {
+        "query": {
+         "interests": "想学书法",
+         "kinds": [
+          "calligraphy"
+         ]
+        },
+        "totalCandidates": 1,
+        "courses": [
+         {
+          "courseId": "demo-calligraphy-01",
+          "title": "楷书入门",
+          "kind": "calligraphy",
+          "kindLabel": "书法",
+          "venue": "社区书屋",
+          "walkMinutes": 8,
+          "durationMin": 60,
+          "level": "入门",
+          "seatsLeft": 10,
+          "hasSteps": false,
+          "tags": [
+           "静心",
+           "坐着上课"
+          ],
+          "note": "每次只练两个字，不赶进度",
+          "nextSession": {
+           "startAt": "2026-11-11T15:00:00Z",
+           "endAt": "2026-11-11T16:00:00Z",
+           "weekdayLabel": "周三"
+          },
+          "reasons": [
+           "您喜欢书法",
+           "走过去只要 8 分钟",
+           "不用爬台阶"
+          ]
+         }
+        ],
+        "readOnly": true,
+        "booked": false,
+        "notified": false
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "想学民乐",
+   "note": "这门课名额已满",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-7f373f",
+     "intent": "culture",
+     "domains": [
+      "culture",
+      "tourism"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "这次没找到走路能到、时间也合适的班。要不我换个范围再帮您找找？",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "culture-courses-bc030b16c822",
+       "type": "culture.course_candidates",
+       "schemaVersion": "1.0",
+       "title": "这次没找到合适的课程",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "DEMO_DATASET",
+         "id": "a3-culture-demo-v1",
+         "note": "演示数据集，课程、场馆、名额均为虚构，仅用于联调与演示"
+        }
+       ],
+       "pendingChecks": [
+        "课程为演示数据，实际开课以场馆公告为准",
+        "名额为演示值，报名前需向场馆确认",
+        "A3 不代办报名，报名需经本人确认后由平台执行"
+       ],
+       "payload": {
+        "query": {
+         "interests": "想学民乐",
+         "kinds": [
+          "folk_music"
+         ]
+        },
+        "totalCandidates": 0,
+        "courses": [],
+        "readOnly": true,
+        "booked": false,
+        "notified": false
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "想参加文化活动",
+   "note": "没说要哪一类",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-abed54",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "WAIT_INPUT",
+      "outcome": null,
+      "dependencyTaskIds": [],
+      "inputRequest": {
+       "inputRequestId": "18c01646-f7bf-425b-9c8b-e5590a003c34",
+       "question": "您想学哪一类？剪纸、刺绣、书法，还是太极？",
+       "requiredFields": [
+        "activityKind"
+       ],
+       "options": [
+        {
+         "id": "papercut",
+         "label": "剪纸",
+         "value": "papercut"
+        },
+        {
+         "id": "embroidery",
+         "label": "刺绣",
+         "value": "embroidery"
+        },
+        {
+         "id": "calligraphy",
+         "label": "书法",
+         "value": "calligraphy"
+        },
+        {
+         "id": "taichi",
+         "label": "太极",
+         "value": "taichi"
+        }
+       ],
+       "allowFreeText": true
+      }
+     },
+     "reply": {
+      "text": "好呀，您想学哪一类？剪纸、刺绣、书法，还是太极？",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "想学跳伞",
+   "note": "我们有剪纸班，但这不是他要的",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-cfdef7",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "您说的这类我们这边暂时没有开班。现在有剪纸、刺绣、书法和太极，您要不要看看？",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "culture-courses-e58490476efe",
+       "type": "culture.course_candidates",
+       "schemaVersion": "1.0",
+       "title": "这次没找到合适的课程",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "DEMO_DATASET",
+         "id": "a3-culture-demo-v1",
+         "note": "演示数据集，课程、场馆、名额均为虚构，仅用于联调与演示"
+        }
+       ],
+       "pendingChecks": [
+        "课程为演示数据，实际开课以场馆公告为准",
+        "名额为演示值，报名前需向场馆确认",
+        "A3 不代办报名，报名需经本人确认后由平台执行"
+       ],
+       "payload": {
+        "query": {
+         "interests": "想学跳伞"
+        },
+        "totalCandidates": 0,
+        "courses": [],
+        "readOnly": true,
+        "booked": false,
+        "notified": false
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "剪纸是什么",
+   "note": "问知识 → 走非遗知识库，带来源",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-a2d2d1",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "剪纸是用剪刀或刻刀在纸上剪刻花纹的民间艺术，窗花、喜花、门笺都是它的形式。常见题材有花鸟、人物、吉祥图案，逢年过节贴在窗上、门上。剪纸已于 2006 年列入第一批国家级非物质文化遗产代表性项目名录。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "culture-knowledge-d88d574f4ff8",
+       "type": "culture.knowledge_answer",
+       "schemaVersion": "1.0",
+       "title": "非遗与地方文化资料",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "NATIONAL_HERITAGE_LIST",
+         "title": "国家级非物质文化遗产代表性项目名录",
+         "org": "文化和旅游部",
+         "note": "批次与列入年份可在中国非物质文化遗产网核对",
+         "id": "kb-papercut",
+         "title_zh": "剪纸是什么"
+        }
+       ],
+       "pendingChecks": [
+        "资料为本地整理的常识条目，具体细节以官方名录和当地传承人说明为准",
+        "涉及具体活动时间、地点、费用时，需向场馆或主办方核实"
+       ],
+       "payload": {
+        "query": "剪纸是什么",
+        "totalCandidates": 1,
+        "entries": [
+         {
+          "kbId": "kb-papercut",
+          "kind": "heritage",
+          "topic": "剪纸",
+          "title": "剪纸是什么",
+          "content": "剪纸是用剪刀或刻刀在纸上剪刻花纹的民间艺术，窗花、喜花、门笺都是它的形式。常见题材有花鸟、人物、吉祥图案，逢年过节贴在窗上、门上。剪纸已于 2006 年列入第一批国家级非物质文化遗产代表性项目名录。",
+          "regions": [
+           "全国"
+          ],
+          "source": {
+           "type": "NATIONAL_HERITAGE_LIST",
+           "title": "国家级非物质文化遗产代表性项目名录",
+           "org": "文化和旅游部",
+           "note": "批次与列入年份可在中国非物质文化遗产网核对"
+          }
+         }
+        ]
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "唔该是什么意思",
+   "note": "老人在说方言 → 认出来并解释",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-d73aac",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "粤语（广东话）里几个常听到的说法：「食饭」= 吃饭；「唔该」= 谢谢 / 劳驾（麻烦别人时用）；「得闲」= 有空；「靓」= 漂亮、好；「唔使」= 不用。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "culture-knowledge-abd3f3b28900",
+       "type": "culture.knowledge_answer",
+       "schemaVersion": "1.0",
+       "title": "非遗与地方文化资料",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "FOLK_COMMON_SENSE",
+         "title": "民间常识性说法",
+         "org": "非遗传承人口述 / 地方民俗通识",
+         "note": "属民间通行说法，具体细节以当地传承人说明为准",
+         "id": "dl-cantonese",
+         "title_zh": "粤语常用说法"
+        }
+       ],
+       "pendingChecks": [
+        "资料为本地整理的常识条目，具体细节以官方名录和当地传承人说明为准",
+        "涉及具体活动时间、地点、费用时，需向场馆或主办方核实"
+       ],
+       "payload": {
+        "query": "唔该是什么意思",
+        "totalCandidates": 1,
+        "entries": [
+         {
+          "kbId": "dl-cantonese",
+          "kind": "dialect",
+          "topic": "粤语",
+          "title": "粤语常用说法",
+          "content": "粤语（广东话）里几个常听到的说法：「食饭」= 吃饭；「唔该」= 谢谢 / 劳驾（麻烦别人时用）；「得闲」= 有空；「靓」= 漂亮、好；「唔使」= 不用。",
+          "regions": [
+           "广东",
+           "香港",
+           "澳门"
+          ],
+          "source": {
+           "type": "FOLK_COMMON_SENSE",
+           "title": "民间常识性说法",
+           "org": "非遗传承人口述 / 地方民俗通识",
+           "note": "属民间通行说法，具体细节以当地传承人说明为准"
+          }
+         }
+        ]
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "景泰蓝怎么烧制",
+   "note": "库里没有 → 直说没有，不编",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-79f5f4",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "这个我这儿没有现成资料，不好瞎说。要不我帮您问问社区或者文化馆的人？",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "culture-knowledge-15eba33f7c93",
+       "type": "culture.knowledge_answer",
+       "schemaVersion": "1.0",
+       "title": "这次没查到相关资料",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [],
+       "pendingChecks": [
+        "资料为本地整理的常识条目，具体细节以官方名录和当地传承人说明为准",
+        "涉及具体活动时间、地点、费用时，需向场馆或主办方核实"
+       ],
+       "payload": {
+        "query": "景泰蓝怎么烧制",
+        "totalCandidates": 0,
+        "entries": []
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "我会剪纸，愿意教大家",
+   "note": "在登记技能 → 生成待审核的技能卡",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-ebdc61",
+     "intent": "ability",
+     "domains": [
+      "ability"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "您会剪纸，这个记下来了。我先帮您报给社区，等他们核实过就能挂出去。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "ability-skill-9d743b1f23fa",
+       "type": "ability.skill_registration",
+       "schemaVersion": "1.0",
+       "title": "技能登记：剪纸（等社区审核）",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "USER_MESSAGE",
+         "id": "",
+         "note": "由老人本人口述整理，未经社区核实"
+        }
+       ],
+       "pendingChecks": [
+        "技能真实性由社区或平台审核，A3 不代替审核通过",
+        "实际服务时长以打卡记录为准，A3 不计算、不增加时长",
+        "匹配结果只是推荐，不承诺一定有人报名"
+       ],
+       "payload": {
+        "skill": {
+         "skillId": "skill-05e8ed76f053",
+         "skillName": "剪纸",
+         "category": "纸艺",
+         "willingness": "TEACH_PUBLIC",
+         "willingnessLabel": "愿意公开教",
+         "weeklySlots": 1,
+         "note": "",
+         "state": "SUBMITTED"
+        },
+        "nextAction": {
+         "state": "SUBMITTED",
+         "stageLabel": "等社区审核",
+         "todo": "社区或 P2 审核技能真实性",
+         "owner": "P2",
+         "a3CanAdvance": false
+        }
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "帮我看看血压高不高",
+   "note": "不归 A3 管的领域",
+   "status": 503,
+   "body": {
+    "code": "CAPABILITY_UNAVAILABLE",
+    "message": "「health」领域归其他智能体负责，A3 当前只接入文化领域",
+    "data": null
+   }
+  }
+ ],
+ "review": [
+  {
+   "label": "没有同类记忆",
+   "note": "库里没找到同 key 的，建议新增",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-0fb335",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "这条我记下来了，等您点个头就存进您的偏好里，以后不用再重复说。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "memory-review-0ff0ab284213",
+       "type": "MEMORY_REVIEW",
+       "schemaVersion": "1.0",
+       "title": "建议新增一条长期偏好",
+       "businessRef": null,
+       "availability": "NEEDS_VERIFICATION",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "MEMORY_CANDIDATE",
+         "id": "cand-001",
+         "version": 1
+        }
+       ],
+       "pendingChecks": [
+        "建议基于当前可见记忆计算，P2 写入前需再次校验候选与审核版本",
+        "需老人本人确认后才成为长期记忆，A3 不代替老人决定",
+        "A3 不生成确认号，确认由 A1 准备、P2 执行"
+       ],
+       "payload": {
+        "candidateId": "cand-001",
+        "candidateVersion": 1,
+        "reviewId": "review-aa76f971-b65d-455a-a226-6391501ef4c7",
+        "reviewVersion": 1,
+        "recommendation": "ADD",
+        "conflictMemoryRefs": [],
+        "proposedDomains": [
+         "culture"
+        ],
+        "needsUserConfirmation": true,
+        "explanation": "现有记忆中未发现同 key 的有效项，建议新增；仍需老人本人确认后才成为长期记忆。"
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "label": "已有完全一样",
+   "note": "内容、取值、领域都一样，不用重复记",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-d02351",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "这条您以前说过，我这儿已经有了，就不重复记了。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "memory-review-31c01610dd17",
+       "type": "MEMORY_REVIEW",
+       "schemaVersion": "1.0",
+       "title": "建议保留原记录，不重复新增",
+       "businessRef": null,
+       "availability": "NEEDS_VERIFICATION",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "MEMORY_CANDIDATE",
+         "id": "cand-001",
+         "version": 1
+        }
+       ],
+       "pendingChecks": [
+        "建议基于当前可见记忆计算，P2 写入前需再次校验候选与审核版本",
+        "需老人本人确认后才成为长期记忆，A3 不代替老人决定",
+        "A3 不生成确认号，确认由 A1 准备、P2 执行"
+       ],
+       "payload": {
+        "candidateId": "cand-001",
+        "candidateVersion": 1,
+        "reviewId": "review-97c55a8d-33f6-4734-a310-59cd975e1a7f",
+        "reviewVersion": 1,
+        "recommendation": "KEEP",
+        "conflictMemoryRefs": [
+         {
+          "memoryId": "m-1",
+          "version": 2
+         }
+        ],
+        "proposedDomains": [
+         "culture"
+        ],
+        "needsUserConfirmation": false,
+        "explanation": "与已有记忆 m-1 内容一致，建议保留原记录，不重复新增。"
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": [
+      {
+       "memoryId": "m-1",
+       "version": 2
+      }
+     ]
+    }
+   }
+  },
+  {
+   "label": "已有但内容不同",
+   "note": "同 key 内容变了，建议替换",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-6d2ac0",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "这条和您之前说的不太一样了，我按新的记。旧的就不用了，您看行吗？",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "memory-review-a50338459945",
+       "type": "MEMORY_REVIEW",
+       "schemaVersion": "1.0",
+       "title": "建议替换原有偏好",
+       "businessRef": null,
+       "availability": "NEEDS_VERIFICATION",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "MEMORY_CANDIDATE",
+         "id": "cand-001",
+         "version": 1
+        }
+       ],
+       "pendingChecks": [
+        "建议基于当前可见记忆计算，P2 写入前需再次校验候选与审核版本",
+        "需老人本人确认后才成为长期记忆，A3 不代替老人决定",
+        "A3 不生成确认号，确认由 A1 准备、P2 执行"
+       ],
+       "payload": {
+        "candidateId": "cand-001",
+        "candidateVersion": 1,
+        "reviewId": "review-68d4b214-bdb7-4e31-ad79-25de025d0517",
+        "reviewVersion": 1,
+        "recommendation": "REPLACE",
+        "conflictMemoryRefs": [
+         {
+          "memoryId": "m-1",
+          "version": 2
+         }
+        ],
+        "proposedDomains": [
+         "culture"
+        ],
+        "needsUserConfirmation": true,
+        "explanation": "与已有记忆 m-1 是同一类偏好但内容不同，建议替换为新内容；旧版本标记为已取代，不能继续作为当前偏好返回。"
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": [
+      {
+       "memoryId": "m-1",
+       "version": 2
+      }
+     ]
+    }
+   }
+  },
+  {
+   "label": "已有且领域更宽",
+   "note": "内容一样但领域变宽，要合并并重新确认",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-21f06b",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "这条和之前记的是一回事，合在一起就行。不过范围变大了，还得您再点个头。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "memory-review-5deb04410a01",
+       "type": "MEMORY_REVIEW",
+       "schemaVersion": "1.0",
+       "title": "建议与已有记忆合并",
+       "businessRef": null,
+       "availability": "NEEDS_VERIFICATION",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "MEMORY_CANDIDATE",
+         "id": "cand-001",
+         "version": 1
+        }
+       ],
+       "pendingChecks": [
+        "建议基于当前可见记忆计算，P2 写入前需再次校验候选与审核版本",
+        "需老人本人确认后才成为长期记忆，A3 不代替老人决定",
+        "A3 不生成确认号，确认由 A1 准备、P2 执行"
+       ],
+       "payload": {
+        "candidateId": "cand-001",
+        "candidateVersion": 1,
+        "reviewId": "review-99d8cc5c-f114-481f-94c1-9e3f137e2c87",
+        "reviewVersion": 1,
+        "recommendation": "MERGE",
+        "conflictMemoryRefs": [
+         {
+          "memoryId": "m-9",
+          "version": 1
+         }
+        ],
+        "proposedDomains": [
+         "culture",
+         "health"
+        ],
+        "needsUserConfirmation": true,
+        "explanation": "内容与 m-9 一致，但适用领域不同，建议合并为 culture/health；扩大适用范围必须重新经老人确认。"
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": [
+      {
+       "memoryId": "m-9",
+       "version": 1
+      }
+     ]
+    }
+   }
+  },
+  {
+   "label": "敏感但没同意",
+   "note": "健康类敏感信息，没同意不存",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-75bcbe",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "这条涉及比较私密的事，我得先问清楚您愿不愿意让我记，没您同意我不存。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "memory-review-6fac3ee13ae8",
+       "type": "MEMORY_REVIEW",
+       "schemaVersion": "1.0",
+       "title": "建议不保存（需本人明确同意）",
+       "businessRef": null,
+       "availability": "NEEDS_VERIFICATION",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "MEMORY_CANDIDATE",
+         "id": "cand-001",
+         "version": 1
+        }
+       ],
+       "pendingChecks": [
+        "建议基于当前可见记忆计算，P2 写入前需再次校验候选与审核版本",
+        "需老人本人确认后才成为长期记忆，A3 不代替老人决定",
+        "A3 不生成确认号，确认由 A1 准备、P2 执行"
+       ],
+       "payload": {
+        "candidateId": "cand-001",
+        "candidateVersion": 1,
+        "reviewId": "review-0c5bb8f7-a516-4367-bcc0-9a996c2c5928",
+        "reviewVersion": 1,
+        "recommendation": "REJECT",
+        "conflictMemoryRefs": [],
+        "proposedDomains": [
+         "culture"
+        ],
+        "needsUserConfirmation": false,
+        "explanation": "这条内容被判定为敏感。按 v3 第八节，健康等敏感记忆必须单独明确同意保存及使用范围，不能默认跨领域共享，因此本次不生成有效记忆。"
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "label": "读不到记忆库",
+   "note": "问不到 ≠ 没有，必须报错",
+   "status": 503,
+   "body": {
+    "code": "CAPABILITY_UNAVAILABLE",
+    "message": "无法读取老人已有记忆，不能判断这条候选是否与现有偏好重复。此时给建议可能造成重复写入，因此暂不受理。",
+    "data": null
+   }
+  }
+ ],
+ "search": [
+  {
+   "label": "有匹配",
+   "note": "正常给结果，敏感项和已取代的都被过滤掉",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "readStatus": "AVAILABLE",
+     "memoryRevision": 12,
+     "authorizationRevision": 4,
+     "retrievedAt": "2026-11-09T08:05:02Z",
+     "items": [
+      {
+       "memoryId": "memory-004",
+       "version": 1,
+       "category": "LONG_TERM_PREFERENCE",
+       "key": "culture.interests",
+       "content": "喜欢剪纸和刺绣",
+       "value": null,
+       "domains": [
+        "culture"
+       ],
+       "sensitivity": "GENERAL",
+       "state": "ACTIVE",
+       "sourceRefs": [],
+       "confirmedAt": null,
+       "updatedAt": "2026-10-25T02:00:00Z",
+       "expiresAt": null
+      },
+      {
+       "memoryId": "memory-001",
+       "version": 2,
+       "category": "LONG_TERM_PREFERENCE",
+       "key": "activity.preferredDurationMin",
+       "content": "平时更喜欢一小时以内的文化活动",
+       "value": 60,
+       "domains": [
+        "tourism",
+        "culture"
+       ],
+       "sensitivity": "GENERAL",
+       "state": "ACTIVE",
+       "sourceRefs": [],
+       "confirmedAt": null,
+       "updatedAt": "2026-10-28T02:00:00Z",
+       "expiresAt": null
+      }
+     ],
+     "returnedContentChars": 22,
+     "truncated": false
+    }
+   },
+   "args": {
+    "purpose": "为当前老人安排短时文化活动",
+    "query": "剪纸 步行时长",
+    "domains": [
+     "culture",
+     "tourism"
+    ],
+    "limit": 5
+   },
+   "auth": [
+    "culture",
+    "tourism"
+   ],
+   "available": true
+  },
+  {
+   "label": "确实没有",
+   "note": "查过了，库里真的有没这回事",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "readStatus": "EMPTY",
+     "memoryRevision": 12,
+     "authorizationRevision": 4,
+     "retrievedAt": "2026-11-09T08:05:02Z",
+     "items": [],
+     "returnedContentChars": 0,
+     "truncated": false
+    }
+   },
+   "args": {
+    "purpose": "查探戈课程",
+    "query": "探戈",
+    "domains": [
+     "culture"
+    ]
+   },
+   "auth": [
+    "culture",
+    "tourism"
+   ],
+   "available": true
+  },
+  {
+   "label": "越权请求",
+   "note": "请求了没授权的领域，直接拒",
+   "status": 403,
+   "body": {
+    "code": "FORBIDDEN",
+    "message": "请求的领域不在本任务授权范围内：health",
+    "data": null
+   },
+   "args": {
+    "purpose": "查健康",
+    "query": "血压",
+    "domains": [
+     "health"
+    ]
+   },
+   "auth": [
+    "tourism"
+   ],
+   "available": true
+  },
+  {
+   "label": "服务不可用",
+   "note": "检索服务连不上，不能说成没偏好",
+   "status": 503,
+   "body": {
+    "code": "CAPABILITY_UNAVAILABLE",
+    "message": "检索服务暂时不可用，无法确认是否存在相关记忆",
+    "data": null
+   },
+   "args": {
+    "purpose": "查剪纸",
+    "query": "剪纸",
+    "domains": [
+     "culture"
+    ]
+   },
+   "auth": [
+    "culture"
+   ],
+   "available": false
+  }
+ ],
+ "memories": [
+  {
+   "memoryId": "memory-001",
+   "version": 2,
+   "category": "LONG_TERM_PREFERENCE",
+   "key": "activity.preferredDurationMin",
+   "content": "平时更喜欢一小时以内的文化活动",
+   "value": 60,
+   "domains": [
+    "tourism",
+    "culture"
+   ],
+   "sensitivity": "GENERAL",
+   "state": "ACTIVE",
+   "updatedAt": "2026-10-28T02:00:00Z"
+  },
+  {
+   "memoryId": "memory-002",
+   "version": 1,
+   "category": "LONG_TERM_PREFERENCE",
+   "key": "mobility.avoidSteps",
+   "content": "尽量避开台阶路线",
+   "value": true,
+   "domains": [
+    "tourism"
+   ],
+   "sensitivity": "GENERAL",
+   "state": "ACTIVE",
+   "updatedAt": "2026-10-27T02:00:00Z"
+  },
+  {
+   "memoryId": "memory-003",
+   "version": 1,
+   "category": "LONG_TERM_PREFERENCE",
+   "key": "health.bloodPressure",
+   "content": "有高血压，需要少盐饮食",
+   "value": null,
+   "domains": [
+    "health"
+   ],
+   "sensitivity": "SENSITIVE",
+   "state": "ACTIVE",
+   "updatedAt": "2026-10-26T02:00:00Z"
+  },
+  {
+   "memoryId": "memory-005",
+   "version": 1,
+   "category": "LONG_TERM_PREFERENCE",
+   "key": "mobility.avoidSteps",
+   "content": "旧的不要台阶（已被取代）",
+   "value": true,
+   "domains": [
+    "tourism"
+   ],
+   "sensitivity": "GENERAL",
+   "state": "SUPERSEDED",
+   "updatedAt": "2026-10-20T02:00:00Z"
+  },
+  {
+   "memoryId": "memory-004",
+   "version": 1,
+   "category": "LONG_TERM_PREFERENCE",
+   "key": "culture.interests",
+   "content": "喜欢剪纸和刺绣",
+   "value": null,
+   "domains": [
+    "culture"
+   ],
+   "sensitivity": "GENERAL",
+   "state": "ACTIVE",
+   "updatedAt": "2026-10-25T02:00:00Z"
+  }
+ ]
+}</script>
+<script>
+const SNAPSHOT = JSON.parse(document.getElementById('snapshot').textContent);
+const $ = id => document.getElementById(id);
+let ONLINE = false;
+
+function esc(s){return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function raw(req, res){
+  $('rawReq').textContent = req ? JSON.stringify(req, null, 2) : '—';
+  $('rawRes').textContent = res ? JSON.stringify(res, null, 2) : '—';
+}
+
+function setMode(online, extra){
+  ONLINE = online;
+  $('mode').className = 'pill ' + (online ? 'on' : 'off');
+  $('modeText').textContent = online ? '在线 · 真实调用本地服务' : '离线 · 用真实运行快照';
+  $('hint').textContent = online
+    ? '所有操作都会真的发 HTTP 请求'
+    : (extra || '服务没起，下面是上次真实运行抓下来的结果，不是编的');
+}
+
+async function check(){
+  const base = $('base').value.replace(/\/$/, '');
+  try{
+    const r = await fetch(base + '/health', {cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    setMode(true);
+    $('hint').textContent = `服务 ${j.data.status} · 协议 ${j.data.protocolVersion} · 审核 ${j.data.capabilities.memoryCandidateReview ? '已接' : '未接'}`;
+  }catch(e){
+    setMode(false);
+  }
+}
+
+async function api(path, body){
+  const base = $('base').value.replace(/\/$/, '');
+  raw(body, null);
+  const r = await fetch(base + path, {
+    method:'POST',
+    headers:{'Content-Type':'application/json; charset=utf-8'},
+    body: JSON.stringify(body)
+  });
+  const j = await r.json();
+  raw(body, j);
+  return {status:r.status, body:j};
+}
+
+/* ---------- 构造请求（和 Python 端 _sample_body 保持同一形状） ---------- */
+function invocation(text, id){
+  const dl = new Date(Date.now() + 3600e3).toISOString().replace(/\.\d+Z$/, 'Z');
+  return {
+    protocolVersion:'3.0', userId:'u100', conversationId:'conv-001', messageId:'msg-001',
+    task:{id:'child-003', parentTaskId:'root-001', version:2, attempt:1,
+          invocationId:id, deadlineAt:dl},
+    input:{text, attachmentIds:[]},
+    context:{businessRefs:[], history:[], completedEffects:[], reason:'USER_MESSAGE',
+             candidateTasks:[], dependencyResults:[], confirmationResults:[],
+             actionLedger:[], planSteps:[],
+             readSet:{memoryRevision:7, authorizationRevision:3, provenanceRefs:[]},
+             inputResponse:null, pendingInputRequests:[]},
+    capabilityToken:'DEMO-TOKEN-NOT-A-REAL-CREDENTIAL'
+  };
+}
+
+function reviewInvocation(cand, id){
+  const b = invocation('审核这条候选', id);
+  b.context.reason = 'CHILDREN_FINISHED';
+  b.context.dependencyResults = [{
+    taskId:'child-010', parentTaskId:'root-001', targetAgent:'a2', domain:'culture',
+    required:true, version:1, status:'SUCCEEDED',
+    reply:{text:'候选已生成', speechRate:0.9, audioUrl:null},
+    results:[{resultId:'cand-result-1', type:'MEMORY_CANDIDATE', schemaVersion:'1.0',
+      title:'候选', businessRef:null, availability:'DEMO',
+      generatedAt:'2026-11-04T00:00:00Z', sources:[], pendingChecks:[], payload:cand}],
+    inputRequest:null, confirmationIds:[], effectIds:[], error:null,
+    completedAt:'2026-11-04T00:00:00Z'
+  }];
+  return b;
+}
+
+const uid = () => 'invoke-' + Math.random().toString(16).slice(2,10);
+
+/* ---------- 文化课 ---------- */
+function renderCulture(entry){
+  const out = $('cultureOut');
+  const {status, body} = entry;
+  let html = `<div class="say"><div class="who r">老人说</div>
+    <div class="bubble old">${esc(entry.text)}</div></div>`;
+
+  if(status !== 200){
+    out.innerHTML = html + `<div class="err-box"><b>${status} ${esc(body.code)}</b><br>${esc(body.message)}</div>
+      <div class="note">不在 A3 负责的领域里，就明确说不接 —— 让 A2 去答，比给一句错的强。</div>`;
+    return;
+  }
+  const d = body.data;
+  html += `<div class="who">系统答</div><div class="bubble bot">${esc(d.reply.text)}</div>`;
+
+  const tags = [`<span class="tag ${d.control.next==='COMPLETE'?'ok':'info'}">${d.control.next}</span>`];
+  if(d.control.outcome) tags.push(`<span class="tag mute">${d.control.outcome}</span>`);
+  tags.push(`<span class="tag mute">intent: ${d.intent}</span>`);
+  html += `<div style="margin-top:12px">${tags.join('')}</div>`;
+
+  if(d.control.next === 'WAIT_INPUT' && d.control.inputRequest){
+    const q = d.control.inputRequest;
+    html += `<div class="note">信息不够，问一次，不硬猜。问题号是程序生成的 UUID v4：<code>${esc(q.inputRequestId)}</code></div>
+      <div style="margin-top:8px">${q.options.map(o=>`<span class="opt">${esc(o.label)}</span>`).join('')}</div>`;
+  }
+
+  const card = (d.results || [])[0];
+  if(card && (card.payload.courses || []).length === 0 && !card.payload.entries && !card.payload.skill){
+    html += `<div class="note">卡片：${esc(card.title)} · availability = <b>${esc(card.availability)}</b></div>
+      <div class="empty" style="padding:16px 0">这张卡片是空的 —— 那就直说没有，不拿不相关的凑数</div>`;
+  }
+  if(card && card.payload.entries){
+    const entries = card.payload.entries;
+    html += `<div class="note">卡片：${esc(card.title)} · availability = <b>${esc(card.availability)}</b> · 条目 ${entries.length} 条</div>`;
+    if(!entries.length){
+      html += `<div class="empty" style="padding:16px 0">库里没有 → 直说没有，绝不顺着话头编一段</div>`;
+    }
+    entries.forEach(e=>{
+      html += `<div class="course">
+        <div class="t">${esc(e.title)}</div>
+        <div class="v">${esc(e.topic)} · ${esc((e.regions||[]).join(' / '))}</div>
+        <div style="margin-top:8px;font-size:14px">${esc(e.content)}</div>
+        <div class="why" style="color:#5F5E5A;margin-top:8px">来源：${esc(e.source.org)} · ${esc(e.source.title)}</div>
+      </div>`;
+    });
+  }
+  if(card && card.payload.skill){
+    const sk = card.payload.skill, na = card.payload.nextAction || {};
+    html += `<div class="note">卡片：${esc(card.title)} · availability = <b>${esc(card.availability)}</b></div>
+      <div class="course">
+        <div class="t">${esc(sk.skillName)} · ${esc(sk.willingnessLabel)}</div>
+        <div class="facts">
+          <span>每周 <b>${sk.weeklySlots}</b> 个时段</span>
+          <span>状态 <b>${esc(sk.state)}</b></span>
+        </div>
+        <div class="why">下一步：${esc(na.stageLabel)}，该 <b>${esc(na.owner)}</b> 做 —— ${esc(na.todo)}</div>
+        <div class="why" style="color:#B45309">A3 能不能自己推进：${na.a3CanAdvance ? '能' : '不能，审核必须社区/平台做'}</div>
+      </div>`;
+  }
+  const items = (card && card.payload.courses) || [];
+  if(card && items.length){
+    html += `<div class="note">卡片：${esc(card.title)} · availability = <b>${esc(card.availability)}</b> · businessRef = <b>${card.businessRef===null?'null':'有'}</b></div>`;
+    items.forEach(c=>{
+      const s = c.nextSession || {};
+      html += `<div class="course">
+        <div class="t">${esc(c.title)}</div>
+        <div class="v">${esc(c.venue)}</div>
+        <div class="facts">
+          <span>走路 <b>${c.walkMinutes}</b> 分钟</span>
+          <span>时长 <b>${c.durationMin}</b> 分钟</span>
+          <span><b>${esc(s.weekdayLabel||'')} ${esc((s.startAt||'').slice(11,16))}</b></span>
+          <span>名额 <b>${c.seatsLeft}</b></span>
+          <span>${c.hasSteps ? '<b style="color:#B45309">要爬台阶</b>' : '无台阶'}</span>
+        </div>
+        ${(c.reasons||[]).length ? `<div class="why">为什么排这个位置：${c.reasons.map(esc).join(' · ')}</div>` : ''}
+      </div>`;
+    });
+  }
+  out.innerHTML = html;
+}
+
+/* ---------- 记忆审核 ---------- */
+const REC_LABEL = {ADD:'新增', KEEP:'保留', MERGE:'合并', REPLACE:'替换', REJECT:'拒绝'};
+function renderReview(entry){
+  const out = $('reviewOut');
+  const {status, body} = entry;
+  if(status !== 200){
+    out.innerHTML = `<div class="err-box"><b>${status} ${esc(body.code)}</b><br>${esc(body.message)}</div>
+      <div class="note">这一条是全场最值钱的：读不到记忆库就报错，<b>不蒙一个「建议新增」</b>。
+      蒙错了会让同一件事存两遍，比不答更糟。</div>`;
+    return;
+  }
+  const d = body.data;
+  const p = d.results[0].payload;
+  const cls = p.recommendation === 'REJECT' ? 'warn' : (p.recommendation === 'KEEP' ? 'mute' : 'ok');
+
+  let html = `<div class="big"><span class="tag ${cls}" style="font-size:18px;padding:6px 14px">${esc(p.recommendation)} ${REC_LABEL[p.recommendation]||''}</span></div>
+    <div class="kv">
+      <span>要不要老人点头：<b>${p.needsUserConfirmation ? '要' : '不要'}</b></span>
+      <span>候选：<code>${esc(p.candidateId)}</code> v${p.candidateVersion}</span>
+      <span>审核号：<code>${esc(p.reviewId).slice(0,18)}…</code></span>
+    </div>
+    <div class="say" style="margin-top:14px"><div class="who">系统对老人说</div>
+    <div class="bubble bot">${esc(d.reply.text)}</div></div>
+    <div class="note">${esc(p.explanation)}</div>`;
+
+  if((p.conflictMemoryRefs||[]).length){
+    html += `<div class="note">撞上的已有记忆：${p.conflictMemoryRefs.map(r=>`<code>${esc(r.memoryId)}</code> v${r.version}`).join('、')}
+      —— 这些也登记进了 usedMemoryRefs，P2 可追溯依据。</div>`;
+  }
+
+  html += `<h2 style="margin:18px 0 0;font-size:13px;font-weight:600;color:var(--muted)">九字段（协议要求正好九个）</h2>
+    <table>${Object.entries(p).map(([k,v])=>{
+      let val = Array.isArray(v) ? (v.length ? v.map(x=>typeof x==='object'?JSON.stringify(x):x).join(', ') : '（空）') : String(v);
+      if(k==='explanation') val = val.slice(0,90) + (val.length>90?'…':'');
+      return `<tr><th>${esc(k)}</th><td><code>${esc(val)}</code></td></tr>`;
+    }).join('')}</table>
+    <div class="note">确认号 confirmationIds = <code>[${(d.confirmationIds||[]).join(',')}]</code> —— A3 不生成确认号，确认由 A1 准备、P2 执行。</div>`;
+  out.innerHTML = html;
+}
+
+/* ---------- 检索四态 ---------- */
+function renderSearch(entry){
+  const out = $('searchOut');
+  const {status, body} = entry;
+  let head = '';
+  if(status === 200){
+    const d = body.data;
+    const hit = d.readStatus === 'AVAILABLE';
+    head = `<div class="big"><span class="tag ${hit?'ok':'mute'}" style="font-size:17px;padding:6px 14px">200 · ${esc(d.readStatus)}</span></div>
+      <div class="kv"><span>给了 <b>${d.items.length}</b> 条</span>
+      <span>实用 <b>${d.returnedContentChars}</b> 字</span>
+      <span>truncated：<b>${d.truncated}</b></span>
+      <span>memoryRevision：<b>${d.memoryRevision}</b></span></div>`;
+  }else{
+    const cls = status === 403 ? 'warn' : 'warn';
+    head = `<div class="big"><span class="tag ${cls}" style="font-size:17px;padding:6px 14px">${status} · ${esc(body.code)}</span></div>
+      <div class="err-box" style="margin-top:10px">${esc(body.message)}</div>`;
+  }
+
+  const returned = new Set(((body.data && body.data.items) || []).map(i=>i.memoryId));
+  let list = '';
+  (SNAPSHOT.memories || []).forEach(m=>{
+    const hit = returned.has(m.memoryId);
+    const drop = hit ? '' : (m.state !== 'ACTIVE' ? `state=${m.state}，不返回`
+                      : (m.sensitivity === 'SENSITIVE' ? '敏感且未授权，不返回' : '关键词没命中，不返回'));
+    list += `<div class="mem ${hit?'hit':'drop'}">
+      <div><code>${esc(m.memoryId)}</code> ${hit?'<span class="tag ok">返回</span>':'<span class="tag mute">过滤</span>'}
+      ${hit?'':`<span style="font-size:12px;color:var(--muted)">${esc(drop)}</span>`}</div>
+      <div>${esc(m.content)}</div>
+      <div class="k">${esc(m.key)} · ${esc(m.domains.join('/'))} · ${esc(m.sensitivity)} · ${esc(m.state)}</div>
+    </div>`;
+  });
+
+  out.innerHTML = head + `<div class="note">${esc(entry.note)}</div>
+    <h2 style="margin:16px 0 0;font-size:13px;font-weight:600;color:var(--muted)">库里这 5 条记忆，谁被返回、谁被挡住</h2>
+    ${list}`;
+}
+
+/* ---------- 场景按钮 ---------- */
+function buildScene(containerId, items, onPick, labelOf){
+  const box = $(containerId);
+  box.innerHTML = '';
+  items.forEach((item, i)=>{
+    const b = document.createElement('button');
+    b.innerHTML = `${esc(labelOf(item))}<small>${esc(item.note || '')}</small>`;
+    b.onclick = ()=>{
+      [...box.children].forEach(c=>c.classList.remove('on'));
+      b.classList.add('on');
+      onPick(item, i);
+    };
+    box.appendChild(b);
+  });
+  if(box.firstChild) box.firstChild.click();
+}
+
+async function pickCulture(item, i){
+  let entry = item;
+  if(ONLINE){
+    try{
+      const {status, body} = await api('/internal/v3/messages', invocation(item.text, uid()));
+      entry = {text:item.text, note:item.note, status, body};
+    }catch(e){
+      setMode(false, '调用失败（' + e.message + '），已切回快照');
+      entry = item;
+    }
+  }
+  renderCulture(entry);
+}
+
+const CAND = {candidateId:'cand-001', candidateVersion:1, category:'LONG_TERM_PREFERENCE',
+              key:'culture.interests', content:'喜欢剪纸和刺绣',
+              domains:['culture'], sensitivity:'GENERAL'};
+const REVIEW_CANDS = [CAND, CAND, CAND, CAND,
+                      Object.assign({}, CAND, {sensitivity:'SENSITIVE'}), CAND];
+
+async function pickReview(item, i){
+  let entry = item;
+  if(ONLINE){
+    try{
+      const {status, body} = await api('/internal/v3/messages', reviewInvocation(REVIEW_CANDS[i], uid()));
+      entry = {label:item.label, note:item.note, status, body};
+    }catch(e){
+      setMode(false, '调用失败（' + e.message + '），已切回快照');
+      entry = item;
+    }
+  }
+  renderReview(entry);
+}
+
+async function pickSearch(item){
+  let entry = item;
+  if(ONLINE){
+    try{
+      const {status, body} = await api('/internal/demo/memory/search', {
+        args:item.args, memories:SNAPSHOT.memories,
+        authorizedDomains:item.auth, storeAvailable:item.available,
+        memoryRevision:12, authorizationRevision:4
+      });
+      entry = Object.assign({}, item, {status, body});
+    }catch(e){
+      setMode(false, '调用失败（' + e.message + '），已切回快照');
+      entry = item;
+    }
+  }
+  renderSearch(entry);
+}
+
+/* ---------- 初始化 ---------- */
+document.querySelectorAll('nav button').forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('section').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    $('tab-' + b.dataset.tab).classList.add('active');
+  };
+});
+$('recheck').onclick = check;
+
+/* 先探活再渲染：否则首屏会在"还不知道在不在线"的时候就把快照画上去，
+   等 check 回来又变成在线，状态和内容对不上。 */
+(async function init(){
+  await check();
+  buildScene('cultureScen', SNAPSHOT.culture, pickCulture, x=>x.text);
+  buildScene('reviewScen', SNAPSHOT.review, pickReview, x=>x.label);
+  buildScene('searchScen', SNAPSHOT.search, pickSearch, x=>x.label);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+
+.home-page button:focus-visible{outline:2px solid #006aff;outline-offset:3px;}
+.home-header-art{position:absolute;right:0;top:0;width:calc(var(--u)*340);height:calc(var(--u)*313);pointer-events:none;}
+.home-page .brand{height:calc(var(--u)*81);margin:0 calc(var(--u)*18) calc(var(--u)*25);gap:0;}
+.home-page .brand .home-brand{width:calc(var(--u)*243);height:calc(var(--u)*81);}
+.home-page .icon-button{width:calc(var(--u)*70);height:calc(var(--u)*70);}
+.home-page .icon-button image{width:calc(var(--u)*68);height:calc(var(--u)*62);}
+.home-page .greeting{font-size:calc(var(--u)*63);letter-spacing:0;font-weight:750;margin:0 calc(var(--u)*18) calc(var(--u)*10);height:calc(var(--u)*84);line-height:1.33;}
+.home-page .date{font-size:calc(var(--u)*31);margin:0 calc(var(--u)*18) calc(var(--u)*35);height:calc(var(--u)*42);gap:calc(var(--u)*8);}
+.home-page .date image{width:calc(var(--u)*26);height:calc(var(--u)*34);}
+.home-page .divider{margin:0 calc(var(--u)*9);}
+.home-page .askbar{height:calc(var(--u)*132);margin:0 calc(var(--u)*8);padding:calc(var(--u)*7);border-radius:calc(var(--u)*42);background:linear-gradient(105deg,#4e9eff 0%,#cee6ff 43%,#fff8df 70%,#ffe177 100%);gap:0;}
+.home-page .text-entry{height:100%;border-radius:calc(var(--u)*34) 0 0 calc(var(--u)*34);font-size:calc(var(--u)*32);font-weight:400;padding:0 calc(var(--u)*24);gap:calc(var(--u)*25);background:linear-gradient(90deg,#e1efff,#f8fbff);}
+.home-page .home-keyboard{width:calc(var(--u)*55);height:calc(var(--u)*45);}
+.home-page .voice{flex:none;width:calc(var(--u)*270);height:calc(var(--u)*105);align-self:center;border-radius:calc(var(--u)*60);font-size:calc(var(--u)*33);font-weight:500;padding:0;gap:calc(var(--u)*17);background:linear-gradient(100deg,#0068ff 65%,#056bf0 88%,#9d9a5a);}
+.home-page .voice image{width:calc(var(--u)*55);height:calc(var(--u)*65);filter:none;}
+.home-page .quick-asks{margin:calc(var(--u)*12) calc(var(--u)*17) calc(var(--u)*36);gap:calc(var(--u)*16);height:calc(var(--u)*81);}
+.home-page .quick-asks button{font-size:calc(var(--u)*29);border-radius:calc(var(--u)*20);padding:0;display:flex;align-items:center;justify-content:center;gap:calc(var(--u)*17);background:#e2efff;}
+.home-page .quick-asks button:last-child{background:#fff4dc;}.home-page .quick-asks text{font-size:calc(var(--u)*40);font-weight:400;line-height:1;margin:0;color:#405b80;}
+.home-page .panel{padding:calc(var(--u)*26);margin:0 0 calc(var(--u)*20);border-radius:calc(var(--u)*29);box-shadow:0 calc(var(--u)*8) calc(var(--u)*30) #c9e2fb33;background:#fff;}
+.home-page .shortcuts{height:calc(var(--u)*197);padding:calc(var(--u)*28) calc(var(--u)*4);margin-bottom:calc(var(--u)*21);}
+.home-page .shortcuts button{gap:calc(var(--u)*5);font-size:calc(var(--u)*33);font-weight:650;justify-content:center;}
+.home-page .shortcuts image{height:calc(var(--u)*86);width:calc(var(--u)*91);object-fit:contain;}
+.home-page .shortcuts button+button:before{border:0!important;background:#e6eef9;left:0;top:calc(var(--u)*18);height:calc(var(--u)*108);width:calc(var(--u)*2);}
+.home-page .section-head{height:calc(var(--u)*53);margin-bottom:calc(var(--u)*16);gap:0;}
+.home-page .section-title{font-size:calc(var(--u)*37);font-weight:750;line-height:1.4;}
+.home-page .section-title:before{width:calc(var(--u)*11);height:calc(var(--u)*40);border-radius:calc(var(--u)*8);margin-right:calc(var(--u)*17);vertical-align:calc(var(--u)*-5);}
+.home-page .link{font-size:calc(var(--u)*27);height:calc(var(--u)*44);min-height:0;line-height:calc(var(--u)*44);}
+.home-page .reminder{height:calc(var(--u)*125);min-height:0;padding:0;gap:calc(var(--u)*25);}
+.home-page .reminder+.reminder{border-top:1px solid #e5edf8;}
+.home-page .icon-disc{width:calc(var(--u)*86);height:calc(var(--u)*86);background:#edf5ff;}
+.home-page .icon-disc image{width:calc(var(--u)*59);height:calc(var(--u)*64);}
+.home-page .row-title{font-size:calc(var(--u)*30);font-weight:650;}
+.home-page .sub{font-size:calc(var(--u)*26);line-height:1.45;margin-top:calc(var(--u)*3);}
+.home-page .time{font-size:calc(var(--u)*28);margin-left:auto;}
+.home-page .reminder .outline{border:calc(var(--u)*2) solid #006aff!important;border-radius:calc(var(--u)*38);width:calc(var(--u)*142);height:calc(var(--u)*65);padding:0;line-height:calc(var(--u)*61);font-size:calc(var(--u)*29);font-weight:400;}
+.home-page .reminder .grow{flex:1;}
+.home-page .accented{border:calc(var(--u)*4) solid transparent;background:linear-gradient(white,white) padding-box,linear-gradient(115deg,#7bb7ff,#cce9ff 45%,#ffe9a0 80%) border-box;padding:calc(var(--u)*21);margin-top:calc(var(--u)*18);}
+.home-page .photo-grid{margin-top:calc(var(--u)*4);gap:calc(var(--u)*19);}
+.home-page .photo-card>image{height:calc(var(--u)*203);border-radius:calc(var(--u)*13);}
+.home-page .photo-label{font-size:calc(var(--u)*30);margin-top:calc(var(--u)*9);line-height:1.35;font-weight:650;align-items:center;}
+.home-page .photo-label text{font-size:calc(var(--u)*37);font-weight:400;}
+.home-page .photo-card .sub{font-size:calc(var(--u)*27);margin-top:calc(var(--u)*4);}
+.home-page .bottom-nav{height:calc(var(--u)*149 + env(safe-area-inset-bottom));padding:calc(var(--u)*15) 0 calc(var(--u)*12 + env(safe-area-inset-bottom));background:#fff;border-top:1px solid transparent;border-image:linear-gradient(90deg,#006aff,#ffe16c) 1;}
+.home-page .bottom-nav button{font-size:calc(var(--u)*27);gap:calc(var(--u)*3);min-height:0;padding:0;position:relative;z-index:0;}
+.home-page .nav-icon{width:calc(var(--u)*108);height:calc(var(--u)*65);background:none;}
+.home-page .nav-icon image{height:calc(var(--u)*57);width:calc(var(--u)*59);}
+.home-page .current:before{content:'';position:absolute;left:50%;transform:translateX(-50%);top:calc(var(--u)*-13);width:calc(var(--u)*111);height:calc(var(--u)*123);background:linear-gradient(110deg,#e0efff,#fff5d0);border-radius:50%;z-index:-1;}
+.home-page .large .row-title{font-size:calc(var(--u)*34);}
+
+.home-page .brand .icon-button image{visibility:hidden}.home-header-art{mask-image:linear-gradient(90deg,transparent,#000 22%);-webkit-mask-image:linear-gradient(90deg,transparent,#000 22%)}
+
+/* 从原始母版提取透明边缘，保留原图颜色消隐曲线。 */
+.home-page{padding-bottom:calc(var(--u)*157 + env(safe-area-inset-bottom));background-color:#f4f8fd;background-image:radial-gradient(ellipse 78% 80% at 2% 0%,#b9e0ff,transparent 85%),linear-gradient(180deg,#f1f8ff 0%,#fcfdfe 96%,#fff 100%);background-size:100% calc(var(--u)*555);background-repeat:no-repeat;}
+.home-page .askbar{height:calc(var(--u)*133);background: url('/static/home/ask-frame.png') center/100% 100% no-repeat;box-shadow:none;padding:calc(var(--u)*8);}
+.home-page .text-entry{background:linear-gradient(90deg,rgba(221,238,255,.91),rgba(255,255,255,.80));border-radius:calc(var(--u)*34) 0 0 calc(var(--u)*34);}
+.home-page .voice{position:relative;z-index:1;height:calc(var(--u)*105);box-shadow:calc(var(--u)*-10) 0 calc(var(--u)*22) rgba(102,174,255,.13);background:linear-gradient(100deg,#0066ff 0%,#0068ff 74%,rgba(1,110,245,.96) 86%,rgba(138,164,122,.8) 100%);}
+.home-page .quick-asks{position:relative;margin-top:calc(var(--u)*11);margin-bottom:calc(var(--u)*38);}
+.home-page .quick-asks::after{content:'';position:absolute;left:calc(var(--u)*-39);right:calc(var(--u)*-39);top:100%;height:calc(var(--u)*38);background:url('/static/home/section-transition.png') center/100% 100% no-repeat;pointer-events:none;}
+.home-page .accented{border:0;background:#fff url('/static/home/recommend-frame.png') center/100% 100% no-repeat;padding:calc(var(--u)*25);box-shadow:0 calc(var(--u)*7) calc(var(--u)*25) rgba(123,185,244,.06);}
+.home-page .bottom-nav{background:linear-gradient(180deg,rgba(255,255,255,.91),rgba(255,255,255,.98) 60%);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-image:linear-gradient(90deg,rgba(0,106,255,.8),rgba(150,203,255,.45) 46%,rgba(255,205,47,.75)) 1;box-shadow:0 calc(var(--u)*-7) calc(var(--u)*20) rgba(226,239,255,.25);}
+.home-page .current:before{top:calc(var(--u)*-13);background:linear-gradient(110deg,rgba(206,232,255,.72),rgba(255,239,181,.64));}
+
+.home-page .digital-human .dh-action{background:#006aff;color:#fff;font-size:17px;line-height:1.5;padding:12px;min-height:48px}.home-page .icon-button{position:relative}.unread-count{position:absolute;right:0;top:0;border-radius:12px;background:#006aff;color:white;font-size:12px;min-width:18px}.home-page.large .row-title,.home-page.large .sub,.home-page.large .dh-memory{font-size:18px!important}.home-page.font-huge .row-title,.home-page.font-huge .sub,.home-page.font-huge .dh-memory{font-size:20px!important}
+
+
+/* 首页专用：以用户 853 × 1844 母版为坐标，不影响其他四页。 */
+.home-page{--u:calc(min(100vw,540px) / 853);padding:calc(var(--u)*32) calc(var(--u)*22) calc(var(--u)*177);background:radial-gradient(ellipse 78% 24% at 2% 0%,#b9e0ff,transparent 85%),#f4f9ff;font-size:calc(var(--u)*32);line-height:1.5;min-height:100vh;}
+.home-page button,.home-page uni-button{border:0!important;outline:none;box-shadow:none;appearance:none;-webkit-appearance:none;box-sizing:border-box;}
+.home-page button::after,.home-page button::before,.home-page uni-button::after,.home-page uni-button::before{border:0!important;box-shadow:none!important;}
+
+/* 删除重复日期行后，输入区与数字人卡片之间的间距 */
+.home-page .askbar{margin-top:calc(var(--u)*18)}
+
+/* 首页头部：品牌行与右上角消息按钮（原本图标被 visibility:hidden 隐藏了） */
+.home-page .brand{display:flex;align-items:center;justify-content:space-between;}
+.home-page .brand .icon-button{width:calc(var(--u)*84);height:calc(var(--u)*84);border-radius:50%;background:rgba(255,255,255,.78);display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 calc(var(--u)*6) calc(var(--u)*18) rgba(64,132,214,.14);}
+.home-page .brand .icon-button image{visibility:visible;width:calc(var(--u)*46);height:calc(var(--u)*46);}
+.home-page .unread-count{position:absolute;top:calc(var(--u)*-2);right:calc(var(--u)*-2);min-width:calc(var(--u)*32);height:calc(var(--u)*32);line-height:calc(var(--u)*28);padding:0 calc(var(--u)*4);border-radius:calc(var(--u)*16);border:2px solid #fff;background:#ff4d4f;color:#fff;font-size:calc(var(--u)*20);text-align:center;box-sizing:border-box;}
+
+/* 右上角消息按钮：再放大一档，白底描边更清楚 */
+.home-page .brand .icon-button{width:calc(var(--u)*96);height:calc(var(--u)*96);background:#fff;border:1px solid #dbe9fb;box-shadow:0 calc(var(--u)*6) calc(var(--u)*18) rgba(64,132,214,.16);}
+.home-page .brand .icon-button image{width:calc(var(--u)*52);height:calc(var(--u)*52);}
+.home-page .unread-count{top:calc(var(--u)*-4);right:calc(var(--u)*-4);min-width:calc(var(--u)*34);height:calc(var(--u)*34);line-height:calc(var(--u)*30);font-size:calc(var(--u)*21);}
+
+/* 首页品牌：沿用原 logo 图标，文字改为「银龄智游」 */
+.home-page .brand .home-brand-mark{width:calc(var(--u)*72);height:calc(var(--u)*81);flex:none;}
+.home-page .brand .home-brand-name{font-size:calc(var(--u)*52);font-weight:800;color:#006aff;letter-spacing:calc(var(--u)*1);line-height:1;margin-left:calc(var(--u)*10);flex:none;}
+
+/* 消息按钮：去掉白底圆钮，只留铃铛；未读用蓝色圆点 */
+.home-page .brand .icon-button{width:calc(var(--u)*84);height:calc(var(--u)*84);background:transparent;border:0;box-shadow:none;border-radius:0;}
+.home-page .brand .icon-button image{width:calc(var(--u)*54);height:calc(var(--u)*54);}
+.home-page .unread-count{top:calc(var(--u)*10);right:calc(var(--u)*10);min-width:calc(var(--u)*18);width:calc(var(--u)*18);height:calc(var(--u)*18);line-height:calc(var(--u)*18);padding:0;border:0;border-radius:50%;background:#006aff;color:transparent;font-size:0;overflow:hidden;}

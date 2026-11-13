@@ -1,0 +1,7 @@
+/* 全局：只作用于 paper 页面（.paper-page 前缀），用于修 FlowShell 内部元素的作用域穿透问题。
+   uni-app 会给各页 <style src="./paper.css"> 加作用域，FlowShell 自己的标题/返回按钮不在页面作用域里，所以这几条必须全局声明。 */
+.flow.paper-page .flow-header{margin-bottom:calc(var(--u)*16)}
+.flow.paper-page .flow-header button{width:52px;min-width:52px;height:52px;min-height:52px;border-radius:50%;background:#ffffffb8;display:flex;align-items:center;justify-content:center}
+.flow.paper-page .flow-header button image{width:24px;height:24px}
+.flow.paper-page .flow-title{display:block;font-size:calc(var(--u)*var(--paper-scale,1)*56);line-height:1.6;font-weight:700;color:#071537}
+.flow.paper-page .flow-subtitle{display:block;font-size:calc(var(--u)*var(--paper-scale,1)*29);line-height:1.6;color:#4e648a}

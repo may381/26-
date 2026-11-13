@@ -1,0 +1,18 @@
+# Python 运行时产物
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# 密钥与环境（仅 .env.example 入库）
+.env
+*.env.local
+
+# 本地数据库与日志
+*.db
+*.sqlite
+*.log
+
+# 编辑器 / 系统
+.idea/
+.DS_Store

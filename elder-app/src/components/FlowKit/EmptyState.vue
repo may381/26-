@@ -1,0 +1,1 @@
+<script setup>defineProps({title:String})</script><template><view class="kit-empty"><image src="/static/outing/icons/file.svg"/><text>{{title}}</text><slot/></view></template>

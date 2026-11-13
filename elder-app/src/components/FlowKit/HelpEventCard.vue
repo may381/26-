@@ -1,0 +1,7 @@
+<script setup>
+import HelpProgress from './HelpProgress.vue'
+import SectionCard from './SectionCard.vue'
+import SectionTitle from './SectionTitle.vue'
+import {helpLabels} from '../app-state.js'
+defineProps({event:Object});defineEmits(['ack','progress','resolve'])
+</script><template><SectionCard><view class="kit-help-heading"><image src="/static/outing/staff.png"/><view><text class="kit-help-state">{{helpLabels[event.status]}}</text><text class="kit-secondary">{{event.status==='OPEN'?'等待工作人员接单':event.status==='ACKNOWLEDGED'?'已接单，请及时更新处理进度':'本次求助已处理完成'}}</text></view></view><SectionTitle title="处理进度"/><HelpProgress :event="event"/><SectionTitle title="本次求助"/><view class="kit-help-info"><image src="/static/outing/icons/file.svg"/><view><text class="kit-label">求助原因</text><text class="kit-secondary">{{event.reason}}</text></view></view><view class="kit-help-info"><image src="/static/outing/icons/pin.svg"/><view><text class="kit-label">求助位置</text><text class="kit-secondary">{{event.location.replace(/（演示）|演示位置：/g,'')}}</text></view></view><view class="kit-help-actions"><button v-if="event.status==='OPEN'" class="kit-primary" @click="$emit('ack')">接单</button><template v-if="event.status==='ACKNOWLEDGED'"><button class="kit-secondary-button" @click="$emit('progress')">更新进度</button><button class="kit-primary" @click="$emit('resolve')">完成处理</button></template></view></SectionCard></template>

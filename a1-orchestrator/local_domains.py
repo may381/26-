@@ -1,5 +1,8 @@
-"""Local domain connector for competition rehearsals, not a P2 v3 gateway.
-Only fixed loopback services are reachable; no notifications/booking/memory writes.
+"""Domain connector used by A1; endpoints come from trusted deployment config.
+
+Defaults remain loopback for a one-machine rehearsal.  Operators may set
+``A1_TOURISM_URL`` and ``A1_FRAUD_URL`` when services run on another machine.
+No notifications, booking, payment, or memory writes are performed here.
 """
 import json
 import re
@@ -12,10 +15,25 @@ from pathlib import Path
 from http.cookiejar import CookieJar
 from urllib.request import build_opener, HTTPCookieProcessor, ProxyHandler, Request, HTTPRedirectHandler
 from urllib.error import HTTPError, URLError
+from urllib.parse import quote, urlsplit
 
 
 class DomainError(Exception):
     pass
+
+
+def _service_base(value, default, variable):
+    raw=(value or default).strip().rstrip('/')
+    parsed=urlsplit(raw)
+    if (parsed.scheme not in ('http','https') or not parsed.hostname
+            or parsed.username is not None or parsed.password is not None
+            or parsed.query or parsed.fragment or parsed.path not in ('','/')):
+        raise DomainError(variable+' 必须是可信的 HTTP(S) 服务根地址，且不能包含路径、账号或查询参数')
+    try:
+        parsed.port
+    except ValueError:
+        raise DomainError(variable+' 端口无效') from None
+    return raw
 
 
 def validate_tourism_result(value):
@@ -54,7 +72,17 @@ def validate_analysis_status(value, identity, source=None):
         if source is not None:
             # A citation to a public case is not evidence of this user's history.
             evidence=result['evidence']
-            for claim in re.findall(r'[^。！？\n]*(?:近期|曾经|此前|历史|多次遭遇)[^。！？\n]*',evidence):
+            # Only treat statements about this user/party as personal-history
+            # claims.  Generic warnings such as "近期此类诈骗高发" describe a
+            # public trend and must not be rejected merely because the source
+            # message did not contain that wording.
+            history_pattern=(
+                r'[^。！？\n]*(?:(?:你|您|用户|当事人|该用户).{0,16}'
+                r'(?:近期|曾经|此前|历史上|多次遭遇)|'
+                r'(?:近期|曾经|此前|历史上|多次遭遇).{0,16}'
+                r'(?:你|您|用户|当事人|该用户))[^。！？\n]*'
+            )
+            for claim in re.findall(history_pattern,evidence):
                 if claim.strip() not in source:
                     raise DomainError('分析包含未核实的历史事实，未取得可信分析结论')
             items=result.get('evidenceItems',[])
@@ -80,9 +108,13 @@ class _NoRedirect(HTTPRedirectHandler):
 
 
 class DomainClient:
-    def __init__(self, transport=None):
+    def __init__(self, transport=None, tourism_base=None, fraud_base=None):
         self.opener=build_opener(ProxyHandler({}),HTTPCookieProcessor(CookieJar()),_NoRedirect())
         self.transport=transport or self._request
+        self.tourism_base=_service_base(tourism_base or os.environ.get('A1_TOURISM_URL'),
+                                        'http://127.0.0.1:8091','A1_TOURISM_URL')
+        self.fraud_base=_service_base(fraud_base or os.environ.get('A1_FRAUD_URL'),
+                                      'http://127.0.0.1:8000','A1_FRAUD_URL')
         self.pending=None
         self.analysis_id=None
         self.analysis_text=None
@@ -91,7 +123,8 @@ class DomainClient:
         if (not isinstance(path,str) or not path.startswith('/') or path.startswith('//')
                 or any(c in path for c in ('\\','\r','\n','\t','#'))):
             raise DomainError('接口路径无效')
-        origin='http://127.0.0.1:8091' if path.startswith(('/api/agent/','/api/a1/')) else 'http://127.0.0.1:8000'
+        tourism=path.startswith(('/api/agent/','/api/a1/'))
+        origin=self.tourism_base if tourism else self.fraud_base
         try:
             request=Request(origin+path,method=method,
                             data=None if body is None else json.dumps(body,ensure_ascii=False).encode('utf-8'),
@@ -128,11 +161,11 @@ class DomainClient:
         except URLError as error:
             if isinstance(error.reason,(socket.timeout,TimeoutError)):
                 raise DomainError('领域服务等待响应超时，未取得处理结果。') from None
-            raise DomainError('无法连接本机'+('旅游服务（8091）' if origin.endswith(':8091') else '反诈服务（8000）')+'，请先启动对应后端。') from None
+            raise DomainError('无法连接'+('旅游服务' if tourism else '反诈服务')+'（'+origin+'），请检查服务地址、网络和后端状态。') from None
         except ValueError:
-            raise DomainError('本机领域服务返回了无法解析的数据，未假定处理成功。') from None
+            raise DomainError('领域服务返回了无法解析的数据，未假定处理成功。') from None
         except (OSError,HTTPException):
-            raise DomainError('本机领域服务连接中断，请核对服务状态；未获得处理结果。') from None
+            raise DomainError('领域服务连接中断，请核对服务状态；未获得处理结果。') from None
         except (TypeError,OverflowError):
             raise DomainError('领域请求格式无效，未取得处理结果。') from None
 
@@ -148,6 +181,35 @@ class DomainClient:
         if not isinstance(result,dict) or result.get('code')!='OK' or not isinstance(result.get('data'),dict):
             raise DomainError('旅游服务未返回有效结果')
         return validate_tourism_result(result['data'])
+
+    def places(self,query,city=None):
+        """Return real AMap places with coordinates; never invent fallback points."""
+        if not isinstance(query,str) or not query.strip() or len(query)>100:
+            raise DomainError('地点查询文本长度应为1～100字符')
+        if city is not None and (not isinstance(city,str) or len(city.strip())>50):
+            raise DomainError('城市参数无效')
+        path='/api/a1/places?query='+quote(query.strip(),safe='')
+        if isinstance(city,str) and city.strip():
+            path+='&city='+quote(city.strip(),safe='')
+        result=self.transport('GET',path)
+        if not isinstance(result,dict) or result.get('code')!='OK' or not isinstance(result.get('data'),dict):
+            raise DomainError('地点查询未返回有效结果')
+        data=result['data']
+        if str(data.get('source','')).strip().upper()!='AMAP':
+            raise DomainError('地点数据不是高德实时来源')
+        if not isinstance(data.get('places'),list):
+            raise DomainError('地点数据格式无效')
+        places=[]
+        for item in data['places'][:8]:
+            if not isinstance(item,dict):continue
+            name=item.get('name');address=item.get('address');location=item.get('location')
+            if not isinstance(name,str) or not name.strip():continue
+            if not isinstance(location,str) or not re.fullmatch(r'-?\d{1,3}(?:\.\d+)?,-?\d{1,3}(?:\.\d+)?',location):continue
+            places.append({'name':name.strip()[:100],
+                           'address':address.strip()[:200] if isinstance(address,str) and address.strip() else None,
+                           'location':location,
+                           'type':item['type'].strip()[:100] if isinstance(item.get('type'),str) and item['type'].strip() else None})
+        return places
 
     def image(self,path,question='请识别图片中可见的文字、标识和景物，说明不确定之处。'):
         if not isinstance(question,str) or not 0<len(question.strip())<=1000:

@@ -1,0 +1,1 @@
+<script setup>defineProps({title:String})</script><template><text class="kit-section-title">{{title}}<slot/></text></template>

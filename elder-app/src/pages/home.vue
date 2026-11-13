@@ -1,0 +1,1 @@
+<template><AppScreen active="home" /></template><script setup>import AppScreen from "../components/AppScreen.vue";import {onShow} from '@dcloudio/uni-app';import {state,refreshState} from '../components/app-state.js';onShow(()=>{refreshState();if(!state.onboarded)uni.reLaunch({url:'/pages/welcome'})});</script>

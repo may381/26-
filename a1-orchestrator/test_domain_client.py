@@ -4,7 +4,7 @@ import unittest
 import uuid
 from http.client import IncompleteRead, RemoteDisconnected
 from urllib.error import HTTPError, URLError
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from local_domains import DomainClient, DomainError, _NoRedirect
 
@@ -34,6 +34,27 @@ class DomainClientTests(unittest.TestCase):
                 self.assertEqual(args[0].full_url, origin + path)
                 self.assertEqual(kwargs['timeout'], timeout)
                 response.read.assert_called_once_with(1024 * 1024 + 1)
+
+    def test_configurable_service_origins(self):
+        with patch.dict('os.environ', {
+            'A1_TOURISM_URL': 'http://192.0.2.10:8091',
+            'A1_FRAUD_URL': 'https://fraud.internal:8443',
+        }):
+            client, _ = self.response(b'{}')
+            # self.response creates the client before this assertion and therefore
+            # proves environment configuration is applied at construction time.
+            client._request('GET','/api/a1/map-config')
+            self.assertEqual(client.opener.open.call_args.args[0].full_url,
+                             'http://192.0.2.10:8091/api/a1/map-config')
+            client._request('GET','/api/analyses')
+            self.assertEqual(client.opener.open.call_args.args[0].full_url,
+                             'https://fraud.internal:8443/api/analyses')
+
+    def test_invalid_service_origins_are_rejected(self):
+        for value in ['file:///tmp/service','http://user:pass@host:8091',
+                      'http://host:8091/api','http://host:bad','//host:8091']:
+            with self.subTest(value=value), self.assertRaises(DomainError):
+                DomainClient(tourism_base=value)
 
     def test_bad_paths_never_open(self):
         client = DomainClient()

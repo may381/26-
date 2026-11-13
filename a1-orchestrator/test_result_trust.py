@@ -63,5 +63,10 @@ class ResultTrustTests(unittest.TestCase):
         value['result']['sources']=[{'source':'https://example.com/case'}]
         with self.assertRaises(DomainError):validate_analysis_status(value,'real-test','要求转账')
 
+    def test_generic_recent_fraud_trend_is_not_user_history(self):
+        value=response()
+        value['result']['evidence']='近期快递退款诈骗较常见，要求验证码具有高风险'
+        validate_analysis_status(value,'real-test','客服要求点击链接并提供验证码')
+
 
 if __name__=='__main__':unittest.main()

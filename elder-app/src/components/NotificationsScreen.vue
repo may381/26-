@@ -1,0 +1,9 @@
+<script setup>import FlowShell from './FlowShell.vue';import {state,writeState,navigate,note} from './app-state.js';function all(){writeState('notifications',state.notifications.map(n=>({...n,unread:false})))}function open(n){writeState('notifications',state.notifications.map(x=>x.id===n.id?{...x,unread:false}:x));if(n.type==='help')navigate('tour-help');else if(n.type==='trip')navigate('trip-record');else note(n.body,n.title)}
+</script>
+<template><FlowShell class="paper-page paper-final" title="通知中心">
+  <view class="paper-hero"><view class="paper-disc paper-disc-large"><image src="/static/refined/alert.png"/></view><text class="paper-title">每一份关心，都收好</text><text class="paper-subtitle">提醒与家人消息，都在这里</text></view>
+  <view class="paper-card paper-unread-summary"><view class="paper-copy"><text class="paper-count">{{state.notifications.filter(n=>n.unread).length}}</text><text class="paper-label">条未读通知</text></view><button class="paper-secondary" @click="all">全部已读</button></view>
+  <view v-if="!state.notifications.length" class="paper-card paper-empty"><view class="paper-disc paper-disc-warm"><image src="/static/outing/icons/check.svg"/></view><text>暂时没有新通知</text></view>
+  <button v-for="n in state.notifications" :key="n.id" class="paper-card paper-notification" @click="open(n)"><view class="paper-disc" :class="{'paper-disc-warm':n.type==='family'||n.type==='reminder'}"><image :src="'/static/outing/icons/'+(n.type==='help'?'headset':n.type==='trip'?'flag':n.type==='family'?'people':'calendar')+'.svg'"/></view><view class="paper-copy"><text class="paper-value"><text v-if="n.unread" class="paper-unread-dot" aria-label="未读"/>{{n.title}}</text><text class="paper-body">{{n.body.replace(/演示数据 · |演示提醒：|演示留言：/g,'')}}</text><text class="paper-subtitle">{{new Date(n.time).toLocaleString('zh-CN')}}</text></view></button>
+</FlowShell></template>
+<style src="./paper.css"></style>

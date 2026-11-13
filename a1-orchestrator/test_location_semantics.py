@@ -9,6 +9,13 @@ from test_conversation import travel
 
 
 class LocationSemanticTests(unittest.TestCase):
+    def test_city_answer_repairs_nonverbatim_model_location(self):
+        for location in (None, '长沙市市中心附近'):
+            result = enforce_location(travel(location), '长沙市，市中心附近',
+                                      [{'role': 'user', 'content': '我想安排一次旅游'}])
+            self.assertEqual(result['decision'], 'PLAN')
+            self.assertEqual(result['location'], '长沙市')
+
     def check_blocked(self, text, location, history=None):
         original = travel(location)
         before = copy.deepcopy(original)
@@ -52,6 +59,11 @@ class LocationSemanticTests(unittest.TestCase):
         for text in ('朋友推荐上海旅游', '听说上海很好玩', '家人建议去上海'):
             with self.subTest(text=text):
                 self.check_blocked(text, '上海')
+
+    def test_direct_recommendation_names_trusted_destination(self):
+        for text in ('请推荐长沙适合老人的真实景点', '帮我推荐长沙少走路的旅游路线'):
+            with self.subTest(text=text):
+                self.assertEqual(enforce_location(travel('长沙'), text)['decision'], 'PLAN')
 
     def test_recommendation_with_explicit_user_choice(self):
         text = '朋友推荐上海，但我想去杭州旅游'

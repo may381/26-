@@ -1,0 +1,5 @@
+<script setup>
+import {computed} from 'vue'
+const props=defineProps({event:Object})
+const stages=computed(()=>{const t=props.event?.timeline||[];const status=props.event?.status;const level=status==='RESOLVED'?3:status==='ACKNOWLEDGED'?(t.some(e=>e.label.includes('处理中'))?2:1):0;return ['已发出','已接单','处理中','已解决'].map((label,i)=>{const e=t.find(e=>e.label.includes(label));return {label,done:i<=level,time:e?new Date(e.time).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}):'',description:['求助信息已提交','工作人员确认受理','工作人员正在协助处理','本次求助处理完成'][i]}})})
+</script><template><view class="help-progress"><view v-for="(s,i) in stages" :key="s.label" class="help-progress-row" :class="{'is-pending':!s.done}"><view class="help-progress-node"><image v-if="s.done" src="/static/outing/icons/check.svg"/><text v-else>{{i+1}}</text></view><view class="help-progress-content"><view class="help-progress-line"><text class="help-progress-label">{{s.label}}</text><text class="help-progress-time">{{s.time||(i===1?'等待接单':'待更新')}}</text></view><text class="help-progress-desc">{{s.description}}</text></view></view></view></template>

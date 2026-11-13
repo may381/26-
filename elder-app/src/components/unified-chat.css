@@ -1,0 +1,56 @@
+/* 已确认的统一对话设计稿；仅作用于对话页，底部导航继续共用 tabs.css。 */
+.app.chat-refined.unified-chat{--c:calc(min(100vw,540px)/935);padding:calc(var(--c)*46) 0 calc(var(--u)*149 + env(safe-area-inset-bottom));min-height:0;height:100dvh;background-color:#f2f8ff;background-image:radial-gradient(ellipse 90% 95% at 0 0,rgba(176,220,255,.75),transparent 88%),radial-gradient(ellipse 65% 95% at 100% 0,rgba(255,240,178,.9),transparent 95%);background-size:100% calc(var(--c)*270);background-repeat:no-repeat}
+.unified-chat .chat-heading{flex-shrink:0;margin:0 calc(var(--c)*43) calc(var(--c)*28);height:calc(var(--c)*112);align-items:center}
+.unified-chat .chat-heading .page-title{font-size:calc(var(--c)*80);line-height:1.25;font-weight:750;margin:0;letter-spacing:0}
+.unified-chat .chat-heading .icon-button{width:44px;height:44px;min-width:44px;margin-right:calc(var(--c)*3)}
+.unified-chat .chat-heading .icon-button>image{width:calc(var(--c)*53);height:calc(var(--c)*53);opacity:1}
+.unified-chat .chat-watermark{width:calc(var(--c)*560);height:calc(var(--c)*593.4783);right:calc(var(--c)*-205);top:calc(var(--c)*-190);opacity:.13;mask-image:linear-gradient(#000 65%,transparent 95%);-webkit-mask-image:linear-gradient(#000 65%,transparent 95%)}
+.unified-chat .messages{position:relative;flex:1;min-height:0;height:0;z-index:1}
+.unified-chat .message{margin:calc(var(--c)*8) calc(var(--c)*35) calc(var(--c)*22);gap:calc(var(--c)*20);align-items:flex-start}
+.unified-chat .avatar{width:calc(var(--c)*90);height:calc(var(--c)*90);background:linear-gradient(125deg,#dff0ff,#fff7da);margin-top:calc(var(--c)*3)}
+.unified-chat .avatar image{width:calc(var(--c)*60);height:calc(var(--c)*60)}
+.unified-chat .message-content{min-width:0;max-width:calc(100% - var(--c)*110)}
+.unified-chat .bubble,.unified-chat .assistant .bubble,.unified-chat .user .bubble{border:0!important;position:relative;padding:calc(var(--c)*18) calc(var(--c)*27);border-radius:calc(var(--c)*31);font-size:max(16px,calc(var(--c)*36));font-weight:400;line-height:1.5;white-space:pre-line;box-shadow:0 calc(var(--c)*9) calc(var(--c)*21) rgba(90,127,166,.15),0 calc(var(--c)*2) calc(var(--c)*5) rgba(99,138,181,.035)}
+.unified-chat .assistant .bubble{background:rgba(255,255,255,.98)}
+.unified-chat .assistant .bubble:before{content:'';position:absolute;inset:0;width:auto;height:auto;padding:max(1.5px,calc(var(--c)*4));border-radius:inherit;background:linear-gradient(90deg,rgba(255,213,68,.88),rgba(255,220,98,.62) 3%,rgba(255,230,145,.18) 9%,transparent 18%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;pointer-events:none}
+.unified-chat .user{margin-top:calc(var(--c)*12);margin-bottom:calc(var(--c)*23)}
+.unified-chat .user .message-content{max-width:85%}
+.unified-chat .user .bubble{background:linear-gradient(105deg,#cde6ff,#e8f2fc 55%,#fff4d4)}
+.unified-chat .message-time{font-size:calc(var(--c)*26);line-height:1.4;margin:calc(var(--c)*9) calc(var(--c)*8) 0;color:#52698b}
+.unified-chat .reply-status{display:flex;align-items:center;gap:calc(var(--c)*11);margin:calc(var(--c)*17) calc(var(--c)*8) calc(var(--c)*20);color:#52698b;font-size:max(12px,calc(var(--c)*28));line-height:1.45}
+.unified-chat .reply-status .oi{width:calc(var(--c)*32);height:calc(var(--c)*32);flex-shrink:0}
+.unified-chat .has-result .message{margin-bottom:calc(var(--c)*15)}
+.unified-chat .has-result .reply-status{margin-bottom:0}
+/* 推荐内容独立于头像和气泡列，统一以整个消息区域为轴心。 */
+.unified-chat .result-shelf{width:calc(100% - var(--c)*100);margin:0 auto calc(var(--c)*25)}
+.unified-chat .recommendation-card{position:relative;width:100%;padding:calc(var(--c)*12);border:calc(var(--c)*3) solid transparent;border-radius:calc(var(--c)*35);background:linear-gradient(#fff,#fff) padding-box,linear-gradient(125deg,rgba(143,198,255,.52),rgba(209,231,250,.1) 30%,transparent 52%,rgba(255,226,127,.1) 70%,rgba(255,211,67,.56)) border-box;box-shadow:0 calc(var(--c)*12) calc(var(--c)*26) rgba(91,132,175,.14),0 calc(var(--c)*3) calc(var(--c)*8) rgba(91,132,175,.045)}
+.unified-chat .result-photo{display:block;width:100%;height:calc(var(--c)*227);border-radius:calc(var(--c)*24)}
+.unified-chat .result-body{padding:calc(var(--c)*10) calc(var(--c)*12) calc(var(--c)*7)}
+.unified-chat .result-title{display:block;font-size:calc(var(--c)*43);line-height:1.3;font-weight:750}
+.unified-chat .result-subtitle{display:block;font-size:max(15px,calc(var(--c)*31));line-height:1.4;color:#53698b;margin-top:calc(var(--c)*2)}
+.unified-chat .result-facts{display:flex;align-items:center;margin:calc(var(--c)*16) 0 calc(var(--c)*13)}
+.unified-chat .result-facts>view{display:flex;align-items:center;justify-content:center;gap:calc(var(--c)*9);flex:1;min-width:0;font-size:max(13px,calc(var(--c)*28));white-space:nowrap;line-height:1.4}
+.unified-chat .result-facts>view:first-child{justify-content:flex-start}
+.unified-chat .result-facts>view:last-child{justify-content:flex-end}
+.unified-chat .result-facts>view+view{border-left:1px solid #d5e1ef}
+.unified-chat .result-facts .oi,.unified-chat .result-facts image{width:calc(var(--c)*40);height:calc(var(--c)*40);flex-shrink:0}
+.unified-chat .result-note{display:block;font-size:max(14px,calc(var(--c)*29));line-height:1.5;color:#53698b}
+.unified-chat .result-actions{display:flex;gap:calc(var(--c)*18);margin-top:calc(var(--c)*20)}
+.unified-chat .result-actions button{flex:1;min-width:0;min-height:38px;display:flex;align-items:center;justify-content:center;border-radius:calc(var(--c)*48);padding:calc(var(--c)*9) calc(var(--c)*8);font-size:max(16px,calc(var(--c)*34));font-weight:650;line-height:1.4}
+.unified-chat .detail-action{background:linear-gradient(100deg,#e5f2ff,#e0efff);color:#006aff}
+.unified-chat .route-action{background:#006aff;color:white}
+.unified-chat .context-suggestions{display:flex;flex-wrap:wrap;gap:calc(var(--c)*18);margin:calc(var(--c)*25) calc(var(--c)*34) calc(var(--c)*26) calc(var(--c)*145)}
+.unified-chat .context-suggestions button{display:flex;align-items:center;min-height:38px;padding:calc(var(--c)*12) calc(var(--c)*27);border-radius:calc(var(--c)*42);background:#fff;box-shadow:0 calc(var(--c)*7) calc(var(--c)*17) rgba(86,126,168,.12);font-size:max(14px,calc(var(--c)*30));line-height:1.4}
+.unified-chat #chat-end{height:calc(var(--c)*12)}
+.unified-chat .message-action{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;margin-top:12px;padding:9px 18px;background:#fff;color:#006aff;border-radius:22px;box-shadow:0 3px 10px #5d83ae15}
+.unified-chat .typing{display:flex;align-items:center;gap:10px;font-size:14px;margin-left:calc(var(--c)*145);padding:8px 0 16px;color:#52698b}
+.unified-chat .typing-dots{display:flex;gap:4px}.unified-chat .typing-dots text{width:5px;height:5px;border-radius:50%;background:#006aff}
+.unified-chat .composer{position:relative;align-self:stretch;flex-shrink:0;margin:0;width:100%;gap:calc(var(--c)*18);padding:calc(var(--c)*14) calc(var(--c)*27);background:#fff;box-shadow:0 -5px 16px rgba(255,255,255,.65)}
+.unified-chat .composer>.oi{width:calc(var(--c)*55);height:calc(var(--c)*55);margin:0 calc(var(--c)*5)}
+.unified-chat .composer input{height:calc(var(--c)*80);min-height:42px;flex:1;width:0;min-width:0;padding:0 calc(var(--c)*26);font-size:max(16px,calc(var(--c)*33));line-height:1.5;border-radius:calc(var(--c)*50);border:1px solid transparent;background:linear-gradient(white,white) padding-box,linear-gradient(100deg,#006aff,rgba(118,181,246,.6) 45%,rgba(255,215,81,.2) 65%,#ffd84c) border-box}
+.unified-chat .chat-placeholder{color:#68758a}
+.unified-chat .composer .mic{width:calc(var(--c)*96);height:calc(var(--c)*96);min-width:44px;min-height:44px;padding:calc(var(--c)*17);border:calc(var(--c)*6) solid #ffe69d;background:#006aff;border-radius:50%}
+.unified-chat .composer .mic image{width:100%;height:100%;filter:none}
+.unified-chat .composer .send{min-height:44px;padding:9px 15px;font-size:16px;flex-shrink:0}
+.unified-chat .composer button[disabled]{opacity:.5}
+.unified-chat.large .bubble{font-size:23px}.unified-chat.large .result-facts{flex-wrap:wrap;gap:8px}.unified-chat.large .result-facts>view{flex:auto;border:0;font-size:17px}.unified-chat.large .result-note{font-size:18px}

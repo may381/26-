@@ -8,6 +8,12 @@ from http.server import ThreadingHTTPServer
 import server
 
 class PreviewTests(unittest.TestCase):
+ def test_service_url_validation_and_same_origin(self):
+  self.assertEqual(server.service_base('MISSING_TEST_URL','http://127.0.0.1:8091'),'http://127.0.0.1:8091')
+  with patch.dict('os.environ',{'BAD_TEST_URL':'http://user:secret@host:8091/api'}):
+   with self.assertRaises(RuntimeError):server.service_base('BAD_TEST_URL','http://127.0.0.1:8091')
+  self.assertTrue(server.same_origin({'Origin':'http://192.0.2.20:8095','Host':'192.0.2.20:8095'}))
+  self.assertFalse(server.same_origin({'Origin':'http://evil.test','Host':'192.0.2.20:8095'}))
  def test_failed_coordinator_returns_actual_stage_for_ui(self):
   chat=Mock();chat.state='READY';chat.trace=[{'stage':'dispatch','label':'委派领域服务','status':'failed','detail':'旅游服务请求失败'}]
   chat.send.side_effect=server.DomainError('旅游服务不可用')

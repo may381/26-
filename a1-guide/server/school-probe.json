@@ -1,1 +1,0 @@
-{"messages":[{"role":"user","content":"Reply with JSON: {\"answer\":\"hello\"}"}],"max_completion_tokens":100,"chat_template_kwargs":{"enable_thinking":false},"stream":false,"model":"qwen3.8-27b"}

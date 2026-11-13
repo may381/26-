@@ -1,0 +1,1 @@
+<script setup>import {onShow as onPageShow} from "@dcloudio/uni-app";import {refreshState as refreshPageState} from "../components/app-state.js";onPageShow(refreshPageState);import PreferenceScreen from "../components/PreferenceScreen.vue"</script><template><PreferenceScreen/></template>

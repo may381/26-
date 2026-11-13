@@ -1,0 +1,29 @@
+
+.app .bottom-nav.unified-nav{--tab-u:calc(min(100vw,540px)/853);position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:100%;max-width:540px;height:calc(var(--tab-u)*149 + env(safe-area-inset-bottom));padding:calc(var(--tab-u)*15) 0 calc(var(--tab-u)*12 + env(safe-area-inset-bottom));display:flex;align-items:flex-start;justify-content:space-around;box-sizing:border-box;background:rgba(255,255,255,.97);border:0;border-top:1px solid transparent;border-image:linear-gradient(90deg,#006aff,#cee5f9 50%,#ffd745) 1;box-shadow:none;backdrop-filter:none;z-index:10}
+.app .unified-nav button{position:relative;flex:1;min-width:0;min-height:0;height:calc(var(--tab-u)*120);padding:0;margin:0;display:flex;align-items:center;justify-content:flex-start;flex-direction:column;gap:calc(var(--tab-u)*3);font-size:calc(var(--tab-u)*27);font-weight:400;line-height:1.5;color:#4e648a;border:0;border-radius:0;background:transparent;box-shadow:none;z-index:0}
+.app .unified-nav button:after{border:0!important;box-shadow:none}.app .unified-nav button:before{content:none;background:none}
+.app .unified-nav .nav-icon{width:calc(var(--tab-u)*108);height:calc(var(--tab-u)*65);display:flex;align-items:center;justify-content:center;background:none;border-radius:0;flex-shrink:0}
+.app .unified-nav .nav-icon image{width:calc(var(--tab-u)*68);height:calc(var(--tab-u)*65);filter:none;opacity:1}
+.app .unified-nav button.current{color:#006aff;font-weight:400}
+.app .unified-nav button.current:before{content:'';position:absolute;left:50%;top:calc(var(--tab-u)*-13);transform:translateX(-50%);width:calc(var(--tab-u)*111);height:calc(var(--tab-u)*123);background:linear-gradient(110deg,#e0efff,#fff5d0);border:0;border-radius:50%;z-index:-1}
+
+/* uni-button 默认 overflow:hidden 会切掉选中光晕，选中底形独立完整绘制。 */
+.app .bottom-nav.unified-nav,.app .unified-nav button,.app .unified-nav .nav-icon{overflow:visible}
+.app .unified-nav button.current:before{top:calc(var(--tab-u)*-13);border-radius:calc(var(--tab-u)*56);clip-path:none;mask:none;-webkit-mask:none}
+.app .unified-nav .nav-icon image{align-self:center;vertical-align:middle;flex-shrink:0}
+
+/* 使用真实背景元素，彻底绕开 uni-button 伪元素默认缩放与裁切。 */
+.app .unified-nav button.current:before,.app .unified-nav button:before{content:none!important;display:none!important}
+.app .unified-nav .tab-halo{position:absolute;top:0;left:50%;transform:translateX(-50%);width:calc(var(--tab-u)*111);height:calc(var(--tab-u)*120);border-radius:calc(var(--tab-u)*60);background:linear-gradient(110deg,#e0efff,#fff5d0);pointer-events:none;z-index:0}
+.app .unified-nav .nav-icon,.app .unified-nav button>text{position:relative;z-index:1}
+.app .unified-nav .nav-icon image{width:calc(var(--tab-u)*65);height:calc(var(--tab-u)*65);object-fit:contain;display:block}
+
+/* 液态玻璃选中态：玻璃容器与图标共享中心，文字在容器下方。 */
+.app .unified-nav .tab-halo{top:calc(var(--tab-u)*-5);width:calc(var(--tab-u)*106);height:calc(var(--tab-u)*75);border-radius:calc(var(--tab-u)*42);box-sizing:border-box;background:linear-gradient(125deg,rgba(194,228,255,.48),rgba(255,255,255,.64) 44%,rgba(255,236,167,.43));border:1px solid rgba(255,255,255,.8);box-shadow:inset 0 1px 1px rgba(255,255,255,.96),inset 0 -1px 2px rgba(143,191,229,.24),0 3px 9px rgba(80,129,178,.12);backdrop-filter:blur(15px) saturate(1.6);-webkit-backdrop-filter:blur(15px) saturate(1.6);animation:tab-glass-settle 460ms cubic-bezier(.2,.85,.25,1.15);overflow:hidden}
+.app .unified-nav .tab-halo::after{content:'';position:absolute;inset:1px;border-radius:inherit;background:linear-gradient(145deg,rgba(255,255,255,.72),transparent 38%,transparent 63%,rgba(255,255,255,.36));pointer-events:none}
+.app .unified-nav .nav-icon{height:calc(var(--tab-u)*65);width:calc(var(--tab-u)*106)}
+.app .unified-nav .nav-icon image{width:calc(var(--tab-u)*54);height:calc(var(--tab-u)*54);transition:transform 250ms cubic-bezier(.2,.85,.25,1.15);transform-origin:center}
+.app .unified-nav button.current .nav-icon image{animation:tab-icon-settle 420ms cubic-bezier(.2,.85,.25,1.15)}
+@keyframes tab-glass-settle{0%{transform:translateX(-50%) scale(.86,.94);opacity:.55}45%{transform:translateX(-50%) scale(1.06,.96);opacity:1}100%{transform:translateX(-50%) scale(1)}}
+@keyframes tab-icon-settle{0%{transform:scale(.86)}55%{transform:scale(1.06)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.app .unified-nav .tab-halo,.app .unified-nav button.current .nav-icon image{animation:none}.app .unified-nav .nav-icon image{transition:none}}

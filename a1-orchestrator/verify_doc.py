@@ -49,10 +49,10 @@ def find(claim, needle, regex=False):
 print("=== 一、入口与端口 ===")
 check("DomainChat.send 入口存在", "def send(self, text)", "domain_chat.py")
 check("packet 固定 mode", "LOCAL_A1_DOMAIN_COORDINATOR_NOT_P2", "domain_chat.py")
-check("8095 入口端口", "127.0.0.1',8095", "server.py")
+check("8095 入口默认端口", "A1_WEB_PORT','8095", "server.py")
 check("8093 联调壳默认端口", 'A1_PORT", "8093"', "service.py")
 check("P2 默认 8080", 'DEFAULT_BASE = "http://127.0.0.1:8080"', "p2_client.py")
-check("旅游 8091 / 反诈 8000 固定回环", r"127\.0\.0\.1:8091", "local_domains.py", regex=True)
+check("旅游/反诈地址支持部署配置", "A1_TOURISM_URL", "local_domains.py")
 
 print("\n=== 二、状态机 ===")
 for state in ("READY", "WAIT_RESULT", "SUBMISSION_UNCERTAIN", "COMPLETE", "FAILED"):
@@ -94,10 +94,10 @@ for text in ("请输入具体需求；空内容没有提交给学校模型。",
              "模型计划被截断，请缩短需求后重试"):
     find("文案：" + text[:14] + "…", text)
 
-# 两条连接错误是拼接出来的：'无法连接本机' + 服务名 + '，请先启动对应后端。'
-find("文案：无法连接本机旅游服务（8091）…", "无法连接本机")
-check("连接错误文案含 8091/8000 分支", "旅游服务（8091）", "local_domains.py")
-check("连接错误文案含反诈分支", "反诈服务（8000）", "local_domains.py")
+# 连接错误由服务类型、已配置地址和安全提示拼接。
+find("文案：无法连接领域服务…", "无法连接")
+check("连接错误文案含旅游分支", "旅游服务' if tourism", "local_domains.py")
+check("连接错误文案含反诈分支", "反诈服务'", "local_domains.py")
 
 print("\n=== 七、8095 入口接口 ===")
 for path in ('/api/message', '/api/status', '/api/reset', '/api/image', '/api/tool',

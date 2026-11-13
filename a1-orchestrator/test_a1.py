@@ -83,6 +83,24 @@ class PlanTests(unittest.TestCase):
         history = [{"role": "user", "content": "想学剪纸，别太远，希望女儿陪同"}]
         self.assertEqual(enforce_location(self.plan, "长沙", history)["decision"], "PLAN")
 
+    def test_new_trip_request_does_not_inherit_history_city(self):
+        plan = copy.deepcopy(self.plan)
+        plan.update(domains=["tourism"], location="杭州",
+                    steps=[{"id": "s1", "agent": "a1", "domain": "tourism",
+                            "goal": "查询杭州行程", "dependsOn": []}])
+        history = [{"role": "user", "content": "我想去杭州玩三天"}]
+        result = enforce_location(plan, "帮我规划出行", history)
+        self.assertEqual(result["decision"], "ASK")
+        self.assertIsNone(result["location"])
+
+    def test_clarification_still_inherits_history_city(self):
+        plan = copy.deepcopy(self.plan)
+        plan.update(domains=["tourism"], location="杭州",
+                    steps=[{"id": "s1", "agent": "a1", "domain": "tourism",
+                            "goal": "查询杭州行程", "dependsOn": []}])
+        history = [{"role": "user", "content": "我想去杭州玩三天"}]
+        self.assertEqual(enforce_location(plan, "两天", history)["decision"], "PLAN")
+
     @patch("a1.ask_model")
     def test_failed_or_invalid_model_result_does_not_commit(self, model):
         session = Conversation()
@@ -102,8 +120,12 @@ class PlanTests(unittest.TestCase):
         history = [{"role": "user", "content": "想学剪纸，女儿陪同"}, {"role": "assistant", "content": "在哪座城市？"}]
         ask_model("长沙", history)
         messages = json.loads(opened.call_args[0][0].data)["messages"]
-        self.assertEqual(messages[1:3], history)
+        # 助手旧回复是自然语言，不能作为提示样例回灌给模型，否则模型会改写成 Markdown；
+        # 只保留一个不含内容的固定标记来表示这一轮已经回复过。
+        self.assertEqual(messages[1], history[0])
+        self.assertEqual(messages[2], {"role": "assistant", "content": "（上一轮助手已回复，内容略）"})
         self.assertEqual(messages[-1]["content"], "长沙")
+        self.assertNotIn("在哪座城市", json.dumps(messages, ensure_ascii=False))
 
 
 class ModelClientTests(unittest.TestCase):
@@ -135,7 +157,11 @@ class ModelClientTests(unittest.TestCase):
         response.read.assert_called_once_with(1024 * 1024 + 1)
         payload = json.loads(request.data)
         self.assertEqual(payload["model"], "qwen3.8-27b")
-        self.assertEqual(payload["messages"], [{"role": "system", "content": SYSTEM}] + history + [{"role": "user", "content": "继续"}])
+        # 只保留用户原话；助手回复只留固定标记，避免模型模仿成 Markdown 或把它当事实。
+        self.assertEqual(payload["messages"], [{"role": "system", "content": SYSTEM}]
+                         + [{"role": "user", "content": "你好"}]
+                         + [{"role": "assistant", "content": "（上一轮助手已回复，内容略）"}]
+                         + [{"role": "user", "content": "继续"}])
         self.assertEqual(history, original)
 
     @patch("a1.urlopen")
@@ -147,6 +173,39 @@ class ModelClientTests(unittest.TestCase):
                 request = opened.call_args.args[0]
                 self.assertEqual(request.full_url, "http://localhost:9999/v1/chat/completions")
                 self.assertEqual(json.loads(request.data)["model"], "school-test")
+
+    @patch("a1.urlopen")
+    def test_non_json_output_is_retried_once(self, opened):
+        def context(content):
+            response = MagicMock()
+            response.read.return_value = json.dumps({"choices": [
+                {"finish_reason": "stop", "message": {"content": content}}]}
+            ).encode()
+            holder = MagicMock()
+            holder.__enter__.return_value = response
+            return holder
+
+        opened.side_effect = [
+            context("长沙适合老人的景点：\n1. 橘子洲\n2. 岳麓山"),
+            context(json.dumps(self.plan)),
+        ]
+        self.assertEqual(ask_model("推荐长沙景点"), self.plan)
+        self.assertEqual(opened.call_count, 2)
+        messages = json.loads(opened.call_args_list[-1][0][0].data)["messages"]
+        self.assertIn("格式纠正", messages[0]["content"])
+
+    @patch("a1.urlopen")
+    def test_hint_is_system_scoped_and_not_user_text(self, opened):
+        self.response(opened)
+        ask_model("长沙", [{"role": "user", "content": "帮我规划出行"}],
+                  hint="上一轮提问：希望在哪座城市查找？")
+        payload = json.loads(opened.call_args.args[0].data)
+        system = payload["messages"][0]["content"]
+        self.assertTrue(system.startswith(SYSTEM))
+        self.assertIn("【本轮约束】", system)
+        self.assertIn("上一轮提问", system)
+        # 约束只进 system，不改变用户消息，也不进入地点证据。
+        self.assertEqual(payload["messages"][-1], {"role": "user", "content": "长沙"})
 
     @patch("a1.urlopen")
     def test_oversized_response_rejected(self, opened):
@@ -180,7 +239,7 @@ class ModelClientTests(unittest.TestCase):
     @patch("a1.urlopen")
     def test_serialization_failure_is_planning_error(self, opened):
         with self.assertRaises(PlanningError) as caught:
-            ask_model("你好", [{"role": "user", "content": object()}])
+            ask_model(object())
         self.assertEqual(str(caught.exception), "模型调用或计划解析失败（TypeError），未执行任何业务")
         opened.assert_not_called()
 

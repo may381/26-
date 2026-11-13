@@ -1,0 +1,1457 @@
+{
+ "culture": [
+  {
+   "text": "想学剪纸，走路别太远",
+   "note": "说清楚兴趣 + 距离要求",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-dbcdd6",
+     "intent": "culture",
+     "domains": [
+      "culture",
+      "tourism"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "找到 2 个可以去的班。最近的是阳光社区活动室的剪纸入门班，走过去大概 5 分钟，周四上午九点半上课。还有 1 个备选，我念给您听？",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "culture-courses-c0121f7ac28f",
+       "type": "culture.course_candidates",
+       "schemaVersion": "1.0",
+       "title": "附近可以参加的非遗文化活动",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "DEMO_DATASET",
+         "id": "a3-culture-demo-v1",
+         "note": "演示数据集，课程、场馆、名额均为虚构，仅用于联调与演示"
+        }
+       ],
+       "pendingChecks": [
+        "课程为演示数据，实际开课以场馆公告为准",
+        "名额为演示值，报名前需向场馆确认",
+        "A3 不代办报名，报名需经本人确认后由平台执行"
+       ],
+       "payload": {
+        "query": {
+         "interests": "想学剪纸，走路别太远",
+         "kinds": [
+          "papercut"
+         ]
+        },
+        "totalCandidates": 2,
+        "courses": [
+         {
+          "courseId": "demo-papercut-01",
+          "title": "剪纸入门班",
+          "kind": "papercut",
+          "kindLabel": "剪纸",
+          "venue": "阳光社区活动室",
+          "walkMinutes": 5,
+          "durationMin": 90,
+          "level": "入门",
+          "seatsLeft": 8,
+          "hasSteps": false,
+          "tags": [
+           "非遗",
+           "手工",
+           "坐着上课"
+          ],
+          "note": "工具现场提供，带一副老花镜就行",
+          "nextSession": {
+           "startAt": "2026-11-12T09:30:00Z",
+           "endAt": "2026-11-12T11:00:00Z",
+           "weekdayLabel": "周四"
+          },
+          "reasons": [
+           "您喜欢剪纸",
+           "走过去只要 5 分钟",
+           "不用爬台阶"
+          ]
+         },
+         {
+          "courseId": "demo-papercut-02",
+          "title": "窗花剪纸提高班",
+          "kind": "papercut",
+          "kindLabel": "剪纸",
+          "venue": "区文化馆三楼",
+          "walkMinutes": 18,
+          "durationMin": 120,
+          "level": "进阶",
+          "seatsLeft": 2,
+          "hasSteps": true,
+          "tags": [
+           "非遗",
+           "手工"
+          ],
+          "note": "楼里有电梯，但要先上三级台阶",
+          "nextSession": {
+           "startAt": "2026-11-10T14:00:00Z",
+           "endAt": "2026-11-10T16:00:00Z",
+           "weekdayLabel": "周二"
+          },
+          "reasons": [
+           "您喜欢剪纸"
+          ]
+         }
+        ],
+        "readOnly": true,
+        "booked": false,
+        "notified": false
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "想学刺绣",
+   "note": "只说兴趣",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-be52f3",
+     "intent": "culture",
+     "domains": [
+      "culture",
+      "tourism"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "找到一个可以去的班。最近的是老年大学东教室的苏绣基础，走过去大概 12 分钟，周一上午十点上课。要去的话我帮您问问还有没有名额。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "culture-courses-f7f3ead857ac",
+       "type": "culture.course_candidates",
+       "schemaVersion": "1.0",
+       "title": "附近可以参加的非遗文化活动",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "DEMO_DATASET",
+         "id": "a3-culture-demo-v1",
+         "note": "演示数据集，课程、场馆、名额均为虚构，仅用于联调与演示"
+        }
+       ],
+       "pendingChecks": [
+        "课程为演示数据，实际开课以场馆公告为准",
+        "名额为演示值，报名前需向场馆确认",
+        "A3 不代办报名，报名需经本人确认后由平台执行"
+       ],
+       "payload": {
+        "query": {
+         "interests": "想学刺绣",
+         "kinds": [
+          "embroidery"
+         ]
+        },
+        "totalCandidates": 1,
+        "courses": [
+         {
+          "courseId": "demo-embroidery-01",
+          "title": "苏绣基础",
+          "kind": "embroidery",
+          "kindLabel": "刺绣",
+          "venue": "老年大学东教室",
+          "walkMinutes": 12,
+          "durationMin": 100,
+          "level": "入门",
+          "seatsLeft": 5,
+          "hasSteps": false,
+          "tags": [
+           "非遗",
+           "手工",
+           "坐着上课"
+          ],
+          "note": "绣绷和丝线由老师统一准备",
+          "nextSession": {
+           "startAt": "2026-11-09T10:00:00Z",
+           "endAt": "2026-11-09T11:40:00Z",
+           "weekdayLabel": "周一"
+          },
+          "reasons": [
+           "您喜欢刺绣",
+           "不用爬台阶"
+          ]
+         }
+        ],
+        "readOnly": true,
+        "booked": false,
+        "notified": false
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "想学书法",
+   "note": "另一门兴趣",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-987848",
+     "intent": "culture",
+     "domains": [
+      "culture",
+      "tourism"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "找到一个可以去的班。最近的是社区书屋的楷书入门，走过去大概 8 分钟，周三下午三点上课。要去的话我帮您问问还有没有名额。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "culture-courses-77a510d39ba9",
+       "type": "culture.course_candidates",
+       "schemaVersion": "1.0",
+       "title": "附近可以参加的非遗文化活动",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "DEMO_DATASET",
+         "id": "a3-culture-demo-v1",
+         "note": "演示数据集，课程、场馆、名额均为虚构，仅用于联调与演示"
+        }
+       ],
+       "pendingChecks": [
+        "课程为演示数据，实际开课以场馆公告为准",
+        "名额为演示值，报名前需向场馆确认",
+        "A3 不代办报名，报名需经本人确认后由平台执行"
+       ],
+       "payload": {
+        "query": {
+         "interests": "想学书法",
+         "kinds": [
+          "calligraphy"
+         ]
+        },
+        "totalCandidates": 1,
+        "courses": [
+         {
+          "courseId": "demo-calligraphy-01",
+          "title": "楷书入门",
+          "kind": "calligraphy",
+          "kindLabel": "书法",
+          "venue": "社区书屋",
+          "walkMinutes": 8,
+          "durationMin": 60,
+          "level": "入门",
+          "seatsLeft": 10,
+          "hasSteps": false,
+          "tags": [
+           "静心",
+           "坐着上课"
+          ],
+          "note": "每次只练两个字，不赶进度",
+          "nextSession": {
+           "startAt": "2026-11-11T15:00:00Z",
+           "endAt": "2026-11-11T16:00:00Z",
+           "weekdayLabel": "周三"
+          },
+          "reasons": [
+           "您喜欢书法",
+           "走过去只要 8 分钟",
+           "不用爬台阶"
+          ]
+         }
+        ],
+        "readOnly": true,
+        "booked": false,
+        "notified": false
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "想学民乐",
+   "note": "这门课名额已满",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-7f373f",
+     "intent": "culture",
+     "domains": [
+      "culture",
+      "tourism"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "这次没找到走路能到、时间也合适的班。要不我换个范围再帮您找找？",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "culture-courses-bc030b16c822",
+       "type": "culture.course_candidates",
+       "schemaVersion": "1.0",
+       "title": "这次没找到合适的课程",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "DEMO_DATASET",
+         "id": "a3-culture-demo-v1",
+         "note": "演示数据集，课程、场馆、名额均为虚构，仅用于联调与演示"
+        }
+       ],
+       "pendingChecks": [
+        "课程为演示数据，实际开课以场馆公告为准",
+        "名额为演示值，报名前需向场馆确认",
+        "A3 不代办报名，报名需经本人确认后由平台执行"
+       ],
+       "payload": {
+        "query": {
+         "interests": "想学民乐",
+         "kinds": [
+          "folk_music"
+         ]
+        },
+        "totalCandidates": 0,
+        "courses": [],
+        "readOnly": true,
+        "booked": false,
+        "notified": false
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "想参加文化活动",
+   "note": "没说要哪一类",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-abed54",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "WAIT_INPUT",
+      "outcome": null,
+      "dependencyTaskIds": [],
+      "inputRequest": {
+       "inputRequestId": "18c01646-f7bf-425b-9c8b-e5590a003c34",
+       "question": "您想学哪一类？剪纸、刺绣、书法，还是太极？",
+       "requiredFields": [
+        "activityKind"
+       ],
+       "options": [
+        {
+         "id": "papercut",
+         "label": "剪纸",
+         "value": "papercut"
+        },
+        {
+         "id": "embroidery",
+         "label": "刺绣",
+         "value": "embroidery"
+        },
+        {
+         "id": "calligraphy",
+         "label": "书法",
+         "value": "calligraphy"
+        },
+        {
+         "id": "taichi",
+         "label": "太极",
+         "value": "taichi"
+        }
+       ],
+       "allowFreeText": true
+      }
+     },
+     "reply": {
+      "text": "好呀，您想学哪一类？剪纸、刺绣、书法，还是太极？",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "想学跳伞",
+   "note": "我们有剪纸班，但这不是他要的",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-cfdef7",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "您说的这类我们这边暂时没有开班。现在有剪纸、刺绣、书法和太极，您要不要看看？",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "culture-courses-e58490476efe",
+       "type": "culture.course_candidates",
+       "schemaVersion": "1.0",
+       "title": "这次没找到合适的课程",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "DEMO_DATASET",
+         "id": "a3-culture-demo-v1",
+         "note": "演示数据集，课程、场馆、名额均为虚构，仅用于联调与演示"
+        }
+       ],
+       "pendingChecks": [
+        "课程为演示数据，实际开课以场馆公告为准",
+        "名额为演示值，报名前需向场馆确认",
+        "A3 不代办报名，报名需经本人确认后由平台执行"
+       ],
+       "payload": {
+        "query": {
+         "interests": "想学跳伞"
+        },
+        "totalCandidates": 0,
+        "courses": [],
+        "readOnly": true,
+        "booked": false,
+        "notified": false
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "剪纸是什么",
+   "note": "问知识 → 走非遗知识库，带来源",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-a2d2d1",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "剪纸是用剪刀或刻刀在纸上剪刻花纹的民间艺术，窗花、喜花、门笺都是它的形式。常见题材有花鸟、人物、吉祥图案，逢年过节贴在窗上、门上。剪纸已于 2006 年列入第一批国家级非物质文化遗产代表性项目名录。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "culture-knowledge-d88d574f4ff8",
+       "type": "culture.knowledge_answer",
+       "schemaVersion": "1.0",
+       "title": "非遗与地方文化资料",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "NATIONAL_HERITAGE_LIST",
+         "title": "国家级非物质文化遗产代表性项目名录",
+         "org": "文化和旅游部",
+         "note": "批次与列入年份可在中国非物质文化遗产网核对",
+         "id": "kb-papercut",
+         "title_zh": "剪纸是什么"
+        }
+       ],
+       "pendingChecks": [
+        "资料为本地整理的常识条目，具体细节以官方名录和当地传承人说明为准",
+        "涉及具体活动时间、地点、费用时，需向场馆或主办方核实"
+       ],
+       "payload": {
+        "query": "剪纸是什么",
+        "totalCandidates": 1,
+        "entries": [
+         {
+          "kbId": "kb-papercut",
+          "kind": "heritage",
+          "topic": "剪纸",
+          "title": "剪纸是什么",
+          "content": "剪纸是用剪刀或刻刀在纸上剪刻花纹的民间艺术，窗花、喜花、门笺都是它的形式。常见题材有花鸟、人物、吉祥图案，逢年过节贴在窗上、门上。剪纸已于 2006 年列入第一批国家级非物质文化遗产代表性项目名录。",
+          "regions": [
+           "全国"
+          ],
+          "source": {
+           "type": "NATIONAL_HERITAGE_LIST",
+           "title": "国家级非物质文化遗产代表性项目名录",
+           "org": "文化和旅游部",
+           "note": "批次与列入年份可在中国非物质文化遗产网核对"
+          }
+         }
+        ]
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "唔该是什么意思",
+   "note": "老人在说方言 → 认出来并解释",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-d73aac",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "粤语（广东话）里几个常听到的说法：「食饭」= 吃饭；「唔该」= 谢谢 / 劳驾（麻烦别人时用）；「得闲」= 有空；「靓」= 漂亮、好；「唔使」= 不用。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "culture-knowledge-abd3f3b28900",
+       "type": "culture.knowledge_answer",
+       "schemaVersion": "1.0",
+       "title": "非遗与地方文化资料",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "FOLK_COMMON_SENSE",
+         "title": "民间常识性说法",
+         "org": "非遗传承人口述 / 地方民俗通识",
+         "note": "属民间通行说法，具体细节以当地传承人说明为准",
+         "id": "dl-cantonese",
+         "title_zh": "粤语常用说法"
+        }
+       ],
+       "pendingChecks": [
+        "资料为本地整理的常识条目，具体细节以官方名录和当地传承人说明为准",
+        "涉及具体活动时间、地点、费用时，需向场馆或主办方核实"
+       ],
+       "payload": {
+        "query": "唔该是什么意思",
+        "totalCandidates": 1,
+        "entries": [
+         {
+          "kbId": "dl-cantonese",
+          "kind": "dialect",
+          "topic": "粤语",
+          "title": "粤语常用说法",
+          "content": "粤语（广东话）里几个常听到的说法：「食饭」= 吃饭；「唔该」= 谢谢 / 劳驾（麻烦别人时用）；「得闲」= 有空；「靓」= 漂亮、好；「唔使」= 不用。",
+          "regions": [
+           "广东",
+           "香港",
+           "澳门"
+          ],
+          "source": {
+           "type": "FOLK_COMMON_SENSE",
+           "title": "民间常识性说法",
+           "org": "非遗传承人口述 / 地方民俗通识",
+           "note": "属民间通行说法，具体细节以当地传承人说明为准"
+          }
+         }
+        ]
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "景泰蓝怎么烧制",
+   "note": "库里没有 → 直说没有，不编",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-79f5f4",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "这个我这儿没有现成资料，不好瞎说。要不我帮您问问社区或者文化馆的人？",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "culture-knowledge-15eba33f7c93",
+       "type": "culture.knowledge_answer",
+       "schemaVersion": "1.0",
+       "title": "这次没查到相关资料",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [],
+       "pendingChecks": [
+        "资料为本地整理的常识条目，具体细节以官方名录和当地传承人说明为准",
+        "涉及具体活动时间、地点、费用时，需向场馆或主办方核实"
+       ],
+       "payload": {
+        "query": "景泰蓝怎么烧制",
+        "totalCandidates": 0,
+        "entries": []
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "我会剪纸，愿意教大家",
+   "note": "在登记技能 → 生成待审核的技能卡",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-ebdc61",
+     "intent": "ability",
+     "domains": [
+      "ability"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "您会剪纸，这个记下来了。我先帮您报给社区，等他们核实过就能挂出去。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "ability-skill-9d743b1f23fa",
+       "type": "ability.skill_registration",
+       "schemaVersion": "1.0",
+       "title": "技能登记：剪纸（等社区审核）",
+       "businessRef": null,
+       "availability": "DEMO",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "USER_MESSAGE",
+         "id": "",
+         "note": "由老人本人口述整理，未经社区核实"
+        }
+       ],
+       "pendingChecks": [
+        "技能真实性由社区或平台审核，A3 不代替审核通过",
+        "实际服务时长以打卡记录为准，A3 不计算、不增加时长",
+        "匹配结果只是推荐，不承诺一定有人报名"
+       ],
+       "payload": {
+        "skill": {
+         "skillId": "skill-05e8ed76f053",
+         "skillName": "剪纸",
+         "category": "纸艺",
+         "willingness": "TEACH_PUBLIC",
+         "willingnessLabel": "愿意公开教",
+         "weeklySlots": 1,
+         "note": "",
+         "state": "SUBMITTED"
+        },
+        "nextAction": {
+         "state": "SUBMITTED",
+         "stageLabel": "等社区审核",
+         "todo": "社区或 P2 审核技能真实性",
+         "owner": "P2",
+         "a3CanAdvance": false
+        }
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "text": "帮我看看血压高不高",
+   "note": "不归 A3 管的领域",
+   "status": 503,
+   "body": {
+    "code": "CAPABILITY_UNAVAILABLE",
+    "message": "「health」领域归其他智能体负责，A3 当前只接入文化领域",
+    "data": null
+   }
+  }
+ ],
+ "review": [
+  {
+   "label": "没有同类记忆",
+   "note": "库里没找到同 key 的，建议新增",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-0fb335",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "这条我记下来了，等您点个头就存进您的偏好里，以后不用再重复说。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "memory-review-0ff0ab284213",
+       "type": "MEMORY_REVIEW",
+       "schemaVersion": "1.0",
+       "title": "建议新增一条长期偏好",
+       "businessRef": null,
+       "availability": "NEEDS_VERIFICATION",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "MEMORY_CANDIDATE",
+         "id": "cand-001",
+         "version": 1
+        }
+       ],
+       "pendingChecks": [
+        "建议基于当前可见记忆计算，P2 写入前需再次校验候选与审核版本",
+        "需老人本人确认后才成为长期记忆，A3 不代替老人决定",
+        "A3 不生成确认号，确认由 A1 准备、P2 执行"
+       ],
+       "payload": {
+        "candidateId": "cand-001",
+        "candidateVersion": 1,
+        "reviewId": "review-aa76f971-b65d-455a-a226-6391501ef4c7",
+        "reviewVersion": 1,
+        "recommendation": "ADD",
+        "conflictMemoryRefs": [],
+        "proposedDomains": [
+         "culture"
+        ],
+        "needsUserConfirmation": true,
+        "explanation": "现有记忆中未发现同 key 的有效项，建议新增；仍需老人本人确认后才成为长期记忆。"
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "label": "已有完全一样",
+   "note": "内容、取值、领域都一样，不用重复记",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-d02351",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "这条您以前说过，我这儿已经有了，就不重复记了。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "memory-review-31c01610dd17",
+       "type": "MEMORY_REVIEW",
+       "schemaVersion": "1.0",
+       "title": "建议保留原记录，不重复新增",
+       "businessRef": null,
+       "availability": "NEEDS_VERIFICATION",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "MEMORY_CANDIDATE",
+         "id": "cand-001",
+         "version": 1
+        }
+       ],
+       "pendingChecks": [
+        "建议基于当前可见记忆计算，P2 写入前需再次校验候选与审核版本",
+        "需老人本人确认后才成为长期记忆，A3 不代替老人决定",
+        "A3 不生成确认号，确认由 A1 准备、P2 执行"
+       ],
+       "payload": {
+        "candidateId": "cand-001",
+        "candidateVersion": 1,
+        "reviewId": "review-97c55a8d-33f6-4734-a310-59cd975e1a7f",
+        "reviewVersion": 1,
+        "recommendation": "KEEP",
+        "conflictMemoryRefs": [
+         {
+          "memoryId": "m-1",
+          "version": 2
+         }
+        ],
+        "proposedDomains": [
+         "culture"
+        ],
+        "needsUserConfirmation": false,
+        "explanation": "与已有记忆 m-1 内容一致，建议保留原记录，不重复新增。"
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": [
+      {
+       "memoryId": "m-1",
+       "version": 2
+      }
+     ]
+    }
+   }
+  },
+  {
+   "label": "已有但内容不同",
+   "note": "同 key 内容变了，建议替换",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-6d2ac0",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "这条和您之前说的不太一样了，我按新的记。旧的就不用了，您看行吗？",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "memory-review-a50338459945",
+       "type": "MEMORY_REVIEW",
+       "schemaVersion": "1.0",
+       "title": "建议替换原有偏好",
+       "businessRef": null,
+       "availability": "NEEDS_VERIFICATION",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "MEMORY_CANDIDATE",
+         "id": "cand-001",
+         "version": 1
+        }
+       ],
+       "pendingChecks": [
+        "建议基于当前可见记忆计算，P2 写入前需再次校验候选与审核版本",
+        "需老人本人确认后才成为长期记忆，A3 不代替老人决定",
+        "A3 不生成确认号，确认由 A1 准备、P2 执行"
+       ],
+       "payload": {
+        "candidateId": "cand-001",
+        "candidateVersion": 1,
+        "reviewId": "review-68d4b214-bdb7-4e31-ad79-25de025d0517",
+        "reviewVersion": 1,
+        "recommendation": "REPLACE",
+        "conflictMemoryRefs": [
+         {
+          "memoryId": "m-1",
+          "version": 2
+         }
+        ],
+        "proposedDomains": [
+         "culture"
+        ],
+        "needsUserConfirmation": true,
+        "explanation": "与已有记忆 m-1 是同一类偏好但内容不同，建议替换为新内容；旧版本标记为已取代，不能继续作为当前偏好返回。"
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": [
+      {
+       "memoryId": "m-1",
+       "version": 2
+      }
+     ]
+    }
+   }
+  },
+  {
+   "label": "已有且领域更宽",
+   "note": "内容一样但领域变宽，要合并并重新确认",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-21f06b",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "这条和之前记的是一回事，合在一起就行。不过范围变大了，还得您再点个头。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "memory-review-5deb04410a01",
+       "type": "MEMORY_REVIEW",
+       "schemaVersion": "1.0",
+       "title": "建议与已有记忆合并",
+       "businessRef": null,
+       "availability": "NEEDS_VERIFICATION",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "MEMORY_CANDIDATE",
+         "id": "cand-001",
+         "version": 1
+        }
+       ],
+       "pendingChecks": [
+        "建议基于当前可见记忆计算，P2 写入前需再次校验候选与审核版本",
+        "需老人本人确认后才成为长期记忆，A3 不代替老人决定",
+        "A3 不生成确认号，确认由 A1 准备、P2 执行"
+       ],
+       "payload": {
+        "candidateId": "cand-001",
+        "candidateVersion": 1,
+        "reviewId": "review-99d8cc5c-f114-481f-94c1-9e3f137e2c87",
+        "reviewVersion": 1,
+        "recommendation": "MERGE",
+        "conflictMemoryRefs": [
+         {
+          "memoryId": "m-9",
+          "version": 1
+         }
+        ],
+        "proposedDomains": [
+         "culture",
+         "health"
+        ],
+        "needsUserConfirmation": true,
+        "explanation": "内容与 m-9 一致，但适用领域不同，建议合并为 culture/health；扩大适用范围必须重新经老人确认。"
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": [
+      {
+       "memoryId": "m-9",
+       "version": 1
+      }
+     ]
+    }
+   }
+  },
+  {
+   "label": "敏感但没同意",
+   "note": "健康类敏感信息，没同意不存",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "conversationId": "conv-001",
+     "messageId": "msg-001",
+     "taskId": "child-003",
+     "baseTaskVersion": 2,
+     "invocationId": "cap-75bcbe",
+     "intent": "culture",
+     "domains": [
+      "culture"
+     ],
+     "control": {
+      "next": "COMPLETE",
+      "outcome": "SUCCEEDED",
+      "dependencyTaskIds": [],
+      "inputRequest": null
+     },
+     "reply": {
+      "text": "这条涉及比较私密的事，我得先问清楚您愿不愿意让我记，没您同意我不存。",
+      "speechRate": 0.9,
+      "audioUrl": null
+     },
+     "results": [
+      {
+       "resultId": "memory-review-6fac3ee13ae8",
+       "type": "MEMORY_REVIEW",
+       "schemaVersion": "1.0",
+       "title": "建议不保存（需本人明确同意）",
+       "businessRef": null,
+       "availability": "NEEDS_VERIFICATION",
+       "generatedAt": "2026-11-09T08:05:02Z",
+       "sources": [
+        {
+         "type": "MEMORY_CANDIDATE",
+         "id": "cand-001",
+         "version": 1
+        }
+       ],
+       "pendingChecks": [
+        "建议基于当前可见记忆计算，P2 写入前需再次校验候选与审核版本",
+        "需老人本人确认后才成为长期记忆，A3 不代替老人决定",
+        "A3 不生成确认号，确认由 A1 准备、P2 执行"
+       ],
+       "payload": {
+        "candidateId": "cand-001",
+        "candidateVersion": 1,
+        "reviewId": "review-0c5bb8f7-a516-4367-bcc0-9a996c2c5928",
+        "reviewVersion": 1,
+        "recommendation": "REJECT",
+        "conflictMemoryRefs": [],
+        "proposedDomains": [
+         "culture"
+        ],
+        "needsUserConfirmation": false,
+        "explanation": "这条内容被判定为敏感。按 v3 第八节，健康等敏感记忆必须单独明确同意保存及使用范围，不能默认跨领域共享，因此本次不生成有效记忆。"
+       }
+      }
+     ],
+     "confirmationIds": [],
+     "tools": [],
+     "handoff": null,
+     "usedMemoryRefs": []
+    }
+   }
+  },
+  {
+   "label": "读不到记忆库",
+   "note": "问不到 ≠ 没有，必须报错",
+   "status": 503,
+   "body": {
+    "code": "CAPABILITY_UNAVAILABLE",
+    "message": "无法读取老人已有记忆，不能判断这条候选是否与现有偏好重复。此时给建议可能造成重复写入，因此暂不受理。",
+    "data": null
+   }
+  }
+ ],
+ "search": [
+  {
+   "label": "有匹配",
+   "note": "正常给结果，敏感项和已取代的都被过滤掉",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "readStatus": "AVAILABLE",
+     "memoryRevision": 12,
+     "authorizationRevision": 4,
+     "retrievedAt": "2026-11-09T08:05:02Z",
+     "items": [
+      {
+       "memoryId": "memory-004",
+       "version": 1,
+       "category": "LONG_TERM_PREFERENCE",
+       "key": "culture.interests",
+       "content": "喜欢剪纸和刺绣",
+       "value": null,
+       "domains": [
+        "culture"
+       ],
+       "sensitivity": "GENERAL",
+       "state": "ACTIVE",
+       "sourceRefs": [],
+       "confirmedAt": null,
+       "updatedAt": "2026-10-25T02:00:00Z",
+       "expiresAt": null
+      },
+      {
+       "memoryId": "memory-001",
+       "version": 2,
+       "category": "LONG_TERM_PREFERENCE",
+       "key": "activity.preferredDurationMin",
+       "content": "平时更喜欢一小时以内的文化活动",
+       "value": 60,
+       "domains": [
+        "tourism",
+        "culture"
+       ],
+       "sensitivity": "GENERAL",
+       "state": "ACTIVE",
+       "sourceRefs": [],
+       "confirmedAt": null,
+       "updatedAt": "2026-10-28T02:00:00Z",
+       "expiresAt": null
+      }
+     ],
+     "returnedContentChars": 22,
+     "truncated": false
+    }
+   },
+   "args": {
+    "purpose": "为当前老人安排短时文化活动",
+    "query": "剪纸 步行时长",
+    "domains": [
+     "culture",
+     "tourism"
+    ],
+    "limit": 5
+   },
+   "auth": [
+    "culture",
+    "tourism"
+   ],
+   "available": true
+  },
+  {
+   "label": "确实没有",
+   "note": "查过了，库里真的有没这回事",
+   "status": 200,
+   "body": {
+    "code": "OK",
+    "message": "成功",
+    "data": {
+     "readStatus": "EMPTY",
+     "memoryRevision": 12,
+     "authorizationRevision": 4,
+     "retrievedAt": "2026-11-09T08:05:02Z",
+     "items": [],
+     "returnedContentChars": 0,
+     "truncated": false
+    }
+   },
+   "args": {
+    "purpose": "查探戈课程",
+    "query": "探戈",
+    "domains": [
+     "culture"
+    ]
+   },
+   "auth": [
+    "culture",
+    "tourism"
+   ],
+   "available": true
+  },
+  {
+   "label": "越权请求",
+   "note": "请求了没授权的领域，直接拒",
+   "status": 403,
+   "body": {
+    "code": "FORBIDDEN",
+    "message": "请求的领域不在本任务授权范围内：health",
+    "data": null
+   },
+   "args": {
+    "purpose": "查健康",
+    "query": "血压",
+    "domains": [
+     "health"
+    ]
+   },
+   "auth": [
+    "tourism"
+   ],
+   "available": true
+  },
+  {
+   "label": "服务不可用",
+   "note": "检索服务连不上，不能说成没偏好",
+   "status": 503,
+   "body": {
+    "code": "CAPABILITY_UNAVAILABLE",
+    "message": "检索服务暂时不可用，无法确认是否存在相关记忆",
+    "data": null
+   },
+   "args": {
+    "purpose": "查剪纸",
+    "query": "剪纸",
+    "domains": [
+     "culture"
+    ]
+   },
+   "auth": [
+    "culture"
+   ],
+   "available": false
+  }
+ ],
+ "memories": [
+  {
+   "memoryId": "memory-001",
+   "version": 2,
+   "category": "LONG_TERM_PREFERENCE",
+   "key": "activity.preferredDurationMin",
+   "content": "平时更喜欢一小时以内的文化活动",
+   "value": 60,
+   "domains": [
+    "tourism",
+    "culture"
+   ],
+   "sensitivity": "GENERAL",
+   "state": "ACTIVE",
+   "updatedAt": "2026-10-28T02:00:00Z"
+  },
+  {
+   "memoryId": "memory-002",
+   "version": 1,
+   "category": "LONG_TERM_PREFERENCE",
+   "key": "mobility.avoidSteps",
+   "content": "尽量避开台阶路线",
+   "value": true,
+   "domains": [
+    "tourism"
+   ],
+   "sensitivity": "GENERAL",
+   "state": "ACTIVE",
+   "updatedAt": "2026-10-27T02:00:00Z"
+  },
+  {
+   "memoryId": "memory-003",
+   "version": 1,
+   "category": "LONG_TERM_PREFERENCE",
+   "key": "health.bloodPressure",
+   "content": "有高血压，需要少盐饮食",
+   "value": null,
+   "domains": [
+    "health"
+   ],
+   "sensitivity": "SENSITIVE",
+   "state": "ACTIVE",
+   "updatedAt": "2026-10-26T02:00:00Z"
+  },
+  {
+   "memoryId": "memory-005",
+   "version": 1,
+   "category": "LONG_TERM_PREFERENCE",
+   "key": "mobility.avoidSteps",
+   "content": "旧的不要台阶（已被取代）",
+   "value": true,
+   "domains": [
+    "tourism"
+   ],
+   "sensitivity": "GENERAL",
+   "state": "SUPERSEDED",
+   "updatedAt": "2026-10-20T02:00:00Z"
+  },
+  {
+   "memoryId": "memory-004",
+   "version": 1,
+   "category": "LONG_TERM_PREFERENCE",
+   "key": "culture.interests",
+   "content": "喜欢剪纸和刺绣",
+   "value": null,
+   "domains": [
+    "culture"
+   ],
+   "sensitivity": "GENERAL",
+   "state": "ACTIVE",
+   "updatedAt": "2026-10-25T02:00:00Z"
+  }
+ ]
+}

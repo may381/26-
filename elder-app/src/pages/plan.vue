@@ -1,0 +1,1 @@
+<script setup>import {onShow as onPageShow} from "@dcloudio/uni-app";import {refreshState as refreshPageState} from "../components/app-state.js";onPageShow(refreshPageState);import PlanScreen from "../components/PlanScreen.vue"</script><template><PlanScreen/></template>

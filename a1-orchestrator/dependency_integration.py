@@ -12,11 +12,17 @@ def integrate_dependencies(root_task_id, dependencies):
     successes = failures = partials = 0
     domains = []
     for item in dependencies:
-        if (not isinstance(item, dict) or item.get("parentTaskId") != root_task_id
+        if (not isinstance(item, dict)
                 or not isinstance(item.get("taskId"), str) or not item["taskId"]
                 or item.get("status") not in TERMINAL
                 or type(item.get("required")) is not bool):
-            raise P2Error("子任务快照无效或不属于当前根任务")
+            raise P2Error("子任务快照无效")
+        # P2 的 dependencyResults 目前只下发 taskId/targetAgent/required/status/
+        # reply/results/error，快照本身已由 P2 按根任务过滤。字段存在时仍校验
+        # 归属，缺失时不能反过来拒绝 P2 的权威快照。
+        parent = item.get("parentTaskId")
+        if parent is not None and parent != root_task_id:
+            raise P2Error("子任务快照不属于当前根任务")
         domain = item.get("domain")
         if isinstance(domain, str) and domain and domain not in domains:
             domains.append(domain)
@@ -58,9 +64,12 @@ def collect_child_confirmations(root_task_id, dependencies):
         raise P2Error("待确认子任务快照数量无效")
     confirmation_ids, domains = [], []
     for item in dependencies:
-        if (not isinstance(item, dict) or item.get("parentTaskId") != root_task_id
+        if (not isinstance(item, dict)
                 or item.get("status") != "WAITING_CONFIRMATION"):
-            raise P2Error("待确认子任务快照无效或不属于当前根任务")
+            raise P2Error("待确认子任务快照无效")
+        parent = item.get("parentTaskId")
+        if parent is not None and parent != root_task_id:
+            raise P2Error("待确认子任务快照不属于当前根任务")
         values = item.get("confirmationIds")
         if (not isinstance(values, list) or not values
                 or not all(isinstance(value, str) and 0 < len(value) <= 128 for value in values)):

@@ -29,11 +29,38 @@ from urllib.error import HTTPError
 sessions={}
 sessions_lock=threading.Lock()
 
+def service_base(variable,default):
+    raw=os.environ.get(variable,default).strip().rstrip('/')
+    parsed=urlsplit(raw)
+    if (parsed.scheme not in ('http','https') or not parsed.hostname
+            or parsed.username is not None or parsed.password is not None
+            or parsed.query or parsed.fragment or parsed.path not in ('','/')):
+        raise RuntimeError(variable+' 必须是可信的 HTTP(S) 服务根地址')
+    try:parsed.port
+    except ValueError:raise RuntimeError(variable+' 端口无效') from None
+    return raw
+
+TOURISM_BASE=service_base('A1_TOURISM_URL','http://127.0.0.1:8091')
+FRAUD_BASE=service_base('A1_FRAUD_URL','http://127.0.0.1:8000')
+A1_SERVICE_BASE=service_base('AGENT_A1_URL','http://127.0.0.1:8093')
+P2_BASE=service_base('A1_P2_PUBLIC_URL','http://127.0.0.1:8080')
+
+def same_origin(headers):
+    origin=headers.get('Origin')
+    if origin is None:return True
+    host=headers.get('Host','').strip()
+    allowed={value.strip().rstrip('/') for value in os.environ.get('A1_WEB_ALLOWED_ORIGINS','').split(',') if value.strip()}
+    if host:allowed.update(('http://'+host,'https://'+host))
+    return origin.rstrip('/') in allowed
+
+def host_port(base):
+    parsed=urlsplit(base)
+    return parsed.hostname,parsed.port or (443 if parsed.scheme=='https' else 80)
+
 def new_p2_session():
     user_id=os.environ.get('A1_P2_USER_ID','').strip()
     if not user_id:return None
-    base=os.environ.get('A1_P2_PUBLIC_URL','http://127.0.0.1:8080')
-    return P2TaskSession(P2PublicClient(base=base),user_id)
+    return P2TaskSession(P2PublicClient(base=P2_BASE),user_id)
 
 def p2_default_enabled():
     return os.environ.get('A1_P2_DEFAULT','').strip().lower() in ('1','true','yes','on')
@@ -65,7 +92,7 @@ def fraud_cases():
     items=[]
     origin=None
     try:
-        with urlopen('http://127.0.0.1:8000/api/knowledge/cases',timeout=3) as response:
+        with urlopen(FRAUD_BASE+'/api/knowledge/cases',timeout=3) as response:
             rows=json.loads(response.read(400001))
         for row in rows if isinstance(rows,list) else []:
             if not isinstance(row,dict) or not row.get('content'):continue
@@ -78,11 +105,16 @@ def fraud_cases():
         pass
     if not items:
         # 后端没起、或后端可用但没有已审核案例时，回退到同一份来源文件。
+        # data/ 默认被 .gitignore 排除，克隆仓库后优先读随反诈后端入库的同一份文件。
         origin='随应用发布的内置案例（与反诈后端同一份来源文件）'
-        try:
-            fixture=json.loads((ROOT/'data'/'fraud-cases.json').read_text(encoding='utf-8'))
-        except (OSError,ValueError):
-            fixture=[]
+        fixture=[]
+        for candidate in (ROOT/'data'/'fraud-cases.json',
+                          ROOT.parent/'anti-fraud'/'backend'/'app'/'cases.json'):
+            try:
+                fixture=json.loads(candidate.read_text(encoding='utf-8'))
+                break
+            except (OSError,ValueError):
+                continue
         for case in fixture if isinstance(fixture,list) else []:
             if not isinstance(case,dict) or not case.get('content'):continue
             items.append({'id':str(case.get('id','')),'type':str(case.get('type','未分类')),
@@ -115,7 +147,7 @@ class Handler(BaseHTTPRequestHandler):
             body=self.rfile.read(size) if size else None
             headers={'Content-Type':self.headers.get('Content-Type','application/json')}
             if self.headers.get('Cookie'):headers['Cookie']=self.headers['Cookie']
-            req=Request('http://127.0.0.1:8091'+target,data=body,headers=headers,method=self.command)
+            req=Request(TOURISM_BASE+target,data=body,headers=headers,method=self.command)
             try:response=urlopen(req,timeout=240)
             except HTTPError as error:response=error
             with response:
@@ -141,17 +173,26 @@ class Handler(BaseHTTPRequestHandler):
         if path=='/api/a1/map-config' or path.startswith('/_AMapService/'):
             try:
                 if '..' in self.path or len(self.path)>12000:raise ValueError()
-                with urlopen('http://127.0.0.1:8091'+self.path,timeout=20) as response:
+                with urlopen(TOURISM_BASE+self.path,timeout=20) as response:
                     raw=response.read(5000001);mime=response.headers.get('Content-Type','application/octet-stream')
                 if len(raw)>5000000:raise ValueError()
                 self.send_response(200);self.send_header('Content-Type',mime);self.send_header('Content-Length',str(len(raw)));self.send_header('Cache-Control','no-store');self.end_headers();self.wfile.write(raw)
             except Exception:self.respond(502,{'error':'高德交互地图服务不可用，请检查8091服务'})
             return
+        if path.startswith('/api/speech/'):
+            try:
+                if '..' in self.path or len(self.path)>2000:raise ValueError()
+                with urlopen(TOURISM_BASE+self.path,timeout=60) as response:
+                    raw=response.read(5000001);mime=response.headers.get('Content-Type','application/octet-stream')
+                if len(raw)>5000000:raise ValueError()
+                self.send_response(200);self.send_header('Content-Type',mime);self.send_header('Content-Length',str(len(raw)));self.send_header('Cache-Control','no-store');self.end_headers();self.wfile.write(raw)
+            except Exception:self.respond(502,{'error':'语音服务暂不可用，请检查8091服务'})
+            return
         if path=='/api/map-image':
             query=parse_qs(urlsplit(self.path).query);identity=query.get('id',[''])[0]
             if not re.fullmatch(r'[A-Za-z0-9]{5,40}',identity):self.respond(400,{'error':'地图地点无效'});return
             try:
-                with urlopen('http://127.0.0.1:8091/api/a1/map-image?'+urlencode({'id':identity,'zoom':12}),timeout=20) as response:
+                with urlopen(TOURISM_BASE+'/api/a1/map-image?'+urlencode({'id':identity,'zoom':12}),timeout=20) as response:
                     content=response.read(3000001);mime=response.headers.get('Content-Type','')
                 if not mime.startswith('image/') or len(content)>3000000:raise ValueError()
                 self.send_response(200);self.send_header('Content-Type',mime);self.send_header('Content-Length',str(len(content)));self.send_header('Cache-Control','no-store');self.end_headers();self.wfile.write(content)
@@ -166,9 +207,10 @@ class Handler(BaseHTTPRequestHandler):
                     with socket.create_connection((host,port),timeout=2):available=True
                 except OSError:available=False
                 return {'name':name,'reachable':available,'scope':'端口可达，不代表模型推理或业务成功'}
-            targets=[('A1任务服务','127.0.0.1',8093),('P2任务网关','127.0.0.1',8080),
-                     ('旅游后端','127.0.0.1',8091),('反诈后端','127.0.0.1',8000),
-                     ('学校模型','10.138.50.151',8000)]
+            model=os.environ.get('A1_MODEL_URL','http://10.138.50.151:8000')
+            targets=[('A1任务服务',*host_port(A1_SERVICE_BASE)),('P2任务网关',*host_port(P2_BASE)),
+                     ('旅游后端',*host_port(TOURISM_BASE)),('反诈后端',*host_port(FRAUD_BASE)),
+                     ('学校模型',*host_port(model))]
             with ThreadPoolExecutor(max_workers=len(targets)) as pool:
                 checks=list(pool.map(probe,targets))
             self.respond(200,{'checks':checks,'mode':'本地A1协调器，非P2正式网关','memory':'本次会话内存；长期共享记忆尚未接通'});return
@@ -196,10 +238,24 @@ class Handler(BaseHTTPRequestHandler):
         if path not in files:self.respond(404,{'error':'页面不存在'});return
         name,mime=files[path];raw=(ROOT/name).read_bytes();self.send_response(200);self.send_header('Content-Type',mime);self.send_header('Content-Length',str(len(raw)));self.send_header('Cache-Control','no-cache');self.end_headers();self.wfile.write(raw)
     def do_POST(self):
-        if self.headers.get('Origin') not in (None,'http://127.0.0.1:8095','http://localhost:8095'):
+        if not same_origin(self.headers):
             self.respond(403,{'error':'请求来源不允许'});return
         path=urlsplit(self.path).path
         if path.startswith('/tourism-api/'):return self.tourism_proxy()
+        if path.startswith('/api/speech/'):
+            try:
+                length=int(self.headers.get('Content-Length','0'))
+                if not 0<length<=6000000:raise ValueError()
+                payload=self.rfile.read(length)
+                if '..' in self.path or len(self.path)>2000:raise ValueError()
+                request=Request(TOURISM_BASE+self.path,data=payload,method='POST',
+                                headers={'Content-Type':self.headers.get('Content-Type','application/octet-stream')})
+                with urlopen(request,timeout=120) as response:
+                    raw=response.read(5000001);mime=response.headers.get('Content-Type','application/json')
+                if len(raw)>5000000:raise ValueError()
+                self.send_response(200);self.send_header('Content-Type',mime);self.send_header('Content-Length',str(len(raw)));self.send_header('Cache-Control','no-store');self.end_headers();self.wfile.write(raw)
+            except Exception:self.respond(502,{'error':'语音服务暂不可用，请检查8091服务'})
+            return
         if path not in ('/api/message','/api/status','/api/reset','/api/image','/api/tool','/api/payment-guard',
                         '/api/p2/message','/api/p2/status','/api/p2/cancel','/api/p2/reset',
                         '/api/p2/confirmation','/api/p2/confirmation-decision','/api/p2/image',
@@ -340,5 +396,9 @@ class Handler(BaseHTTPRequestHandler):
 
 if __name__=='__main__':
     ThreadingHTTPServer.allow_reuse_address=False
-    print('时光链统一问答：http://127.0.0.1:8095/\n综合→学校模型规划；出行→8091；反诈→8000。Ctrl+C 停止。',flush=True)
-    ThreadingHTTPServer(('127.0.0.1',8095),Handler).serve_forever()
+    bind=os.environ.get('A1_WEB_BIND','127.0.0.1').strip() or '127.0.0.1'
+    try:port=int(os.environ.get('A1_WEB_PORT','8095'))
+    except ValueError:raise SystemExit('A1_WEB_PORT 必须是有效端口')
+    if not 1<=port<=65535:raise SystemExit('A1_WEB_PORT 必须是有效端口')
+    print(f'时光链统一问答：http://127.0.0.1:{port}/\n综合→学校模型规划；出行→{TOURISM_BASE}；反诈→{FRAUD_BASE}。Ctrl+C 停止。',flush=True)
+    ThreadingHTTPServer((bind,port),Handler).serve_forever()

@@ -1,0 +1,8 @@
+<script setup>import FlowShell from './FlowShell.vue';import {state,favorite,navigate,writeState,again} from './app-state.js';function open(f){if(f.type==='scenic')navigate('scenic-detail');else{writeState('route',f.routeId);navigate('route-confirm')}}
+</script>
+<template><FlowShell class="paper-page paper-final" title="我的收藏">
+  <view class="paper-hero"><view class="paper-disc paper-disc-large"><image src="/static/refined/favorite.png"/></view><text class="paper-title">喜欢的地方，留给下次</text><text class="paper-subtitle">收藏景区与路线，想出发时随时找得到。</text></view>
+  <view v-if="!state.favorites.length" class="paper-card paper-empty"><view class="paper-disc"><image src="/static/outing/icons/heart.svg"/></view><text>还没有收藏的景区或路线</text><button class="paper-primary" @click="navigate('scenic-detail')">看看景区</button></view>
+  <view v-for="f in state.favorites" :key="f.type+f.name" class="paper-card"><button class="paper-favorite" @click="open(f)"><image class="paper-thumb" :src="f.type==='route'?'/static/travel/map-large.jpg':'/static/travel/park.jpg'" mode="aspectFill"/><view class="paper-copy"><view class="paper-type-line"><text class="paper-badge">{{f.type==='route'?'路线':'景区'}}</text></view><text class="paper-value">{{f.name}}</text><text class="paper-subtitle">{{f.sub.replace(/演示/g,'')}}</text></view></button><view class="paper-final-pair"><button v-if="f.type==='route'" class="paper-secondary" @click="again({route:f.routeId,plan:state.plan})">再走一次</button><button class="paper-skip paper-link-action" @click="favorite(f.type,f.routeId)">取消收藏</button></view></view>
+</FlowShell></template>
+<style src="./paper.css"></style>

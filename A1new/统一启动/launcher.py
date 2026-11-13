@@ -1,4 +1,5 @@
-"""Central startup shortcuts; original project directories stay in place."""
+"""Start and inspect the A1, tourism, fraud, and preview services."""
+import os
 import socket
 import subprocess
 import sys
@@ -8,9 +9,10 @@ from pathlib import Path
 
 BASE = Path(__file__).resolve().parents[2]
 SERVICES = {
-    "tourism": (8091, BASE / "a1-guide", ["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(BASE / "a1-guide" / "start-school.ps1")]),
-    "fraud": (8000, BASE / "外包A30" / "anti-fraud", ["cmd.exe", "/c", str(BASE / "外包A30" / "anti-fraud" / "start-school-backend.bat")]),
-    "web": (8095, BASE / "A1new", [sys.executable, "server.py"]),
+    "a1": (int(os.environ.get("A1_PORT", "8093")), BASE / "a1-orchestrator", ["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(BASE / "a1-orchestrator" / "启动A1联调服务.ps1")]),
+    "tourism": (int(os.environ.get("PORT", "8091")), BASE / "a1-guide", ["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(BASE / "a1-guide" / "start-source.ps1")]),
+    "fraud": (int(os.environ.get("FRAUD_PORT", "8000")), BASE / "anti-fraud", ["cmd.exe", "/c", str(BASE / "anti-fraud" / "start-backend.bat")]),
+    "web": (int(os.environ.get("A1_WEB_PORT", "8095")), BASE / "A1new", [sys.executable, "server.py"]),
 }
 
 def listening(port):
@@ -36,14 +38,15 @@ def main():
     if mode == "status":
         for name, (port, _, _) in SERVICES.items():
             print(f"{name} ({port}): {'RUNNING' if listening(port) else 'STOPPED'}")
-        print("Port checks do not verify school model inference.")
+        print("Port checks do not verify authentication, school model inference, or business results.")
         return
     for name in SERVICES if mode == "all" else [mode]:
         start(name)
     if mode in ("all", "web"):
         for _ in range(20):
-            if listening(8095):
-                webbrowser.open("http://127.0.0.1:8095/")
+            web_port=SERVICES["web"][0]
+            if listening(web_port):
+                webbrowser.open(f"http://127.0.0.1:{web_port}/")
                 break
             time.sleep(0.5)
         else:

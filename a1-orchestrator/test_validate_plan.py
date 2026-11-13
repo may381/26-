@@ -137,6 +137,23 @@ class ValidationTests(unittest.TestCase):
             value = plan(); value["memoryCandidate"] = memory
             self.assertIs(validate_plan(value), value)
 
+    def test_ask_options_are_bounded_and_only_for_questions(self):
+        ask = plan(); ask.update(decision="ASK", steps=[], domains=["tourism"])
+        ask["options"] = [{"id": "today", "label": "今天", "value": "今天"},
+                          {"id": "weekend", "label": "周末", "value": "周末"}]
+        self.assertIs(validate_plan(ask), ask)
+        for options in ([], [{"id": "o" + str(i), "label": "a", "value": "a"} for i in range(5)],
+                        [{"id": "o1", "label": "a", "value": "a"}, {"id": "o1", "label": "b", "value": "b"}],
+                        [{"id": "o1", "label": "a"}],
+                        [{"id": "", "label": "a", "value": "a"}],
+                        [{"id": "o1", "label": "a", "value": "a", "extra": 1}],
+                        [{"id": "o1", "label": "标" * 41, "value": "a"}],
+                        "o1"):
+            value = copy.deepcopy(ask); value["options"] = options
+            with self.subTest(options=options): self.assertRaises(PlanningError, validate_plan, value)
+        value = plan(); value["options"] = copy.deepcopy(ask["options"])
+        self.reject(value, "只有追问才能提供候选答案")
+
     def test_six_steps_backward_dependencies_and_no_mutation(self):
         value = plan(); value["steps"] = []
         for i in range(6):

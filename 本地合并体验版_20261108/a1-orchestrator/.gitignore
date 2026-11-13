@@ -1,9 +1,0 @@
-__pycache__/
-*.py[cod]
-.pytest_cache/
-.a1-service-key
-a1-receipts.sqlite3
-*.sqlite3-journal
-.env
-.env.*
-!.env.example

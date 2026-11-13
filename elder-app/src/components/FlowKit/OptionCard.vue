@@ -1,0 +1,1 @@
+<script setup>defineProps({label:String,selected:Boolean,icon:String});defineEmits(["select"])</script><template><button class="kit-option" :class="{selected}" @click="$emit('select')"><image v-if="icon" :src="'/static/outing/icons/'+icon+'.svg'"/><text>{{label}}</text><image v-if="selected" class="kit-check" src="/static/outing/icons/check.svg"/></button></template>

@@ -37,6 +37,17 @@ class DependencyIntegrationTests(unittest.TestCase):
         for item in (wrong,running):
             with self.assertRaises(P2Error):integrate_dependencies("root",[item])
 
+    def test_accepts_p2_snapshot_without_parent_or_domain(self):
+        # P2 的 AgentDelegationService.results() 只下发 taskId/targetAgent/required/
+        # status/reply/results/error，快照归属由 P2 按根任务过滤。
+        item={"taskId":"c1","targetAgent":"a2","required":True,"status":"FAILED",
+              "reply":None,"results":[],
+              "error":{"code":"INVOCATION_UNRESOLVED","message":"调用结果未确认","retryable":False}}
+        value=integrate_dependencies("root",[item])
+        self.assertEqual(value["outcome"],"FAILED")
+        self.assertIn("调用结果未确认",value["reply"])
+        self.assertEqual(value["domains"],[])
+
     def test_collects_registered_child_confirmations_without_changing_ids(self):
         item=child("c1","care");item["status"]="WAITING_CONFIRMATION";item["confirmationIds"]=["confirm-1","confirm-2"]
         value=collect_child_confirmations("root",[item])

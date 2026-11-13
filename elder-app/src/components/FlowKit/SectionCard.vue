@@ -1,0 +1,1 @@
+<script setup>import SectionTitle from "./SectionTitle.vue";defineProps({title:String})</script><template><view class="kit-card"><SectionTitle v-if="title" :title="title"/><slot/></view></template>

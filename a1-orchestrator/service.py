@@ -159,6 +159,40 @@ def make_handler(receipts, key, process=handle):
                 return False
             return True
 
+        def read_json_body(self, maximum=1024 * 1024):
+            """Accept fixed-length and RFC 7230 chunked JSON bodies from P2."""
+            transfer = self.headers.get("Transfer-Encoding", "").lower()
+            if transfer == "chunked":
+                raw = bytearray()
+                while True:
+                    line = self.rfile.readline(128)
+                    if not line:
+                        raise ValueError()
+                    size = int(line.split(b";", 1)[0].strip(), 16)
+                    if size == 0:
+                        while self.rfile.readline(8192) not in (b"\r\n", b"\n", b""):
+                            pass
+                        break
+                    if size < 0 or len(raw) + size > maximum:
+                        raise ValueError()
+                    chunk = self.rfile.read(size)
+                    if len(chunk) != size or self.rfile.read(2) != b"\r\n":
+                        raise ValueError()
+                    raw.extend(chunk)
+                if not raw:
+                    raise ValueError()
+            else:
+                size = int(self.headers.get("Content-Length", "0"))
+                if not 0 < size <= maximum:
+                    raise ValueError()
+                raw = self.rfile.read(size)
+                if len(raw) != size:
+                    raise ValueError()
+            value = json.loads(raw.decode("utf-8"))
+            if not isinstance(value, dict):
+                raise ValueError()
+            return value
+
         def do_GET(self):
             path = urlsplit(self.path).path
             if path == "/health":
@@ -175,12 +209,7 @@ def make_handler(receipts, key, process=handle):
                 return
             self.connection.settimeout(15)
             try:
-                size = int(self.headers.get("Content-Length", "0"))
-                if not 0 < size <= 1024 * 1024:
-                    raise ValueError()
-                body = json.loads(self.rfile.read(size).decode("utf-8"))
-                if not isinstance(body, dict):
-                    raise ValueError()
+                body = self.read_json_body()
             except (ValueError, UnicodeError, OSError):
                 self.send_json(400, envelope("INVALID_ARGUMENT", "请求必须是有效JSON对象且不超过1MiB"))
                 return

@@ -1,0 +1,1 @@
+<template><view class="kit-notice"><image src="/static/outing/icons/info.svg"/><text><slot/></text></view></template>

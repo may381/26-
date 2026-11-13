@@ -45,3 +45,22 @@ class LocalDomainTests(unittest.TestCase):
         transport=Mock()
         with self.assertRaises(DomainError):DomainClient(transport).tourism('   ')
         transport.assert_not_called()
+
+    def test_places_keep_only_real_amap_points_with_coordinates(self):
+        transport=Mock(return_value={'code':'OK','data':{'source':'AMAP','places':[
+            {'name':'西湖','address':'杭州市西湖区','location':'120.155,30.265','type':'风景名胜'},
+            {'name':'无坐标地点','location':'not-a-point'},
+            {'name':'   ','location':'120.1,30.1'},
+            'bad-item']}})
+        places=DomainClient(transport).places('西湖','杭州')
+        self.assertEqual([place['name'] for place in places],['西湖'])
+        self.assertEqual(places[0]['location'],'120.155,30.265')
+
+    def test_places_reject_non_amap_source(self):
+        client=DomainClient(Mock(return_value={'code':'OK','data':{'source':'MOCK','places':[]}}))
+        with self.assertRaises(DomainError):client.places('西湖')
+
+    def test_places_reject_blank_query_without_calling_upstream(self):
+        transport=Mock()
+        with self.assertRaises(DomainError):DomainClient(transport).places('  ')
+        transport.assert_not_called()

@@ -1,0 +1,1 @@
+<script setup>defineProps({name:String})</script><template><image class="oi" :src="'/static/outing/icons/'+name+'.svg'" mode="aspectFit"/></template><style>.oi{width:24px;height:24px;display:inline-block;flex-shrink:0}</style>

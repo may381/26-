@@ -1,0 +1,1 @@
+<template><TravelScreen mode="scenic-detail"/></template><script setup>import {onShow as onPageShow} from "@dcloudio/uni-app";import {refreshState as refreshPageState} from "../components/app-state.js";onPageShow(refreshPageState);import TravelScreen from "../components/TravelScreen.vue"</script>

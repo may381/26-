@@ -1,0 +1,1 @@
+<script setup>import {onShow as onPageShow} from "@dcloudio/uni-app";import {refreshState as refreshPageState} from "../components/app-state.js";onPageShow(refreshPageState);import ContactEditScreen from "../components/ContactEditScreen.vue"</script><template><ContactEditScreen/></template>

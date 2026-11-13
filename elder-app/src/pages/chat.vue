@@ -1,0 +1,1 @@
+<template><AppScreen active="chat" /></template><script setup>import {onShow as onPageShow} from "@dcloudio/uni-app";import {refreshState as refreshPageState} from "../components/app-state.js";onPageShow(refreshPageState);import AppScreen from "../components/AppScreen.vue";</script>
